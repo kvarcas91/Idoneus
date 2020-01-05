@@ -18,6 +18,8 @@ namespace Core.ViewModels
         public ObservableCollection<Task> Tasks { get; set; }
 
         public ICommand ShowAddTaskPopupCommand { get; set; }
+        public ICommand CleanCompletedTasksCommand { get; set; }
+        public ICommand TestCommand { get; set; }
 
         public bool AddTaskPopupVisible { get; set; } = false;
 
@@ -25,6 +27,11 @@ namespace Core.ViewModels
 
         public DashboardViewModel()
         {
+
+
+            TestCommand = new ParameterizedRelayCommand<Task>(Test);
+
+
 
             Projects = new ObservableCollection<Project>();
 
@@ -130,28 +137,34 @@ namespace Core.ViewModels
 
             Tasks = new ObservableCollection<Task>();
 
-            //Tasks = new ObservableCollection<Task>
-            //{
-            //   new Task
-            //   {
-            //       Content = "First task",
-            //       IsCompleted = false
-            //   },
+            Tasks = new ObservableCollection<Task>
+            {
+               new Task
+               {
+                   Content = "First task",
+                   IsCompleted = false
+               },
 
-            //    new Task
-            //   {
-            //       Content = "Second task",
-            //       IsCompleted = false
-            //   },
+                new Task
+               {
+                   Content = "Second task",
+                   IsCompleted = false
+               },
 
-            //     new Task
-            //   {
-            //       Content = "third task",
-            //       IsCompleted = true
-            //   }
-            //};
+                 new Task
+               {
+                   Content = "third task",
+                   IsCompleted = true
+               }
+            };
+            Tasks.Add(new Task
+            {
+                Content = "test from UI"
+            }
+           );
 
             ShowAddTaskPopupCommand = new RelayCommand(ShowAddTaskPopup);
+            CleanCompletedTasksCommand = new RelayCommand(CleanCompletedTasks);
         }
 
 
@@ -159,7 +172,36 @@ namespace Core.ViewModels
         {
             AddTaskPopupVisible ^= true;
             Debug.WriteLine("pop up");
+            //Tasks.Add(new Task
+            //{
+            //    Content = "test from UI"
+            //}
+            //);
         }
+
+        private void CleanCompletedTasks ()
+        {
+            for (int i = Tasks.Count-1; i >= 0; i--)
+            {
+                if (Tasks[i].IsCompleted) Tasks.Remove(Tasks[i]);
+            }
+        }
+
+
+        #region Test Methods
+
+        private void Test (Task task)
+        {
+            Debug.WriteLine("Test hit");
+           
+           
+            Tasks.OrderBy(i => i.IsCompleted);
+            
+        }
+
+
+        #endregion
+
 
     }
 }

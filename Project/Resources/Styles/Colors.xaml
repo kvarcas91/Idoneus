@@ -3,7 +3,7 @@
                     xmlns:local="clr-namespace:Project.Resources.Styles">
 
     <!-- Light Blue -->
-    <Color x:Key="PrimaryColor">#546E7A</Color>
+    <Color x:Key="PrimaryColor">#007bde</Color>
     <SolidColorBrush x:Key="PrimaryColorBrush" Color="{StaticResource PrimaryColor}"/>
 
     <!-- Dark Blue -->
@@ -11,7 +11,7 @@
     <SolidColorBrush x:Key="PrimaryDarkColorBrush" Color="{StaticResource PrimaryDarkColor}"/>
 
     <!-- Light Blue transparent -->
-    <Color x:Key="PrimaryTransparentColor">#002196F3</Color>
+    <Color x:Key="PrimaryTransparentColor">#000c8cf2</Color>
     <SolidColorBrush x:Key="PrimaryTransparentColorBrush" Color="{StaticResource PrimaryTransparentColor}"/>
 
     <!-- Very Light Grey -->
@@ -23,15 +23,15 @@
     <SolidColorBrush x:Key="LightGreyBrush" Color="{StaticResource LightGrey}"/>
 
     <!-- Darker Blue -->
-    <Color x:Key="SecondaryColor">#485E69</Color>
+    <Color x:Key="SecondaryColor">#0070c9</Color>
     <SolidColorBrush x:Key="SecondaryColorBrush" Color="{StaticResource SecondaryColor}"/>
 
     <!-- Secondary Transparent -->
-    <Color x:Key="LighterPrimaryColor">#688796</Color>
+    <Color x:Key="LighterPrimaryColor">#38a5fc</Color>
     <SolidColorBrush x:Key="LighterPrimaryColorBrush" Color="{StaticResource LighterPrimaryColor}"/>
 
     <!-- Secondary Transparent -->
-    <Color x:Key="SecondaryTransparentColor">#00485E69</Color>
+    <Color x:Key="SecondaryTransparentColor">#00007bde</Color>
     <SolidColorBrush x:Key="SecondaryTransparentColorBrush" Color="{StaticResource SecondaryTransparentColor}"/>
 
     <!-- Progress Foreground Blue-->

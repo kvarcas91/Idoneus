@@ -126,7 +126,9 @@
                         <CheckBox Grid.Row="0" Grid.Column="1" 
                                               Grid.RowSpan="2"
                                               x:Name="IsCompleted"
-                                              IsChecked="{Binding IsCompleted}"
+                                              IsChecked="{Binding IsCompleted, Mode=TwoWay}"
+                                  Command="{Binding ElementName=TaskListView, Path=DataContext.TestCommand}"
+                                CommandParameter="{Binding}"
                               Style="{StaticResource TaskCheckBox}">
                             <TextBlock Text="{Binding Content}"
                                                    TextAlignment="Justify"
