@@ -1,0 +1,8 @@
+C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Core\bin\Debug\Core.dll
+C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Core\bin\Debug\Core.pdb
+C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Core\obj\Debug\Core.csprojAssemblyReference.cache
+C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Core\obj\Debug\Core.dll
+C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Core\obj\Debug\Core.pdb
+C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Core\bin\Debug\Ninject.dll
+C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Core\bin\Debug\Ninject.xml
+C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Core\obj\Debug\Core.csproj.CopyComplete
