@@ -35,13 +35,17 @@
     <SolidColorBrush x:Key="SecondaryTransparentColorBrush" Color="{StaticResource SecondaryTransparentColor}"/>
 
     <!-- Progress Foreground Blue-->
-    <Color x:Key="ProgressForegroundColor">#0D47A1</Color>
-    <SolidColorBrush x:Key="ProgressForegroundColorBrush" Color="{StaticResource ProgressForegroundColor}"/>
+    <Color x:Key="DarkBlueColor">#0D47A1</Color>
+    <SolidColorBrush x:Key="DarkBlueColorBrush" Color="{StaticResource DarkBlueColor}"/>
+
+    <!-- Light Blue -->
+    <Color x:Key="LightBlueColor">#2196F3</Color>
+    <SolidColorBrush x:Key="LightBlueColorBrush" Color="{StaticResource LightBlueColor}"/>
 
     <!-- Priority Colors -->
     <Color x:Key="PriorityLow">#FFA800</Color> <!-- Yellow -->
     <Color x:Key="PriorityMedium">#FF6A00</Color> <!-- Orange -->
     <Color x:Key="PriorityHigh">#701944</Color> <!-- Bordo -->
-    <Color x:Key="PriorityDefault">#F2F2F2</Color> <!-- background color / light gray -->
+    <Color x:Key="PriorityDefault">#2196F3</Color> <!-- black-->
 
 </ResourceDictionary>

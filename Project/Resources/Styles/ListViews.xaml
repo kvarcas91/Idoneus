@@ -45,7 +45,7 @@
                             <ColumnDefinition Width="Auto"/>
 
                             <!-- Progress percentage -->
-                            <ColumnDefinition Width="50"/>
+                            <ColumnDefinition Width="60"/>
 
 
                         </Grid.ColumnDefinitions>
@@ -122,8 +122,23 @@
             <Setter.Value>
                 <DataTemplate>
 
+                    <Border Padding="0 5 0 5">
+                        <CheckBox Grid.Row="0" Grid.Column="1" 
+                                              Grid.RowSpan="2"
+                                              x:Name="IsCompleted"
+                                              IsChecked="{Binding IsCompleted}"
+                              Style="{StaticResource TaskCheckBox}">
+                            <TextBlock Text="{Binding Content}"
+                                                   TextAlignment="Justify"
+                                                   TextWrapping="Wrap"
+                                   Margin="0 3 0 0"
+                                   Style="{StaticResource RegularListItemSnippetText}"
+                                       Foreground="{Binding IsCompleted, Converter={converters:IsCompletedToColorConverter}}"
+                                                   TextDecorations="{Binding IsCompleted,
+                                                                     Converter={converters:BoolToTextDecorationConverter}}"/>
+                        </CheckBox>
 
-                   
+                    </Border>
 
                 </DataTemplate>
             </Setter.Value>

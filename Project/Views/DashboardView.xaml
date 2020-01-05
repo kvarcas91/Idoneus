@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:Project.Views"
              xmlns:vm="clr-namespace:Core.ViewModels;assembly=Core"
              mc:Ignorable="d" 
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              d:DesignHeight="450" d:DesignWidth="800">
   
 
@@ -22,7 +23,6 @@
             <!-- Content -->
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-
 
         <!-- Toolbar -->
         <Grid Grid.Row="0"
@@ -147,7 +147,7 @@
                         </Border>
 
                         <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
-                                 Foreground="{StaticResource ProgressForegroundColorBrush}"
+                                 Foreground="{StaticResource LightBlueColorBrush}"
                                  Value="100"
                                      Width="60"
                                 Height="60"/>
@@ -231,11 +231,31 @@
 
                     <!-- Header -->
                     <StackPanel Orientation="Vertical">
-                        <TextBlock Text="TODAY'S TASKS"
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            
+                            
+                            <TextBlock Text="TODAY'S TASKS"
                                    Margin="10 0"
                                    FontFamily="{StaticResource RalewayBold}"
                                    FontSize="{StaticResource Small}"
                                    Foreground="{StaticResource SecondaryColorBrush}"/>
+
+                            <Button Grid.Column="1"
+                                Background="Transparent"
+                                    BorderThickness="0"
+                                    Style="{StaticResource PackButtonBase}">
+                                <materialDesign:PackIcon Kind="AddCircleOutline"
+                                                         Foreground="{StaticResource LightBlueColorBrush}"
+                                                         Style="{StaticResource GrowPackIcon}"/>
+                            </Button>
+                            
+                        </Grid>
 
                         <Separator Margin="5"/>
 

@@ -40,7 +40,7 @@ namespace Core.ViewModels
                 {
                     Header = "Do something",
                     Progress = 20,
-                    Priority = Utils.Priority.High,
+                    Priority = Utils.Priority.Low,
                     Content = "First content from Eddie"
                 },
 
@@ -64,7 +64,7 @@ namespace Core.ViewModels
                  {
                     Header = "Do More stuff",
                     Progress = 100,
-                    Priority = Utils.Priority.Medium,
+                    Priority = Utils.Priority.Default,
                     Content = "Second content from Eddie designed to be a long text"
                  },
 

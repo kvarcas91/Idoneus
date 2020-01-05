@@ -11,7 +11,9 @@
                 <ResourceDictionary Source="/Resources/Styles/CircularProgressBar.xaml"/>
                 <ResourceDictionary Source="/Resources/Styles/ProgressBar.xaml"/>
                 <ResourceDictionary Source="/Resources/Styles/Scroll.xaml"/>
+                <ResourceDictionary Source="/Resources/Styles/CheckBox.xaml"/>
                 <ResourceDictionary Source="/Resources/Styles/ListViews.xaml"/>
+              
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
