@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Project.Views"
              xmlns:vm="clr-namespace:Core.ViewModels;assembly=Core"
+             xmlns:converters="clr-namespace:Project.Converters"
              mc:Ignorable="d" 
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              d:DesignHeight="450" d:DesignWidth="800">
@@ -141,14 +142,14 @@
                             FontFamily="Arial"
                             Foreground="{StaticResource PrimaryDarkColorBrush}"
                             FontSize="{StaticResource Regular}">
-                                <Run Text="100"/>
+                                <Run Text="{Binding TotalProgress}"/>
                                 <Run Text="%"/>
                             </TextBlock>
                         </Border>
 
                         <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
                                  Foreground="{StaticResource LightBlueColorBrush}"
-                                 Value="100"
+                                 Value="{Binding TotalProgress}"
                                      Width="60"
                                 Height="60"/>
 
@@ -184,31 +185,46 @@
                   Background="{StaticResource BackgroundLightBrush}">
 
                 <Grid>
-                    <Grid.RowDefinitions>
+
+                    <Grid Visibility="{Binding Projects.Count, Converter={converters:ListItemCountToVisibilityConverter}, ConverterParameter=1}">
+
+                        <Grid.RowDefinitions>
+
+                            <!-- Header -->
+                            <RowDefinition Height="Auto"/>
+
+                            <!-- Content -->
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
 
                         <!-- Header -->
-                        <RowDefinition Height="Auto"/>
-
-                        <!-- Content -->
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-
-                    <!-- Header -->
-                    <StackPanel Orientation="Vertical">
-                        <TextBlock Text="PROJECT SUMMARY"
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock Text="PROJECT SUMMARY"
                                    Margin="10 0"
                                    FontFamily="{StaticResource RalewayBold}"
                                    FontSize="{StaticResource Small}"
                                    Foreground="{StaticResource SecondaryColorBrush}"/>
 
-                        <Separator Margin="5"/>
+                            <Separator Margin="5"/>
 
-                    </StackPanel>
+                        </StackPanel>
 
-                    <!-- Content -->
-                    <ListView Grid.Row="1" ItemsSource="{Binding Projects}"
+                        <!-- Content -->
+                        <ListView Grid.Row="1" ItemsSource="{Binding Projects}"
                               Style="{StaticResource ProjectListViewSnippet}"/>
+                    </Grid>
+
+                    <!-- Empty view -->
+                    <TextBlock Text="No Projects"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Center"
+                               FontSize="{StaticResource XXLarge}"
+                               Foreground="Gray"
+                               FontFamily="{StaticResource PlayFairRegular}"
+                               Visibility="{Binding Projects.Count, Converter={converters:ListItemCountToVisibilityConverter}}"/>
+                    
                 </Grid>
+                
 
             </Border>
 
@@ -220,52 +236,73 @@
 
 
                 <Grid>
-                    <Grid.RowDefinitions>
+                    
+                    <!-- Content -->
+                    <Grid
+                          Visibility="{Binding Tasks.Count, Converter={converters:ListItemCountToVisibilityConverter}, ConverterParameter=1}">
+                        <Grid.RowDefinitions>
+
+                            <!-- Header -->
+                            <RowDefinition Height="Auto"/>
+
+                            <!-- Content -->
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
 
                         <!-- Header -->
-                        <RowDefinition Height="Auto"/>
+                        <StackPanel Orientation="Vertical">
 
-                        <!-- Content -->
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
 
-                    <!-- Header -->
-                    <StackPanel Orientation="Vertical">
 
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
 
-                            
-                            
-                            <TextBlock Text="TODAY'S TASKS"
+                                <TextBlock Text="TODAY'S TASKS"
                                    Margin="10 0"
                                    FontFamily="{StaticResource RalewayBold}"
                                    FontSize="{StaticResource Small}"
                                    Foreground="{StaticResource SecondaryColorBrush}"/>
 
-                            <Button Grid.Column="1"
+                                <Button Grid.Column="1"
                                 Background="Transparent"
                                     BorderThickness="0"
-                                    Style="{StaticResource PackButtonBase}">
-                                <materialDesign:PackIcon Kind="AddCircleOutline"
+                                    Style="{StaticResource PackButtonBase}"
+                                    Command="{Binding ShowAddTaskPopupCommand}">
+                                    <materialDesign:PackIcon Kind="AddCircleOutline"
                                                          Foreground="{StaticResource LightBlueColorBrush}"
                                                          Style="{StaticResource GrowPackIcon}"/>
-                            </Button>
-                            
-                        </Grid>
+                                </Button>
 
-                        <Separator Margin="5"/>
+                            </Grid>
 
-                    </StackPanel>
+                            <Separator Margin="5"/>
 
-                    <!-- Content -->
-                    <ListView Grid.Row="1" ItemsSource="{Binding Tasks}"
+                        </StackPanel>
+
+                        <!-- Content -->
+                        <ListView Grid.Row="1" ItemsSource="{Binding Tasks}"
                               Style="{StaticResource TodayTaskListView}"/>
-                </Grid>
 
+                        <local:AddTaskPopUp Grid.Row="1"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Top"/>
+                    </Grid>
+
+
+                    <!-- Empty view -->
+                    <TextBlock Text="No Tasks"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Center"
+                               FontSize="{StaticResource XXLarge}"
+                               Foreground="Gray"
+                               FontFamily="{StaticResource PlayFairItalic}"
+                               Visibility="{Binding Tasks.Count, Converter={converters:ListItemCountToVisibilityConverter}}"/>
+                </Grid>
+                
+              
             </Border>
         </Grid>
 

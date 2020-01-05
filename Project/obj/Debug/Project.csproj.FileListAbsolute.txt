@@ -43,3 +43,5 @@ C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\obj\Debug\Project.csproj.Ge
 C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\obj\Debug\Project.csproj.CopyComplete
 C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\obj\Debug\Project.exe
 C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\obj\Debug\Project.pdb
+C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\obj\Debug\Views\PopUps\AddTaskPopUp.g.cs
+C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\obj\Debug\Views\PopUps\AddTaskPopUp.baml

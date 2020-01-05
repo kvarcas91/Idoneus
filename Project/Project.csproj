@@ -73,10 +73,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Animations\FrameworkElementAnimations.cs" />
+    <Compile Include="Animations\StoryBoardHelper.cs" />
+    <Compile Include="AttachedProperties\BaseAttachedProperty.cs" />
+    <Compile Include="AttachedProperties\FrameworkElementAnimationAttachedProperties.cs" />
     <Compile Include="Converters\ApplicationPageValueConverter.cs" />
     <Compile Include="Converters\Base\BaseValueConverter.cs" />
     <Compile Include="Converters\BoolToTextDecorationConverter.cs" />
     <Compile Include="Converters\IsCompletedToColorConverter.cs" />
+    <Compile Include="Converters\ListItemCountToVisibilityConverter.cs" />
     <Compile Include="Converters\PriorityToColorConverter.cs" />
     <Compile Include="Converters\ProgressBar\ArcEndPointConverter.cs" />
     <Compile Include="Converters\ProgressBar\ArcSizeConverter.cs" />
@@ -95,6 +100,9 @@
     </Compile>
     <Compile Include="Views\MainSideBarView.xaml.cs">
       <DependentUpon>MainSideBarView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PopUps\AddTaskPopUp.xaml.cs">
+      <DependentUpon>AddTaskPopUp.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ProjectListView.xaml.cs">
       <DependentUpon>ProjectListView.xaml</DependentUpon>
@@ -159,6 +167,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\MainSideBarView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PopUps\AddTaskPopUp.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
