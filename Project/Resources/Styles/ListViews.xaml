@@ -1,0 +1,149 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:Project.Resources.Styles"
+                    xmlns:converters="clr-namespace:Project.Converters">
+
+
+
+    <!-- Base ListView Style -->
+    <Style x:Key="ListView" TargetType="{x:Type ListView}">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+        <Setter Property="ScrollViewer.CanContentScroll" Value="False"/>
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+
+    <!-- Project snippet list view from dashboard -->
+    <Style x:Key="ProjectListViewSnippet" TargetType="{x:Type ListView}" BasedOn="{StaticResource ListView}">
+        <Setter Property="ItemTemplate">
+            <Setter.Value>
+                <DataTemplate>
+
+
+                    <Grid>
+                        <Grid.RowDefinitions>
+
+                            <!-- Content -->
+                            <RowDefinition Height="30"/>
+
+                            <!-- Separator -->
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+
+                            <!-- Priority color indicator -->
+                            <ColumnDefinition Width="20"/>
+
+                            <!-- Project header -->
+                            <ColumnDefinition Width="*"/>
+
+                            <!-- completed tasks / Total tasks -->
+                            <ColumnDefinition Width="Auto"/>
+
+                            <!-- Progress bar -->
+                            <ColumnDefinition Width="Auto"/>
+
+                            <!-- Progress percentage -->
+                            <ColumnDefinition Width="50"/>
+
+
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Priority Color Indicator -->
+                        <Border Grid.Column="0"
+                            Background="{Binding Priority, Converter={converters:PriorityToColorConverter}}" 
+                                Width="3" 
+                                Height="10"
+                                Margin="3"/>
+
+                        <!-- Project summary -->
+                        <TextBlock Grid.Column="1"
+                                   Text="{Binding Content}"
+                                   TextTrimming="WordEllipsis"
+                                   Style="{StaticResource RegularListItemSnippetText}"/>
+
+                        <!-- Completed tasks / All tasks -->
+                        <TextBlock Grid.Column="2"
+                                   Style="{StaticResource RegularListItemSnippetText}"
+                                   Margin="0 0 10 0">
+                            <Run Text="20"/>
+                            <Run Text="/"/>
+                            <Run Text="149"/>
+                        </TextBlock>
+
+                        <!-- Project Progress Bar -->
+                        <ProgressBar Grid.Column="3"
+                                     Width="150"
+                                     Value="{Binding Progress}"
+                                     Style="{StaticResource HorizontalProgressBar}"
+                                     Background="{StaticResource LightGreyBrush}"
+                                     BorderThickness="0"
+                                     Height="5"
+                                     Foreground="{Binding Priority, Converter={converters:PriorityToColorConverter}}"/>
+
+                        <TextBlock Grid.Column="4"
+                                   Style="{StaticResource RegularListItemSnippetText}"
+                                   Margin="10 0 10 0">
+                            <Run Text="{Binding Progress}"/>
+                            <Run Text="%"/>
+                        </TextBlock>
+
+
+                        <Separator Grid.Row="1" Grid.ColumnSpan="5" Height="1"
+                                   Foreground="{StaticResource LightGreyBrush}"/>
+
+                    </Grid>
+
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+        
+        <!-- Disable onMouseOver and default style -->
+        <Setter Property="ItemContainerStyle">
+            <Setter.Value>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                <ContentPresenter />
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <!-- Today's task from dashboard -->
+    <Style x:Key="TodayTaskListView" TargetType="{x:Type ListView}" BasedOn="{StaticResource ListView}">
+        <Setter Property="ItemTemplate">
+            <Setter.Value>
+                <DataTemplate>
+
+
+                   
+
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+
+        <!-- Disable onMouseOver and default style -->
+        <Setter Property="ItemContainerStyle">
+            <Setter.Value>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                <ContentPresenter />
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

@@ -75,6 +75,7 @@
     </ApplicationDefinition>
     <Compile Include="Converters\ApplicationPageValueConverter.cs" />
     <Compile Include="Converters\Base\BaseValueConverter.cs" />
+    <Compile Include="Converters\PriorityToColorConverter.cs" />
     <Compile Include="Converters\ProgressBar\ArcEndPointConverter.cs" />
     <Compile Include="Converters\ProgressBar\ArcSizeConverter.cs" />
     <Compile Include="Converters\ProgressBar\LargeArcConverter.cs" />
@@ -126,6 +127,14 @@
     <Page Include="Resources\Styles\Fonts.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Styles\ListViews.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Styles\ProgressBar.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resources\Styles\Scroll.xaml">
       <Generator>MSBuild:Compile</Generator>

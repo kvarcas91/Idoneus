@@ -40,3 +40,5 @@ C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\obj\Debug\Views\TasksView.g
 C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\obj\Debug\Views\DashboardView.baml
 C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\obj\Debug\Views\ProjectListView.baml
 C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\obj\Debug\Views\TasksView.baml
+C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\obj\Debug\Resources\Styles\ListViews.baml
+C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\obj\Debug\Resources\Styles\ProgressBar.baml

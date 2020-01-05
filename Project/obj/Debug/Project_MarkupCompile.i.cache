@@ -10,11 +10,11 @@ none
 false
 DEBUG;TRACE
 C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\App.xaml
-121833059306
+14-284017829
 
-22-1339403030
+24-274433069
 18-85219573
-MainWindow.xaml;Resources\Styles\Buttons.xaml;Resources\Styles\CircularProgressBar.xaml;Resources\Styles\Colors.xaml;Resources\Styles\Fonts.xaml;Resources\Styles\Scroll.xaml;Resources\Styles\Texts.xaml;Views\DashboardView.xaml;Views\MainContentView.xaml;Views\MainSideBarView.xaml;Views\ProjectListView.xaml;Views\TasksView.xaml;
+MainWindow.xaml;Resources\Styles\Buttons.xaml;Resources\Styles\CircularProgressBar.xaml;Resources\Styles\Colors.xaml;Resources\Styles\Fonts.xaml;Resources\Styles\ListViews.xaml;Resources\Styles\ProgressBar.xaml;Resources\Styles\Scroll.xaml;Resources\Styles\Texts.xaml;Views\DashboardView.xaml;Views\MainContentView.xaml;Views\MainSideBarView.xaml;Views\ProjectListView.xaml;Views\TasksView.xaml;
 
-False
+True
 
