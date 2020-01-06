@@ -92,7 +92,8 @@
 
                                     <!-- SideBar -->
                                     <Border Grid.Row="0" Grid.RowSpan="2" Grid.Column="0"
-                                            Padding="{Binding InnerContetPadding}">
+                                            Padding="{Binding InnerContetPadding}"
+                                            Panel.ZIndex="1">
                                         <v:MainSideBarView />
                                     </Border>
 

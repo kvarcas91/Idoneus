@@ -10,10 +10,13 @@ namespace Project.Converters
 {
     public class DateTimeToStringConverter : BaseValueConverter<DateTimeToStringConverter>
     {
+
+        // param - ignore difference between today and older days
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var date = (DateTime)value;
 
+            // Ignore difference between days if true
             if (parameter != null)
                 return date.ToLocalTime().ToString("dd MMM, yyyy");
 
@@ -24,7 +27,6 @@ namespace Project.Converters
             // if it is not today..
             return date.ToLocalTime().ToString("HH:mm, MMM, yyyy");
 
-            return date;
         }
 
         public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

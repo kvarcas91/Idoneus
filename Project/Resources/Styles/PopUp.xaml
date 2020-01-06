@@ -29,5 +29,35 @@
             </DataTrigger>
         </Style.Triggers>
     </Style>
-    
+
+    <Style x:Key="ProjectListSideBarAnimation" TargetType="{x:Type Border}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsProjectListSideBarExpanded}" Value="True">
+                <DataTrigger.EnterActions>
+                    <StopStoryboard BeginStoryboardName="EndAnimation" />
+                    <BeginStoryboard x:Name="NewAnimation">
+                        <Storyboard>
+                            <!--<ThicknessAnimation Storyboard.TargetProperty="Margin" From="-300,0,300,0" To="0,0,0,0" Duration="0:0:0.5" />-->
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.2" />
+                            <DoubleAnimation Storyboard.TargetProperty="Width" From="30" To="300" Duration="0:0:0.4" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.EnterActions>
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding IsProjectListSideBarExpanded}" Value="False">
+                <DataTrigger.EnterActions>
+                    <StopStoryboard BeginStoryboardName="EndAnimation" />
+                    <BeginStoryboard x:Name="EndAnimation">
+                        <Storyboard>
+                            <!--<ThicknessAnimation Storyboard.TargetProperty="Margin" From="0,0,0,0" To="-300,0,300,0" Duration="0:0:0.5" />-->
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.2" />
+                            <DoubleAnimation Storyboard.TargetProperty="Width" From="300" To="30" Duration="0:0:0.4" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.EnterActions>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
 </ResourceDictionary>

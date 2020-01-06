@@ -130,6 +130,7 @@
                                 VerticalAlignment="Center"
                                 HorizontalAlignment="Center"
                                 FontFamily="Arial"
+                                FontWeight="Bold"
                                 Foreground="{StaticResource DarkBlueColorBrush}"
                                 FontSize="{StaticResource Regular}">
                                     <Run Text="{Binding TotalTasksProgress}"/>
@@ -306,7 +307,7 @@
                     <!-- Empty view -->
                     <materialDesign:PackIcon Kind="FormatListBulleted"
                                              Grid.RowSpan="2"
-                                             Visibility="{Binding Tasks.Count, Converter={converters:ListItemCountToVisibilityConverter}}"
+                                             Visibility="{Binding Projects.Count, Converter={converters:ListItemCountToVisibilityConverter}}"
                                              Style="{StaticResource EmptyIconView}"/>
                     
                 </Grid>

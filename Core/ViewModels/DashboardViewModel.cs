@@ -65,11 +65,11 @@ namespace Core.ViewModels
 
             Projects = FakeData.GetProjects();
             Tasks = FakeData.GetTasks();
-            //Notes = FakeData.GetNotes();
+            Notes = FakeData.GetNotes();
 
             //Projects = new ObservableCollection<IProject>();
             //Tasks = new ObservableCollection<ITask>();
-            Notes = new ObservableCollection<Note>();
+            //Notes = new ObservableCollection<Note>();
 
             SetUpCommands();
             initTest();
