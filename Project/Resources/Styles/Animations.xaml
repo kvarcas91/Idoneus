@@ -30,7 +30,7 @@
         </Style.Triggers>
     </Style>
 
-    <Style x:Key="ProjectListSideBarAnimation" TargetType="{x:Type Border}">
+    <Style x:Key="ProjectListSideBarAnimation" TargetType="{x:Type FrameworkElement}">
         <Style.Triggers>
             <DataTrigger Binding="{Binding IsProjectListSideBarExpanded}" Value="True">
                 <DataTrigger.EnterActions>
@@ -60,4 +60,34 @@
         </Style.Triggers>
     </Style>
 
+
+    <Style x:Key="ProjectSideBarControlOpacity" TargetType="{x:Type FrameworkElement}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsProjectListSideBarExpanded}" Value="True">
+                <DataTrigger.EnterActions>
+                    <StopStoryboard BeginStoryboardName="EndAnimation" />
+                    <BeginStoryboard x:Name="NewAnimation">
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Width" From="0" To="100" Duration="0:0:0.25" />
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.15" />
+
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.EnterActions>
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding IsProjectListSideBarExpanded}" Value="False">
+                <DataTrigger.EnterActions>
+                    <StopStoryboard BeginStoryboardName="EndAnimation" />
+                    <BeginStoryboard x:Name="EndAnimation">
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Width" To="0" Duration="0:0:0.25" />
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.15" />
+                           
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.EnterActions>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
 </ResourceDictionary>
