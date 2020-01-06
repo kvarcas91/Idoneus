@@ -10,6 +10,57 @@
         <Setter Property="VerticalAlignment" Value="Center"/>
     </Style>
 
+    <Style x:Key="PageHeader" TargetType="{x:Type TextBlock}">
+        <Setter Property="FontFamily" Value="{StaticResource PlayFairRegular}"/>
+        <Setter Property="FontSize" Value="{StaticResource XXLarge}"/>
+        <Setter Property="Foreground" Value="{StaticResource SecondaryColorBrush}"/>
+        <Setter Property="Margin" Value="10"/>
+    </Style>
+
+    <Style x:Key="InfoBoxHeader" TargetType="{x:Type TextBlock}">
+        <Setter Property="FontFamily" Value="Arial"/>
+        <Setter Property="FontSize" Value="{StaticResource Large}"/>
+        <Setter Property="Foreground" Value="{StaticResource SecondaryColorBrush}"/>
+    </Style>
+
+    <Style x:Key="ListBoxHeader" TargetType="{x:Type TextBlock}">
+        <Setter Property="FontFamily" Value="{StaticResource RalewayBold}"/>
+        <Setter Property="FontSize" Value="{StaticResource Small}"/>
+        <Setter Property="Foreground" Value="{StaticResource SecondaryColorBrush}"/>
+        <Setter Property="Margin" Value="10 0"/>
+    </Style>
+
+    <Style x:Key="InfoBoxContent" TargetType="{x:Type TextBlock}">
+        <Setter Property="FontFamily" Value="{StaticResource RalewayMedium}"/>
+        <Setter Property="FontSize" Value="{StaticResource Small}"/>
+        <Setter Property="Foreground" Value="Gray"/>
+        <Setter Property="Margin" Value="5"/>
+    </Style>
+
+    <!-- Shows Empty List -->
+    <Style x:Key="EmptyList" TargetType="{x:Type TextBlock}">
+        <Setter Property="FontFamily" Value="{StaticResource PlayFairItalic}"/>
+        <Setter Property="FontSize" Value="{StaticResource XXLarge}"/>
+        <Setter Property="Foreground" Value="Gray"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+    </Style>
+
+    <Style x:Key="NoteDateText" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource BaseTextBlockStyle}">
+        <Setter Property="Foreground" Value="{StaticResource SecondaryColorBrush}"/>
+        <Setter Property="FontSize" Value="{StaticResource Regular}"/>
+        <Setter Property="FontFamily" Value="Arial"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <Style x:Key="NoteContentText" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource BaseTextBlockStyle}">
+        <Setter Property="Foreground" Value="Gray"/>
+        <Setter Property="FontSize" Value="{StaticResource Small}"/>
+        <Setter Property="FontFamily" Value="{StaticResource RalewayMedium}"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Margin" Value="10 5 0 20"/>
+    </Style>
+
     <!--<Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource BaseStyle}">
 
         <Setter Property="FontSize" Value="{StaticResource Large}" />

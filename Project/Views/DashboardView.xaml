@@ -8,7 +8,7 @@
              xmlns:converters="clr-namespace:Project.Converters"
              mc:Ignorable="d" 
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="700" d:DesignWidth="1100">
   
 
     <UserControl.DataContext>
@@ -38,18 +38,15 @@
             </Grid.ColumnDefinitions>
 
             <TextBlock Grid.Column="0"
-                       Margin="10"
                        Text="Dashboard"
-                       FontFamily="{StaticResource PlayFairRegular}"
-                       FontSize="{StaticResource XXLarge}"
-                       Foreground="{StaticResource SecondaryColorBrush}"/>
+                       Style="{StaticResource PageHeader}"/>
 
             <TextBlock Grid.Column="1"
                        Margin="10"
                        VerticalAlignment="Center"
                        Foreground="Gray"
                        FontFamily="Arial"
-                       Text="Feb, 15, 2020"/>
+                       Text="{Binding CurrentDate, Converter={converters:DateTimeToStringConverter}, ConverterParameter=1}"/>
 
         </Grid>
 
@@ -66,48 +63,41 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
             <!-- Total Project Indicator -->
-            <Border Grid.Column="0" Margin="30 0 30 0"
-                    Background="{StaticResource BackgroundLightBrush}">
-
-                <StackPanel Orientation="Vertical"
-                            Margin="10">
-                    <TextBlock Text="209"
-                                  FontFamily="Arial"
-                               Foreground="{StaticResource SecondaryColorBrush}"
-                               FontSize="{StaticResource Large}"/>
-
-                    <TextBlock Text="Published projects"
-                                Margin="5"
-                               Foreground="Gray"
-                               FontSize="{StaticResource Regular}"/>
-                </StackPanel>
-
-            </Border>
-
-            <!-- Total Tasks Indicator -->
             <Border Grid.Column="1" Margin="30 0 30 0"
                     Background="{StaticResource BackgroundLightBrush}">
 
                 <StackPanel Orientation="Vertical"
                             Margin="10">
-                    <TextBlock Text="2089"
-                               FontFamily="Arial"
-                               Foreground="{StaticResource SecondaryColorBrush}"
-                               FontSize="{StaticResource Large}"/>
+                    <TextBlock Text="{Binding TotalProjectCount}"
+                               Style="{StaticResource InfoBoxHeader}"/>
 
-                    <TextBlock Text="Completed tasks"
-                                Margin="5"
-                               Foreground="Gray"
-                               FontSize="{StaticResource Regular}"/>
+                    <TextBlock Text="Published projects"
+                               Style="{StaticResource InfoBoxContent}"/>
+                </StackPanel>
+
+            </Border>
+
+            <!-- Total Tasks Indicator -->
+            <Border Grid.Column="2" Margin="30 0 30 0"
+                    Background="{StaticResource BackgroundLightBrush}">
+
+                <StackPanel Orientation="Vertical"
+                            Margin="10">
+                    <TextBlock Text="{Binding ActiveTasksCount}"
+                               Style="{StaticResource InfoBoxHeader}"/>
+
+                    <TextBlock Text="Active tasks"
+                               Style="{StaticResource InfoBoxContent}"/>
                 </StackPanel>
 
             </Border>
 
             <!-- Total Performance Indicator -->
-            <Border Grid.Column="2" Background="{StaticResource BackgroundLightBrush}"
+            <Border Grid.Column="3" Background="{StaticResource BackgroundLightBrush}"
                     Margin="30 0 30 0"
                     Padding="10 0">
 
@@ -126,33 +116,32 @@
                     <Grid Grid.Column="0"
                           HorizontalAlignment="Left"
                           Width="60"
-                                Height="60" >
+                          Height="60" >
 
-                        <Border Background="Transparent"
-                                
-                           BorderBrush="{StaticResource LightBlueColorBrush}"
+                        <Border Background="Transparent"  
+                                BorderBrush="{StaticResource LightBlueColorBrush}"
                                 Opacity="0.5"
-                            BorderThickness="1.5"
-                            Margin="1"
-                            CornerRadius="{Binding ActualHeight, RelativeSource={RelativeSource self}}"
+                                BorderThickness="1.5"
+                                Margin="1"
+                                CornerRadius="{Binding ActualHeight, RelativeSource={RelativeSource self}}"
                                 Width="{Binding ActualHeight, RelativeSource={RelativeSource self}}">
 
                             <TextBlock  
-                            VerticalAlignment="Center"
-                            HorizontalAlignment="Center"
-                            FontFamily="Arial"
-                            Foreground="{StaticResource DarkBlueColorBrush}"
-                            FontSize="{StaticResource Regular}">
-                                <Run Text="{Binding TotalProgress}"/>
-                                <Run Text="%"/>
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center"
+                                FontFamily="Arial"
+                                Foreground="{StaticResource DarkBlueColorBrush}"
+                                FontSize="{StaticResource Regular}">
+                                    <Run Text="{Binding TotalTasksProgress}"/>
+                                    <Run Text="%"/>
                             </TextBlock>
                         </Border>
 
                         <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
-                                 Foreground="{StaticResource LightBlueColorBrush}"
-                                 Value="{Binding TotalProgress}"
+                                     Foreground="{StaticResource LightBlueColorBrush}"
+                                     Value="{Binding TotalTasksProgress}"
                                      Width="60"
-                                Height="60"/>
+                                     Height="60"/>
 
                     </Grid>
 
@@ -167,79 +156,82 @@
                         </Grid.RowDefinitions>
 
                         <TextBlock Grid.Row="0"
-                            Text="200 Overdue"
-                                   Foreground="Gray"/>
+                                   Style="{StaticResource InfoBoxContent}">
+                            <Run Text="{Binding OverdueTasksCount}"
+                                 FontFamily="Arial"/>
+                            <Run Text="Overdue"/>
+                        </TextBlock>
 
                         <TextBlock Grid.Row="1"
-                            Text="2200 Completed"
-                                   Foreground="Gray"/>
+                                   Style="{StaticResource InfoBoxContent}">
+                            <Run Text="{Binding CompletedTasksCount}"
+                                 FontFamily="Arial"/>
+                            <Run Text="Completed"/>
+                        </TextBlock>
                     </Grid>
                 </Grid>
-
-            </Border>
-
-
-            <!-- Project Summary -->
-            <Border Grid.Row="1" Grid.ColumnSpan="2"
-                  Margin="30"
-                    Padding="10"
-                  Background="{StaticResource BackgroundLightBrush}">
-
-                <Grid>
-
-                    <Grid Visibility="{Binding Projects.Count, Converter={converters:ListItemCountToVisibilityConverter}, ConverterParameter=1}">
-
-                        <Grid.RowDefinitions>
-
-                            <!-- Header -->
-                            <RowDefinition Height="Auto"/>
-
-                            <!-- Content -->
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-
-                        <!-- Header -->
-                        <StackPanel Orientation="Vertical">
-                            <TextBlock Text="PROJECT SUMMARY"
-                                   Margin="10 0"
-                                   FontFamily="{StaticResource RalewayBold}"
-                                   FontSize="{StaticResource Small}"
-                                   Foreground="{StaticResource SecondaryColorBrush}"/>
-
-                            <Separator Margin="5"/>
-
-                        </StackPanel>
-
-                        <!-- Content -->
-                        <ListView Grid.Row="1" ItemsSource="{Binding Projects}"
-                              Style="{StaticResource ProjectListViewSnippet}"/>
-                    </Grid>
-
-                    <!-- Empty view -->
-                    <TextBlock Text="No Projects"
-                               VerticalAlignment="Center"
-                               HorizontalAlignment="Center"
-                               FontSize="{StaticResource XXLarge}"
-                               Foreground="Gray"
-                               FontFamily="{StaticResource PlayFairItalic}"
-                               Visibility="{Binding Projects.Count, Converter={converters:ListItemCountToVisibilityConverter}}"/>
-                    
-                </Grid>
-                
 
             </Border>
 
             <!-- Today's Tasks -->
-            <Border Grid.Row="1" Grid.Column="2"
+            <Border Grid.Row="0" Grid.Column="0"
+                    Grid.RowSpan="2"
                     Background="{StaticResource BackgroundLightBrush}"
-                    Margin="30"
+                    Margin="0 0 0 30"
                     Padding="10">
-
 
                 <Grid>
 
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Header -->
+                    <StackPanel Orientation="Vertical">
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+
+
+                            <TextBlock Text="NOTES"
+                                  Style="{StaticResource ListBoxHeader}"/>
+
+                            <Button Grid.Column="1"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Style="{StaticResource PackButtonBase}"
+                                    Command="{Binding CleanCompletedTasksCommand}"
+                                        ToolTip="Remove completed tasks">
+                                <materialDesign:PackIcon Kind="Delete"
+                                                         Foreground="{StaticResource LightBlueColorBrush}"
+                                                         Style="{StaticResource GrowPackIcon}"/>
+                            </Button>
+
+                            <Button Grid.Column="2"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Style="{StaticResource PackButtonBase}"
+                                    Command="{Binding ShowAddTaskPopupCommand}"
+                                        ToolTip="Add new task">
+                                <materialDesign:PackIcon Kind="AddCircleOutline"
+                                                         Foreground="{StaticResource LightBlueColorBrush}"
+                                                         Style="{StaticResource GrowPackIcon}"/>
+                            </Button>
+
+                        </Grid>
+
+                        <Separator Margin="5"/>
+
+                    </StackPanel>
+
                     <!-- Content -->
-                    <Grid
+                    <Grid Grid.Row="1"
                           Visibility="{Binding Tasks.Count, Converter={converters:ListItemCountToVisibilityConverter}, ConverterParameter=1}">
                         <Grid.RowDefinitions>
 
@@ -250,76 +242,171 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
 
-                        <!-- Header -->
-                        <StackPanel Orientation="Vertical">
-
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
 
 
+                        <!-- Content -->
+                        <ListView ItemsSource="{Binding Notes}"
+                                  Grid.Row="1"
+                                  Style="{StaticResource NotesListViewStyle}"/>
 
-                                <TextBlock Text="TODAY'S TASKS"
-                                   Margin="10 0"
-                                   FontFamily="{StaticResource RalewayBold}"
-                                   FontSize="{StaticResource Small}"
-                                   Foreground="{StaticResource SecondaryColorBrush}"/>
 
-                                <Button Grid.Column="1"
+                    </Grid>
+
+                    <materialDesign:PackIcon Kind="Notebook"
+                                             Grid.RowSpan="2"
+                                             Visibility="{Binding Notes.Count, Converter={converters:ListItemCountToVisibilityConverter}}"
+                                             Style="{StaticResource EmptyIconView}"/>
+                </Grid>
+
+
+            </Border>
+
+            <!-- Project Summary -->
+            <Border Grid.Row="1" Grid.Column="1"
+                    Grid.ColumnSpan="2"
+                    Margin="30"
+                    Padding="10"
+                    Background="{StaticResource BackgroundLightBrush}">
+
+                <Grid>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Header -->
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Text="PROJECT SUMMARY"
+                                   Style="{StaticResource ListBoxHeader}"/>
+
+                        <Separator Margin="5"/>
+
+                    </StackPanel>
+
+                    <Grid Grid.Row="1"
+                        Visibility="{Binding Projects.Count, Converter={converters:ListItemCountToVisibilityConverter}, ConverterParameter=1}">
+
+                        <Grid.RowDefinitions>
+
+                            <!-- Header -->
+                            <RowDefinition Height="Auto"/>
+
+                            <!-- Content -->
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        
+
+                        <!-- Content -->
+                        <ListView Grid.Row="1" ItemsSource="{Binding Projects}"
+                                  Style="{StaticResource ProjectListViewSnippet}"/>
+                    </Grid>
+
+                    <!-- Empty view -->
+                    <materialDesign:PackIcon Kind="FormatListBulleted"
+                                             Grid.RowSpan="2"
+                                             Visibility="{Binding Tasks.Count, Converter={converters:ListItemCountToVisibilityConverter}}"
+                                             Style="{StaticResource EmptyIconView}"/>
+                    
+                </Grid>
+                
+
+            </Border>
+
+            <!-- Today's Tasks -->
+            <Border Grid.Row="1" Grid.Column="3"
+                    Background="{StaticResource BackgroundLightBrush}"
+                    Margin="30"
+                    Padding="10">
+
+                <Grid>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    
+                    <!-- Header -->
+                    <StackPanel Orientation="Vertical">
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+
+
+                            <TextBlock Text="TODAY'S TASKS"
+                                  Style="{StaticResource ListBoxHeader}"/>
+
+                            <Button Grid.Column="1"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     Style="{StaticResource PackButtonBase}"
                                     Command="{Binding CleanCompletedTasksCommand}"
                                         ToolTip="Remove completed tasks">
-                                    <materialDesign:PackIcon Kind="Delete"
+                                <materialDesign:PackIcon Kind="Delete"
                                                          Foreground="{StaticResource LightBlueColorBrush}"
                                                          Style="{StaticResource GrowPackIcon}"/>
-                                </Button>
+                            </Button>
 
-                                <Button Grid.Column="2"
+                            <Button Grid.Column="2"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     Style="{StaticResource PackButtonBase}"
                                     Command="{Binding ShowAddTaskPopupCommand}"
                                         ToolTip="Add new task">
-                                    <materialDesign:PackIcon Kind="AddCircleOutline"
+                                <materialDesign:PackIcon Kind="AddCircleOutline"
                                                          Foreground="{StaticResource LightBlueColorBrush}"
                                                          Style="{StaticResource GrowPackIcon}"/>
-                                </Button>
+                            </Button>
 
-                            </Grid>
+                        </Grid>
 
-                            <Separator Margin="5"/>
+                        <Separator Margin="5"/>
 
-                        </StackPanel>
+                    </StackPanel>
+
+                    <!-- Content -->
+                    <Grid Grid.Row="1"
+                          Visibility="{Binding Tasks.Count, Converter={converters:ListItemCountToVisibilityConverter}, ConverterParameter=1}">
+                        <Grid.RowDefinitions>
+
+                            <!-- Header -->
+                            <RowDefinition Height="Auto"/>
+
+                            <!-- Content -->
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                       
 
                         <!-- Content -->
                         <ListView x:Name="TaskListView"
                             Grid.Row="1" ItemsSource="{Binding Tasks}"
                               Style="{StaticResource TodayTaskListView}"/>
 
-                        <local:AddTaskPopUp Grid.Row="1"
-                                        HorizontalAlignment="Right"
-                                        VerticalAlignment="Top"
-                                            Opacity="0"
-                                            Style="{StaticResource SlideDownAnimation}">
-                            <Button Content="test"
-                                    Command="{Binding TestCommand}"/>
-                        </local:AddTaskPopUp>
+                       
                     </Grid>
 
+                    <local:AddTaskPopUp Grid.Row="1"
+                                        Panel.ZIndex="1"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Top"
+                                        Opacity="0"
+                                        Style="{StaticResource SlideDownAnimation}"/>
 
                     <!-- Empty view -->
-                    <TextBlock Text="No Tasks"
-                               VerticalAlignment="Center"
-                               HorizontalAlignment="Center"
-                               FontSize="{StaticResource XXLarge}"
-                               Foreground="Gray"
-                               FontFamily="{StaticResource PlayFairItalic}"
-                               Visibility="{Binding Tasks.Count, Converter={converters:ListItemCountToVisibilityConverter}}"/>
+                    <materialDesign:PackIcon Kind="CalendarTask"
+                                             Grid.RowSpan="2"
+                                             Visibility="{Binding Tasks.Count, Converter={converters:ListItemCountToVisibilityConverter}}"
+                                             Style="{StaticResource EmptyIconView}"/>
+
+                   
+                    
                 </Grid>
                 
               

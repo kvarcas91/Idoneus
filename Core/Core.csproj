@@ -42,6 +42,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -50,7 +51,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataModels\Comments\IComment.cs" />
+    <Compile Include="DataModels\Components\IComponent.cs" />
+    <Compile Include="DataModels\Components\IData.cs" />
+    <Compile Include="DataModels\Components\IFile.cs" />
+    <Compile Include="DataModels\Components\IFolder.cs" />
+    <Compile Include="DataModels\FakeData.cs" />
+    <Compile Include="DataModels\Interfaces\IDateable.cs" />
+    <Compile Include="DataModels\Interfaces\IElement.cs" />
+    <Compile Include="DataModels\Interfaces\IInteractiveComponent.cs" />
+    <Compile Include="DataModels\Interfaces\IInteractiveElement.cs" />
+    <Compile Include="DataModels\Interfaces\IOrderable.cs" />
+    <Compile Include="DataModels\Interfaces\IPath.cs" />
+    <Compile Include="DataModels\Interfaces\IPrioritizable.cs" />
+    <Compile Include="DataModels\Interfaces\IProgressable.cs" />
+    <Compile Include="DataModels\Notes\Note.cs" />
+    <Compile Include="DataModels\Person\IContributor.cs" />
+    <Compile Include="DataModels\Person\IPerson.cs" />
+    <Compile Include="DataModels\Projects\IProject.cs" />
     <Compile Include="DataModels\Projects\Project.cs" />
+    <Compile Include="DataModels\Tasks\ISubTask.cs" />
+    <Compile Include="DataModels\Tasks\ITask.cs" />
     <Compile Include="DataModels\Tasks\Task.cs" />
     <Compile Include="IoC\IoC.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

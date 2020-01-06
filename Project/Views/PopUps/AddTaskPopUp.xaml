@@ -5,8 +5,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Project.Views"
              mc:Ignorable="d" 
+             xmlns:vm="clr-namespace:Core.ViewModels;assembly=Core"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              d:DesignHeight="450" d:DesignWidth="800">
+
+    <!--<UserControl.DataContext>
+        <vm:DashboardViewModel/>
+    </UserControl.DataContext>-->
+   
     <!-- Chat message container -->
     <Grid>
 
@@ -44,11 +50,22 @@
                 <DropShadowEffect BlurRadius="2" ShadowDepth="1" Color="{StaticResource LightBlueColor}" />
             </Border.Effect>
 
-            <!-- Content -->
-            <ContentPresenter />
+            <StackPanel Orientation="Vertical">
+                <TextBox x:Name="task"
+                         Width="200"
+                         MaxHeight="100"
+                         Style="{StaticResource BaseTextBox}"
+                         VerticalScrollBarVisibility="Auto"
+                         Margin="10"/>
+
+                <Button Content="Add"
+                        Command="{Binding AddNewDailyTaskCommand}"
+                        CommandParameter="{Binding Text, ElementName=task}"/>
+            </StackPanel>
+            
         </Border>
 
-       
+
 
     </Grid>
 </UserControl>

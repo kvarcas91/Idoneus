@@ -54,9 +54,4 @@
     <Style TargetType="{x:Type ListView}" BasedOn="{StaticResource BaseStyle}"/>
     <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource BaseTextBlockStyle}"/>
 
-    <!-- Icons -->
-    <system:String x:Key="UserIcon">&#xf007;</system:String>
-    <system:String x:Key="PasswordIcon">&#xf09c;</system:String>
-    <system:String x:Key="AddCircleIcon">&#xf055;</system:String>
-
 </ResourceDictionary>

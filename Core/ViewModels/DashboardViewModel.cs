@@ -11,162 +11,81 @@ using System.Windows.Input;
 namespace Core.ViewModels
 {
     public class DashboardViewModel : BaseViewModel
+   
     {
 
-        public ObservableCollection<Project> Projects { get; set; }
+        #region Observable Items
 
-        public ObservableCollection<Task> Tasks { get; set; }
+        public ObservableCollection<IProject> Projects { get; set; }
+        public ObservableCollection<ITask> Tasks { get; set; }
+        public ObservableCollection<Note> Notes { get; set; }
+
+        #endregion // Observable Items
+
+        #region ICommand Properties
 
         public ICommand ShowAddTaskPopupCommand { get; set; }
         public ICommand CleanCompletedTasksCommand { get; set; }
-        public ICommand TestCommand { get; set; }
+        public ICommand SelectTaskCommand { get; set; }
+        public ICommand AddNewDailyTaskCommand { get; set; }
+
+        #endregion // ICommand Properties
+
+        #region Public Properties
+
+        #region Visibility
 
         public bool AddTaskPopupVisible { get; set; } = false;
 
-        public double TotalProgress { get; set; } = 49;
+        #endregion // Visibility
+
+        #region Info Box
+
+        public double TotalTasksProgress
+        {
+            get => CompletedTasksCount * 100 / (CompletedTasksCount + OverdueTasksCount);
+            set => TotalTasksProgress = value;
+        }
+        public int TotalProjectCount { get; set; } = 495;
+        public int ActiveTasksCount { get; set; } = 2469;
+        public int CompletedTasksCount { get; set; } = 120;
+        public int OverdueTasksCount { get; set; } = 100;
+
+        #endregion // Info Box
+
+        public DateTime CurrentDate { get; } = DateTime.Now;
+
+        #endregion // Public Properties
+
+        #region Constructor
 
         public DashboardViewModel()
         {
 
 
-            TestCommand = new ParameterizedRelayCommand<Task>(Test);
+            Projects = FakeData.GetProjects();
+            Tasks = FakeData.GetTasks();
+            //Notes = FakeData.GetNotes();
 
+            //Projects = new ObservableCollection<IProject>();
+            //Tasks = new ObservableCollection<ITask>();
+            Notes = new ObservableCollection<Note>();
 
-
-            Projects = new ObservableCollection<Project>();
-
-            //Projects = new ObservableCollection<Project> 
-            //{ 
-            //    new Project
-            //    {
-            //        Header = "Do something",
-            //        Progress = 20,
-            //        Priority = Utils.Priority.High,
-            //        Content = "First content from Eddie"
-            //    },
-
-            //     new Project
-            //     {
-            //        Header = "Do More stuff",
-            //        Progress = 100,
-            //        Priority = Utils.Priority.Medium,
-            //        Content = "Second content from Eddie designed to be a long text"
-            //     },
-
-            //      new Project
-            //    {
-            //        Header = "Do something",
-            //        Progress = 20,
-            //        Priority = Utils.Priority.Low,
-            //        Content = "First content from Eddie"
-            //    },
-
-            //     new Project
-            //     {
-            //        Header = "Do More stuff",
-            //        Progress = 100,
-            //        Priority = Utils.Priority.Medium,
-            //        Content = "Second content from Eddie designed to be a long text"
-            //     },
-
-            //      new Project
-            //    {
-            //        Header = "Do something",
-            //        Progress = 20,
-            //        Priority = Utils.Priority.High,
-            //        Content = "First content from Eddie"
-            //    },
-
-            //     new Project
-            //     {
-            //        Header = "Do More stuff",
-            //        Progress = 100,
-            //        Priority = Utils.Priority.Default,
-            //        Content = "Second content from Eddie designed to be a long text"
-            //     },
-
-            //      new Project
-            //    {
-            //        Header = "Do something",
-            //        Progress = 20,
-            //        Priority = Utils.Priority.High,
-            //        Content = "First content from Eddie"
-            //    },
-
-            //     new Project
-            //     {
-            //        Header = "Do More stuff",
-            //        Progress = 100,
-            //        Priority = Utils.Priority.Medium,
-            //        Content = "Second content from Eddie designed to be a long text"
-            //     },
-
-            //      new Project
-            //    {
-            //        Header = "Do something",
-            //        Progress = 20,
-            //        Priority = Utils.Priority.High,
-            //        Content = "First content from Eddie"
-            //    },
-
-            //     new Project
-            //     {
-            //        Header = "Do More stuff",
-            //        Progress = 99,
-            //        Priority = Utils.Priority.Medium,
-            //        Content = "Second content from Eddie designed to be a long text"
-            //     },
-
-            //      new Project
-            //    {
-            //        Header = "Do something",
-            //        Progress = 0,
-            //        Priority = Utils.Priority.High,
-            //        Content = "First content from Eddie"
-            //    },
-
-            //     new Project
-            //     {
-            //        Header = "Do More stuff",
-            //        Progress = 49,
-            //        Priority = Utils.Priority.Medium,
-            //        Content = "Second content from Eddie designed to be a long text"
-            //     }
-            //};
-
-
-            Tasks = new ObservableCollection<Task>();
-
-            Tasks = new ObservableCollection<Task>
-            {
-               new Task
-               {
-                   Content = "First task",
-                   IsCompleted = false
-               },
-
-                new Task
-               {
-                   Content = "Second task",
-                   IsCompleted = false
-               },
-
-                 new Task
-               {
-                   Content = "third task",
-                   IsCompleted = true
-               }
-            };
-            Tasks.Add(new Task
-            {
-                Content = "test from UI"
-            }
-           );
-
-            ShowAddTaskPopupCommand = new RelayCommand(ShowAddTaskPopup);
-            CleanCompletedTasksCommand = new RelayCommand(CleanCompletedTasks);
+            SetUpCommands();
+            initTest();
         }
 
+        #endregion // Constructor
+
+        #region ICommand Methods
+
+        private void SetUpCommands ()
+        {
+            SelectTaskCommand = new ParameterizedRelayCommand<ITask>(SelectTask);
+            ShowAddTaskPopupCommand = new RelayCommand(ShowAddTaskPopup);
+            CleanCompletedTasksCommand = new RelayCommand(CleanCompletedTasks);
+            AddNewDailyTaskCommand = new ParameterizedRelayCommand<string>(AddNewDailyTask);
+        }
 
         private void ShowAddTaskPopup ()
         {
@@ -187,21 +106,57 @@ namespace Core.ViewModels
             }
         }
 
+        private void AddNewDailyTask (string taskContent)
+        {
+            if (string.IsNullOrWhiteSpace(taskContent)) return;
+            
+            Tasks.Insert(0, new Task
+            {
+                Content = taskContent.Trim()
+            });
+
+            AddTaskPopupVisible ^= true;
+
+
+        }
+
+        private void SelectTask(ITask task)
+        {
+            var index = Tasks.IndexOf(task);
+
+            // If task is completed - move it to the end. Otherwise, move to front
+            var newIndex = task.IsCompleted ? Tasks.Count - 1 : 0;
+
+            Tasks.Move(index, newIndex);
+        }
+
+        #endregion  ICommand Methods
+
+        #region Private Methods
+
+
+
+        #endregion // Private Methods
 
         #region Test Methods
 
-        private void Test (Task task)
+        public ICommand TestCommand { get; set; }
+
+        private void initTest ()
         {
-            Debug.WriteLine("Test hit");
-           
-           
-            Tasks.OrderBy(i => i.IsCompleted);
+            TestCommand = new ParameterizedRelayCommand<string>(TestMethod);
+        }
+
+        private void TestMethod(string test)
+        {
+            Debug.WriteLine("test hit");
+            Debug.WriteLine($"param: {test}");
             
+           
         }
 
 
         #endregion
-
 
     }
 }

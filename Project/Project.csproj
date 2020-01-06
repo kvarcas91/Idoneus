@@ -76,6 +76,7 @@
     <Compile Include="Converters\ApplicationPageValueConverter.cs" />
     <Compile Include="Converters\Base\BaseValueConverter.cs" />
     <Compile Include="Converters\BoolToTextDecorationConverter.cs" />
+    <Compile Include="Converters\DateTimeToStringConverter.cs" />
     <Compile Include="Converters\IsCompletedToColorConverter.cs" />
     <Compile Include="Converters\ListItemCountToVisibilityConverter.cs" />
     <Compile Include="Converters\PriorityToColorConverter.cs" />
@@ -153,6 +154,10 @@
     <Page Include="Resources\Styles\Scroll.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Styles\TextBoxes.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resources\Styles\Texts.xaml">
       <Generator>MSBuild:Compile</Generator>

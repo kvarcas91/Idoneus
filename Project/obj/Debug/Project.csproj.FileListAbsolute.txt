@@ -46,3 +46,4 @@ C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\obj\Debug\Project.pdb
 C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\obj\Debug\Views\PopUps\AddTaskPopUp.g.cs
 C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\obj\Debug\Views\PopUps\AddTaskPopUp.baml
 C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\obj\Debug\Resources\Styles\PopUp.baml
+C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\obj\Debug\Resources\Styles\TextBoxes.baml

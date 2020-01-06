@@ -5,12 +5,15 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Project.Views"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <StackPanel
-         HorizontalAlignment="Center"
-         VerticalAlignment="Center">
-        <TextBlock Text="Projects"
-                       FontSize="{StaticResource XXLarge}"
-                       FontFamily="{StaticResource PlayFairRegular}"/>
-    </StackPanel>
+             d:DesignHeight="700" d:DesignWidth="1100"
+              xmlns:vm="clr-namespace:Core.ViewModels;assembly=Core"
+             xmlns:converters="clr-namespace:Project.Converters">
+
+
+    <UserControl.DataContext>
+        <vm:ProjectListViewModel/>
+    </UserControl.DataContext>
+    
+    
+    
 </UserControl>

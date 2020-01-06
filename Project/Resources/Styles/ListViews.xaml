@@ -116,7 +116,7 @@
         </Setter>
     </Style>
     
-    <!-- Today's task from dashboard -->
+    <!-- Today's task list view from dashboard -->
     <Style x:Key="TodayTaskListView" TargetType="{x:Type ListView}" BasedOn="{StaticResource ListView}">
         <Setter Property="ItemTemplate">
             <Setter.Value>
@@ -127,7 +127,7 @@
                                               Grid.RowSpan="2"
                                               x:Name="IsCompleted"
                                               IsChecked="{Binding IsCompleted, Mode=TwoWay}"
-                                  Command="{Binding ElementName=TaskListView, Path=DataContext.TestCommand}"
+                                  Command="{Binding ElementName=TaskListView, Path=DataContext.SelectTaskCommand}"
                                 CommandParameter="{Binding}"
                               Style="{StaticResource TaskCheckBox}">
                             <TextBlock Text="{Binding Content}"
@@ -141,6 +141,53 @@
                         </CheckBox>
 
                     </Border>
+
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+
+        <!-- Disable onMouseOver and default style -->
+        <Setter Property="ItemContainerStyle">
+            <Setter.Value>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                <ContentPresenter />
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <!-- Notes list view from dashboard -->
+    <Style x:Key="NotesListViewStyle" TargetType="{x:Type ListView}" BasedOn="{StaticResource ListView}">
+        <Setter Property="ItemTemplate">
+            <Setter.Value>
+                <DataTemplate>
+
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            
+                            <!-- submition date -->
+                            <RowDefinition Height="Auto"/>
+                            
+                            <!-- content -->
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0"
+                                   Text="{Binding SubmitionDate, Converter={converters:DateTimeToStringConverter}}"
+                                   Style="{StaticResource NoteDateText}"/>
+
+                        <TextBlock Grid.Row="1"
+                                   Text="{Binding Content}"
+                                   Style="{StaticResource NoteContentText}"/>
+
+                    </Grid>
 
                 </DataTemplate>
             </Setter.Value>
