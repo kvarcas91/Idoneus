@@ -50,6 +50,12 @@
 
                         </Grid.ColumnDefinitions>
 
+                        <Grid.InputBindings>
+                            <MouseBinding Gesture="LeftDoubleClick" 
+                                          Command="{Binding ElementName=projectSnippetListView, Path=DataContext.OpenProjectCommand}"
+                                          CommandParameter="{Binding}"/>
+                        </Grid.InputBindings>
+
                         <!-- Priority Color Indicator -->
                         <Border Grid.Column="0"
                             Background="{Binding Priority, Converter={converters:PriorityToColorConverter}}" 
@@ -67,9 +73,9 @@
                         <TextBlock Grid.Column="2"
                                    Style="{StaticResource RegularListItemSnippetText}"
                                    Margin="0 0 10 0">
-                            <Run Text="20"/>
+                            <Run Text="{Binding CompletedTasksCount}"/>
                             <Run Text="/"/>
-                            <Run Text="149"/>
+                            <Run Text="{Binding Tasks.Count, Mode=OneWay}"/>
                         </TextBlock>
 
                         <!-- Project Progress Bar -->
@@ -236,16 +242,40 @@
                                           CommandParameter="{Binding}"/>
                             </Grid.InputBindings>
 
+                        <Grid.Triggers>
+                            <EventTrigger RoutedEvent="MouseEnter">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="{StaticResource BackgroundLight}" Duration="0:0:0.3" Storyboard.TargetName="container" Storyboard.TargetProperty="Background.Color" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                            <EventTrigger RoutedEvent="MouseLeave">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="White" Duration="0:0:0.3" Storyboard.TargetName="container" Storyboard.TargetProperty="Background.Color" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                            <!--<Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Background" TargetName="container" Value="{StaticResource BackgroundLightBrush}"/>
+                            </Trigger>-->
+                            <!--<Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Cursor" Value="Hand"/>
+                            </Trigger>-->
+                        </Grid.Triggers>
+
                             <!-- Priority bar -->
                             <Border Background="{Binding Priority, Converter={converters:PriorityToColorConverter}}" 
                                         Width="4" 
                                         HorizontalAlignment="Left"/>
 
-                            <Border Grid.Column="0" 
+                        <!-- Progress -->
+                        <Border Grid.Column="0" 
                                 Padding="8 15">
 
                                 <Grid >
-                                    <!-- Progress -->
+                                   
                                     <Border Background="Transparent"
                                         BorderBrush="{Binding Priority, Converter={converters:PriorityToColorConverter}}"
                                         BorderThickness="1.5"
@@ -289,12 +319,14 @@
                                            Padding="0 0 0 2"
                                            FontSize="{StaticResource Small}"
                                            Foreground="{StaticResource SecondaryColorBrush}"
-                                           FontFamily="{StaticResource RalewayBold}"/>
+                                           FontFamily="{StaticResource RalewayBold}"
+                                           TextTrimming="CharacterEllipsis"/>
 
                                     <!-- Content -->
                                     <TextBlock Text="{Binding Content}"
                                            Padding="0 2 0 0"
                                            Foreground="Gray"
+                                               ToolTip="{Binding Content}"
                                            FontSize="{StaticResource XSmall}"
                                            FontFamily="{StaticResource RalewayMedium}"
                                            TextTrimming="CharacterEllipsis"/>
@@ -327,4 +359,53 @@
         </Setter>
     </Style>
 
+
+    <!-- Contributors list view -->
+    <Style x:Key="ContributorListView" TargetType="{x:Type ListView}" BasedOn="{StaticResource ListView}">
+        <Setter Property="ItemTemplate">
+            <Setter.Value>
+                <DataTemplate>
+
+                    <Border Margin="3"
+                            Height="25"
+                            Width="25"
+                            ToolTip="{Binding FullName}"
+                            CornerRadius="15"
+                            BorderThickness="2"
+                            Opacity="0.6"
+                            Background="{Binding InitialColor}">
+
+                        <TextBlock Text="{Binding Initials}"
+                                   Foreground="White"
+                                   Style="{StaticResource ContributorInitialText}"/>
+
+                    </Border>
+
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+
+        <!-- Disable onMouseOver and default style -->
+        <Setter Property="ItemContainerStyle">
+            <Setter.Value>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                <ContentPresenter />
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ItemsPanel">
+            <Setter.Value>
+                <ItemsPanelTemplate>
+                    <WrapPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

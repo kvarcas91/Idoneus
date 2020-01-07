@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Core.Utils;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -38,7 +39,8 @@ namespace Core.DataModels
                     Header = "Do something",
                     Progress = 20,
                     Priority = Utils.Priority.Low,
-                    Content = "First content from Eddie"
+                    Content = "First content from Eddie",
+                     Tasks = GetRandomTasks()
                 },
 
                  new Project
@@ -56,7 +58,8 @@ namespace Core.DataModels
                     Header = "Do something",
                     Progress = 20,
                     Priority = Utils.Priority.High,
-                    Content = "First content from Eddie"
+                    Content = "First content from Eddie",
+                     Tasks = GetRandomTasks()
                 },
 
                  new Project
@@ -64,7 +67,8 @@ namespace Core.DataModels
                     Header = "Do More stuff",
                     Progress = 100,
                     Priority = Utils.Priority.Default,
-                    Content = "Second content from Eddie designed to be a long text"
+                    Content = "Second content from Eddie designed to be a long text",
+                     Tasks = GetRandomTasks()
                  },
 
                   new Project
@@ -81,7 +85,8 @@ namespace Core.DataModels
                     Header = "Do More stuff",
                     Progress = 100,
                     Priority = Utils.Priority.Medium,
-                    Content = "Second content from Eddie designed to be a long text"
+                    Content = "Second content from Eddie designed to be a long text",
+                     Tasks = GetRandomTasks()
                  },
 
                   new Project
@@ -89,7 +94,8 @@ namespace Core.DataModels
                     Header = "Do something",
                     Progress = 20,
                     Priority = Utils.Priority.High,
-                    Content = "First content from Eddie"
+                    Content = "First content from Eddie",
+                     Tasks = GetRandomTasks()
                 },
 
                  new Project
@@ -97,7 +103,8 @@ namespace Core.DataModels
                     Header = "Do More stuff",
                     Progress = 99,
                     Priority = Utils.Priority.Medium,
-                    Content = "Second content from Eddie designed to be a long text"
+                    Content = "Second content from Eddie designed to be a long text",
+                     Tasks = GetRandomTasks()
                  },
 
                   new Project
@@ -105,7 +112,8 @@ namespace Core.DataModels
                     Header = "Do something",
                     Progress = 0,
                     Priority = Utils.Priority.High,
-                    Content = "First content from Eddie"
+                    Content = "First content from Eddie",
+                     Tasks = GetRandomTasks()
                 },
 
                  new Project
@@ -113,9 +121,15 @@ namespace Core.DataModels
                     Header = "Do More stuff",
                     Progress = 49,
                     Priority = Utils.Priority.Medium,
-                    Content = "Second content from Eddie designed to be a long text"
+                    Content = "Second content from Eddie designed to be a long text",
+                    Tasks = GetRandomTasks()
                  }
             };
+
+            foreach (var item in projects)
+            {
+                ((Project)item).SetCompletedTasksCount();
+            }
 
             return projects;
         }
@@ -125,6 +139,38 @@ namespace Core.DataModels
             var tasks = new ObservableCollection<ITask>
             {
                new Task
+               {
+                   Content = "First task",
+                   IsCompleted = false,
+                   Priority = Utils.Priority.Default,
+                   Progress = 38
+               },
+
+                new Task
+               {
+                   Content = "Second task",
+                   IsCompleted = true,
+                   Priority = Utils.Priority.Medium,
+                   Progress = 98
+               },
+
+                 new Task
+               {
+                   Content = "third task",
+                   IsCompleted = false,
+                   Priority = Utils.Priority.High,
+                   Progress = 2
+               },
+
+                 new Task
+               {
+                   Content = "do something nice task",
+                   IsCompleted = true,
+                   Priority = Utils.Priority.Low,
+                   Progress = 0
+               },
+
+                 new Task
                {
                    Content = "First task",
                    IsCompleted = false,
@@ -146,6 +192,14 @@ namespace Core.DataModels
                    IsCompleted = true,
                    Priority = Utils.Priority.High,
                    Progress = 2
+               },
+
+                 new Task
+               {
+                   Content = "do something nice task",
+                   IsCompleted = true,
+                   Priority = Utils.Priority.Low,
+                   Progress = 0
                }
             };
 
@@ -183,7 +237,8 @@ namespace Core.DataModels
                 Priority = Utils.Priority.Medium,
                 SubmitionDate = DateTime.MinValue,
                 DueDate = DateTime.Now,
-                Tasks = GetRandomTasks()
+                Tasks = GetRandomTasks(),
+                Contributors = GetContributors()
             };
         }
 
@@ -200,6 +255,96 @@ namespace Core.DataModels
             }
 
             return output;
+        }
+
+        public static ObservableCollection<IContributor> GetContributors()
+        {
+            return new ObservableCollection<IContributor>
+            {
+                new Contributor
+                {
+                    FirstName = "Eduardas",
+                    LastName = "Slutas",
+                    InitialColor = ColorPool.GetColor()
+                },
+
+                new Contributor
+                {
+                    FirstName = "Mindaugas",
+                    LastName = "Slutas",
+                   InitialColor = ColorPool.GetColor()
+                },
+
+                 new Contributor
+                {
+                    FirstName = "Tomas",
+                    LastName = "Pluskys",
+                    InitialColor = ColorPool.GetColor()
+                },
+
+                  new Contributor
+                {
+                    FirstName = "Benas",
+                    LastName = "Whatever",
+                    InitialColor = ColorPool.GetColor()
+                },
+
+                   new Contributor
+                {
+                    FirstName = "Gitanas",
+                    LastName = "Nauseda",
+                    InitialColor = ColorPool.GetColor()
+                },
+
+                    new Contributor
+                {
+                    FirstName = "Dalia",
+                    LastName = "Grybauskaite",
+                    InitialColor = ColorPool.GetColor()
+                },
+
+                     new Contributor
+                {
+                    FirstName = "Eduardas",
+                    LastName = "Slutas",
+                    InitialColor = ColorPool.GetColor()
+                },
+
+                new Contributor
+                {
+                    FirstName = "Mindaugas",
+                    LastName = "Slutas",
+                    InitialColor = ColorPool.GetColor()
+                },
+
+                 new Contributor
+                {
+                    FirstName = "Tomas",
+                    LastName = "Pluskys",
+                    InitialColor = ColorPool.GetColor()
+                },
+
+                  new Contributor
+                {
+                    FirstName = "Benas",
+                    LastName = "Whatever",
+                    InitialColor = ColorPool.GetColor()
+                },
+
+                   new Contributor
+                {
+                    FirstName = "Gitanas",
+                    LastName = "Nauseda",
+                    InitialColor = ColorPool.GetColor()
+                },
+
+                    new Contributor
+                {
+                    FirstName = "Dalia",
+                    LastName = "Grybauskaite",
+                    InitialColor = ColorPool.GetColor()
+                }
+            };
         }
     }
 }

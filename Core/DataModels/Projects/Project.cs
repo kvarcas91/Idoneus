@@ -18,7 +18,22 @@ namespace Core.DataModels
         public Priority Priority { get; set; }
         public double Progress { get; set; }
         public string Path { get; set; }
+        public int CompletedTasksCount { get; set; }
 
+        public void SetCompletedTasksCount ()
+        {
+            var count = 0;
+           
+            foreach (var item in Tasks)
+            {
+                if (item is ITask task)
+                {
+                    if (task.IsCompleted) count++;
+                }
+            }
+
+            CompletedTasksCount = count;
+        }
         public bool AddElement(IElement element)
         {
             throw new NotImplementedException();

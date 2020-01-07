@@ -79,6 +79,7 @@
     <Compile Include="Converters\DateTimeToStringConverter.cs" />
     <Compile Include="Converters\IsCompletedToColorConverter.cs" />
     <Compile Include="Converters\ListItemCountToVisibilityConverter.cs" />
+    <Compile Include="Converters\NullObjectToVisibilityConverter.cs" />
     <Compile Include="Converters\PriorityToColorConverter.cs" />
     <Compile Include="Converters\ProgressBar\ArcEndPointConverter.cs" />
     <Compile Include="Converters\ProgressBar\ArcSizeConverter.cs" />
@@ -87,6 +88,8 @@
     <Compile Include="Converters\ProgressBar\RotateTransformCentreConverter.cs" />
     <Compile Include="Converters\ProgressBar\StartPointConverter.cs" />
     <Compile Include="Converters\ProgressBar\ValueConverter.cs" />
+    <Compile Include="Extentions\AttachedProperties.cs" />
+    <Compile Include="Extentions\WatermarkAdorner.cs" />
     <Compile Include="Utils\WindowResizer.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="Views\DashboardView.xaml.cs">
@@ -143,7 +146,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Resources\Styles\PopUp.xaml">
+    <Page Include="Resources\Styles\Animations.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

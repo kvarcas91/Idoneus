@@ -11,11 +11,17 @@ namespace Core.ViewModels
     {
 
         public ApplicationPage CurrentPage { get; set; } = ApplicationPage.Dashboard;
+        public string PageHeader { get; set; }
 
-        public void GoTo(ApplicationPage page)
+        public object Parameters { get; private set; }
+
+
+        public void GoTo(ApplicationPage page, object param = null)
         {
+            Parameters = param;
             CurrentPage = page;
+           
         }
-
+ 
     }
 }

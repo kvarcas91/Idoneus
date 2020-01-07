@@ -51,15 +51,14 @@
                     <BeginStoryboard x:Name="EndAnimation">
                         <Storyboard>
                             <!--<ThicknessAnimation Storyboard.TargetProperty="Margin" From="0,0,0,0" To="-300,0,300,0" Duration="0:0:0.5" />-->
-                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.2" />
-                            <DoubleAnimation Storyboard.TargetProperty="Width" From="300" To="30" Duration="0:0:0.4" />
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.2" />
+                            <DoubleAnimation Storyboard.TargetProperty="Width" To="30" Duration="0:0:0.4" />
                         </Storyboard>
                     </BeginStoryboard>
                 </DataTrigger.EnterActions>
             </DataTrigger>
         </Style.Triggers>
     </Style>
-
 
     <Style x:Key="ProjectSideBarControlOpacity" TargetType="{x:Type FrameworkElement}">
         <Style.Triggers>
@@ -84,6 +83,36 @@
                             <DoubleAnimation Storyboard.TargetProperty="Width" To="0" Duration="0:0:0.25" />
                             <DoubleAnimation Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.15" />
                            
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.EnterActions>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="ProjectsInfoControlAnimation" TargetType="{x:Type FrameworkElement}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsControlExpanded}" Value="false">
+                <DataTrigger.EnterActions>
+                    <StopStoryboard BeginStoryboardName="EndAnimation" />
+                    <BeginStoryboard x:Name="NewAnimation">
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Height" From="0" To="100" Duration="0:0:0.25" />
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.15" />
+
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.EnterActions>
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding IsControlExpanded}" Value="true">
+                <DataTrigger.EnterActions>
+                    <StopStoryboard BeginStoryboardName="EndAnimation" />
+                    <BeginStoryboard x:Name="EndAnimation">
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Height" To="0" Duration="0:0:0.25" />
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.15" />
+
                         </Storyboard>
                     </BeginStoryboard>
                 </DataTrigger.EnterActions>

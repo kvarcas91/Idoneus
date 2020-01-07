@@ -18,37 +18,9 @@
     <Grid Background="White">
         <Grid.RowDefinitions>
 
-            <!-- Toolbar -->
-            <RowDefinition Height="Auto"/>
-
             <!-- Content -->
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-
-        <!-- Toolbar -->
-        <Grid Grid.Row="0"
-              Margin="5">
-            <Grid.ColumnDefinitions>
-
-                <!-- Page Title -->
-                <ColumnDefinition Width="*"/>
-
-                <!-- Date -->
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-
-            <TextBlock Grid.Column="0"
-                       Text="Dashboard"
-                       Style="{StaticResource PageHeader}"/>
-
-            <TextBlock Grid.Column="1"
-                       Margin="10"
-                       VerticalAlignment="Center"
-                       Foreground="Gray"
-                       FontFamily="Arial"
-                       Text="{Binding CurrentDate, Converter={converters:DateTimeToStringConverter}, ConverterParameter=1}"/>
-
-        </Grid>
 
         <!-- Content -->
         <Grid Grid.Row="1"
@@ -300,7 +272,8 @@
                         
 
                         <!-- Content -->
-                        <ListView Grid.Row="1" ItemsSource="{Binding Projects}"
+                        <ListView x:Name="projectSnippetListView"
+                            Grid.Row="1" ItemsSource="{Binding Projects}"
                                   Style="{StaticResource ProjectListViewSnippet}"/>
                     </Grid>
 
@@ -371,34 +344,68 @@
 
                     </StackPanel>
 
-                    <!-- Content -->
+                    <!-- Add Task -->
                     <Grid Grid.Row="1"
                           Visibility="{Binding Tasks.Count, Converter={converters:ListItemCountToVisibilityConverter}, ConverterParameter=1}">
                         <Grid.RowDefinitions>
 
-                            <!-- Header -->
-                            <RowDefinition Height="Auto"/>
-
                             <!-- Content -->
                             <RowDefinition Height="*"/>
+
+                            <!-- Add Task -->
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
                        
 
                         <!-- Content -->
                         <ListView x:Name="TaskListView"
-                            Grid.Row="1" ItemsSource="{Binding Tasks}"
+                            Grid.Row="0" ItemsSource="{Binding Tasks}"
                               Style="{StaticResource TodayTaskListView}"/>
 
-                       
-                    </Grid>
 
-                    <local:AddTaskPopUp Grid.Row="1"
-                                        Panel.ZIndex="1"
-                                        HorizontalAlignment="Right"
-                                        VerticalAlignment="Top"
-                                        Opacity="0"
-                                        Style="{StaticResource SlideDownAnimation}"/>
+                        <Grid Grid.Row="1" 
+                                          Margin="-10"
+                                          MaxHeight="100"
+                                          Opacity="0.5"
+                                          Background="White">
+
+                            <Grid.ColumnDefinitions>
+
+                                <!-- Add Comment textbox -->
+                                <ColumnDefinition Width="*"/>
+
+                                <!-- Send button -->
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBox x:Name="SendTaskTextBox"
+                                            Grid.Column="0"
+                                                 Padding="5"
+                                            Style="{StaticResource BaseTextBox}"
+                                            />
+                            <TextBlock Grid.Column="0"
+                                                   Text="Add task here..."
+                                                   Style="{StaticResource TaskHint}"/>
+
+                            <!-- Send comment -->
+                            <Button Grid.Column="1"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                Margin="10 0"
+                                                Command="{Binding AddNewDailyTaskCommand}"
+                                                CommandParameter="{Binding Text, ElementName=SendTaskTextBox}"
+                                                Style="{StaticResource PackButtonBase}"
+                                                ToolTip="Add Comment"
+                                                  >
+                                <materialDesign:PackIcon Kind="Send"
+                                                 Foreground="{StaticResource LightBlueColorBrush}"
+                                                 Style="{StaticResource GrowPackIcon}"/>
+                            </Button>
+
+                        </Grid>
+
+                    </Grid>
 
                     <!-- Empty view -->
                     <materialDesign:PackIcon Kind="CalendarTask"

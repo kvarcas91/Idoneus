@@ -1,11 +1,8 @@
 ﻿using Core.DataModels;
 using Core.ViewModels.Base;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Windows.Input;
 
 namespace Core.ViewModels
@@ -28,6 +25,7 @@ namespace Core.ViewModels
         public ICommand CleanCompletedTasksCommand { get; set; }
         public ICommand SelectTaskCommand { get; set; }
         public ICommand AddNewDailyTaskCommand { get; set; }
+        public ICommand OpenProjectCommand { get; set; }
 
         #endregion // ICommand Properties
 
@@ -61,8 +59,7 @@ namespace Core.ViewModels
 
         public DashboardViewModel()
         {
-
-
+            
             Projects = FakeData.GetProjects();
             Tasks = FakeData.GetTasks();
             Notes = FakeData.GetNotes();
@@ -72,7 +69,7 @@ namespace Core.ViewModels
             //Notes = new ObservableCollection<Note>();
 
             SetUpCommands();
-            initTest();
+            InitTest();
         }
 
         #endregion // Constructor
@@ -85,6 +82,12 @@ namespace Core.ViewModels
             ShowAddTaskPopupCommand = new RelayCommand(ShowAddTaskPopup);
             CleanCompletedTasksCommand = new RelayCommand(CleanCompletedTasks);
             AddNewDailyTaskCommand = new ParameterizedRelayCommand<string>(AddNewDailyTask);
+            OpenProjectCommand = new ParameterizedRelayCommand<IProject>(OpenProject);
+        }
+
+        private void OpenProject(IProject project)
+        {
+            IoC.Get<ApplicationViewModel>().GoTo(ApplicationPage.Projects, project);
         }
 
         private void ShowAddTaskPopup ()
@@ -130,6 +133,8 @@ namespace Core.ViewModels
             Tasks.Move(index, newIndex);
         }
 
+        
+
         #endregion  ICommand Methods
 
         #region Private Methods
@@ -142,7 +147,7 @@ namespace Core.ViewModels
 
         public ICommand TestCommand { get; set; }
 
-        private void initTest ()
+        private void InitTest ()
         {
             TestCommand = new ParameterizedRelayCommand<string>(TestMethod);
         }

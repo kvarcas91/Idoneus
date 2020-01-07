@@ -66,6 +66,7 @@
     <Compile Include="DataModels\Interfaces\IPrioritizable.cs" />
     <Compile Include="DataModels\Interfaces\IProgressable.cs" />
     <Compile Include="DataModels\Notes\Note.cs" />
+    <Compile Include="DataModels\Person\Contributor.cs" />
     <Compile Include="DataModels\Person\IContributor.cs" />
     <Compile Include="DataModels\Person\IPerson.cs" />
     <Compile Include="DataModels\Projects\IProject.cs" />
@@ -75,6 +76,7 @@
     <Compile Include="DataModels\Tasks\Task.cs" />
     <Compile Include="IoC\IoC.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utils\ColorPool.cs" />
     <Compile Include="Utils\Priority.cs" />
     <Compile Include="ViewModels\ApplicationViewModel.cs" />
     <Compile Include="ViewModels\Base\ApplicationPage.cs" />

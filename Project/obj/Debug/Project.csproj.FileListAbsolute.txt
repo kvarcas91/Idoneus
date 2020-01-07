@@ -18,6 +18,7 @@ C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\obj\Debug\MainWindow.g.cs
 C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\obj\Debug\Views\DashboardView.g.cs
 C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\obj\Debug\Views\MainContentView.g.cs
 C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\obj\Debug\Views\MainSideBarView.g.cs
+C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\obj\Debug\Views\PopUps\AddTaskPopUp.g.cs
 C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\obj\Debug\Views\ProjectListView.g.cs
 C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\obj\Debug\Views\TasksView.g.cs
 C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\obj\Debug\App.g.cs
@@ -29,12 +30,15 @@ C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\obj\Debug\Resources\Styles\
 C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\obj\Debug\Resources\Styles\CircularProgressBar.baml
 C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\obj\Debug\Resources\Styles\Colors.baml
 C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\obj\Debug\Resources\Styles\ListViews.baml
+C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\obj\Debug\Resources\Styles\Animations.baml
 C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\obj\Debug\Resources\Styles\ProgressBar.baml
 C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\obj\Debug\Resources\Styles\Scroll.baml
+C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\obj\Debug\Resources\Styles\TextBoxes.baml
 C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\obj\Debug\Resources\Styles\Texts.baml
 C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\obj\Debug\Views\DashboardView.baml
 C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\obj\Debug\Views\MainContentView.baml
 C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\obj\Debug\Views\MainSideBarView.baml
+C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\obj\Debug\Views\PopUps\AddTaskPopUp.baml
 C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\obj\Debug\Views\ProjectListView.baml
 C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\obj\Debug\Views\TasksView.baml
 C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\obj\Debug\Project.g.resources
@@ -43,7 +47,3 @@ C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\obj\Debug\Project.csproj.Ge
 C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\obj\Debug\Project.csproj.CopyComplete
 C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\obj\Debug\Project.exe
 C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\obj\Debug\Project.pdb
-C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\obj\Debug\Views\PopUps\AddTaskPopUp.g.cs
-C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\obj\Debug\Views\PopUps\AddTaskPopUp.baml
-C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\obj\Debug\Resources\Styles\PopUp.baml
-C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\obj\Debug\Resources\Styles\TextBoxes.baml

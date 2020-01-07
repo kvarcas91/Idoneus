@@ -25,6 +25,7 @@ namespace Core.ViewModels
 
         public ICommand TestCommand { get; set; }
         public ICommand CollapseProjectListCommand { get; set; }
+        public ICommand ExpandTaskPanelCommand { get; set; }
 
         #endregion // Icommand Properties
 
@@ -36,11 +37,12 @@ namespace Core.ViewModels
 
         #region Public Properties
 
-        public IProject CurrentProject { get; set; } = FakeData.GetProject();
+        public IProject CurrentProject { get; set; } 
 
         #region Visilibity
 
         public bool IsProjectListSideBarExpanded { get; set; } = true;
+        public bool IsControlExpanded { get; set; } = false;
 
         #endregion // Visibility
 
@@ -69,11 +71,17 @@ namespace Core.ViewModels
         private void SetUpCommands ()
         {
             CollapseProjectListCommand = new RelayCommand(CollapseProjectList);
+            ExpandTaskPanelCommand = new RelayCommand(ExpandTaskPanel);
         }
 
         private void CollapseProjectList ()
         {
             IsProjectListSideBarExpanded ^= true;
+        }
+
+        private void ExpandTaskPanel()
+        {
+            IsControlExpanded ^= true;
         }
 
         #endregion // Private Methods
@@ -82,8 +90,15 @@ namespace Core.ViewModels
 
         public ProjectListViewModel()
         {
+
             Projects = FakeData.GetProjects();
             Tasks = FakeData.GetTasks();
+
+            //CurrentProject = (IProject)IoC.Get<ApplicationViewModel>().Parameters;
+
+            CurrentProject = FakeData.GetProject();
+
+            IsProjectListSideBarExpanded = (CurrentProject == null);
 
             SetUpCommands();
             InitTest();

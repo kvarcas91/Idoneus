@@ -1,13 +1,11 @@
-﻿using Core.ViewModels.Base;
+﻿using Core;
+using Core.ViewModels;
+using Core.ViewModels.Base;
 using Project.Converters.Base;
 using Project.Views;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Project.Converters
 {
@@ -20,10 +18,13 @@ namespace Project.Converters
             {
 
                 case ApplicationPage.Dashboard:
+                    IoC.Get<ApplicationViewModel>().PageHeader = "Dashboard";
                     return new DashboardView();
                 case ApplicationPage.Projects:
+                    IoC.Get<ApplicationViewModel>().PageHeader = "Projects";
                     return new ProjectListView();
                 case ApplicationPage.Tasks:
+                    IoC.Get<ApplicationViewModel>().PageHeader = "Tasks";
                     return new TasksView();
                 default:
                     Debugger.Break();
