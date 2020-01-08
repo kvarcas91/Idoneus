@@ -42,6 +42,7 @@ namespace Core.ViewModels
         public ICommand CollapseProjectListCommand { get; set; }
         public ICommand ExpandTaskPanelCommand { get; set; }
         public ICommand AddNewTaskCommand { get; set; }
+        public ICommand SelectTaskCommand { get; set; }
 
         #endregion // Icommand Properties
 
@@ -60,8 +61,15 @@ namespace Core.ViewModels
 
             DBHelper.InsertTask(task, CurrentProject.ID);
             CurrentProject.Tasks.Add(task);
-            ((Project)CurrentProject).UpdateProgress();
             NewTaskContent = string.Empty;
+            UpdateCounters();
+        }
+
+        private void SelectTask (ITask task)
+        {
+            //task.IsCompleted ^= true;
+            ((Task)task).UpdateProgress();
+            DBHelper.UpdateTask((Task)task);
             UpdateCounters();
         }
 
@@ -127,6 +135,7 @@ namespace Core.ViewModels
             ExpandTaskPanelCommand = new RelayCommand(ExpandTaskPanel);
             AddNewTaskCommand = new RelayCommand(AddNewTask);
             SelectProjectCommand = new ParameterizedRelayCommand<IProject>(SelectProject);
+            SelectTaskCommand = new ParameterizedRelayCommand<ITask>(SelectTask);
         }
 
         private void SelectProject (IProject project)
@@ -137,7 +146,7 @@ namespace Core.ViewModels
 
         private void UpdateCounters ()
         {
-            //Progress = CurrentProject.Progress;
+            ((Project)CurrentProject)?.UpdateProgress();
         }
 
         private void CollapseProjectList ()

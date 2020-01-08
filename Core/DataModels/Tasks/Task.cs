@@ -2,31 +2,36 @@
 using Core.Utils;
 using Core.ViewModels.Base;
 using Dapper.Contrib.Extensions;
+using PropertyChanged;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Core.DataModels
 {
+    [ImplementPropertyChanged]
     [Table("tasks")]
-    public class Task : ITask
+    public class Task : ITask, INotifyPropertyChanged
     {
+        [Key]
+        public long ID { get; set; }
+
         [Computed]
         public IList<IPerson> Contributors { get; set; }
 
         [Computed]
         public IList<ISubTask> SubTasks { get; } = new ObservableCollection<ISubTask>();
 
-        [Key]
-        public long ID { get; set; }
-
         [Computed]
         public DateTime SubmitionDate { get; set; }
         public DateTime DueDate { get; set; }
         public Priority Priority { get; set; }
+        [Computed]
         public decimal Progress { get; set; }
         public uint OrderNumber { get; set; }
         public bool IsCompleted { get; set; }
@@ -34,6 +39,8 @@ namespace Core.DataModels
 
         [Computed]
         public int CompletedSubTasksCount { get; set; }
+
+        public event PropertyChangedEventHandler PropertyChanged = (sender, e) => { };
 
         public void UpdateProgress()
         {
@@ -101,6 +108,11 @@ namespace Core.DataModels
         public bool UpdatePerson(IPerson person)
         {
             throw new NotImplementedException();
+        }
+
+        private void NotifyPropertyChanged([CallerMemberName] string name = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
     }
 }

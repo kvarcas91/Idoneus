@@ -45,7 +45,7 @@ namespace Core.DataBase
 			foreach (var project in output)
 			{
 				project.Tasks = GetProjectTasks(project.ID);
-                project.UpdateProgress();
+				project.UpdateProgress();
 				//project.Progress = GetProjectProgress(project.ID);
 				//project.AddPersons(GetProjectContributors(project.ID));
 
@@ -66,28 +66,28 @@ namespace Core.DataBase
 
 		#region Tasks
 
-        public static void InsertTask (ITask task, long projectID)
-        {
-            using IDbConnection connection = new SQLiteConnection(GetConnectionString());
-            var sql = @"insert into tasks (Content, DueDate, Priority, IsCompleted) values (@Content, @DueDate, @Priority, @IsCompleted)";
-            connection.Execute(sql, task);
-            task.ID = GetLastRowID("tasks");
+		public static void InsertTask (ITask task, long projectID)
+		{
+			using IDbConnection connection = new SQLiteConnection(GetConnectionString());
+			var sql = @"insert into tasks (Content, DueDate, Priority, IsCompleted) values (@Content, @DueDate, @Priority, @IsCompleted)";
+			connection.Execute(sql, task);
+			task.ID = GetLastRowID("tasks");
 
-            connection.Dispose();
+			connection.Dispose();
 
-            AssignTaskToTheProject(projectID, task.ID);
+			AssignTaskToTheProject(projectID, task.ID);
 
-        }
+		}
 
-        private static void AssignTaskToTheProject(long projectID, long taskID)
-        {
-            using IDbConnection connection = new SQLiteConnection(GetConnectionString());
-            connection.Execute("INSERT INTO project_tasks (projectID, taskID) values (@projectID, @taskID)",
-                new { projectID, taskID });
-            connection.Dispose();
-        }
+		private static void AssignTaskToTheProject(long projectID, long taskID)
+		{
+			using IDbConnection connection = new SQLiteConnection(GetConnectionString());
+			connection.Execute("INSERT INTO project_tasks (projectID, taskID) values (@projectID, @taskID)",
+				new { projectID, taskID });
+			connection.Dispose();
+		}
 
-        public static ObservableCollection<IElement> GetProjectTasks(long projectID)
+		public static ObservableCollection<IElement> GetProjectTasks(long projectID)
 		{
 			using IDbConnection connection = new SQLiteConnection(GetConnectionString());
 			var output = connection.Query<Task>(
@@ -97,7 +97,7 @@ namespace Core.DataBase
 				$"INNER JOIN projects pr on pr.ID = p.projectID WHERE pr.ID = {projectID} order by t.OrderNumber");
 			foreach (var task in output)
 			{
-                task.UpdateProgress();
+				task.UpdateProgress();
 				task.AddElements(GetSubTasks(task.ID));
 				//task.AddPersons(GetTaskContributors(task.ID));
 				//task.Progress = GetTaskProgress(task.ID);
@@ -129,25 +129,31 @@ namespace Core.DataBase
 			return count;
 		}
 
+		public static void UpdateTask (Task task)
+		{
+			using IDbConnection connection = new SQLiteConnection(GetConnectionString());
+			connection.Update(task);
+			connection.Dispose();
+		}
 
-        #endregion // Tasks
+		#endregion // Tasks
 
-        #region SubTasks
+		#region SubTasks
 
-        private static IList<IElement> GetSubTasks(long taskID)
-        {
-           
-            var output = new List<IElement>();
-           
-            return output;
-        }
+		private static IList<IElement> GetSubTasks(long taskID)
+		{
+		   
+			var output = new List<IElement>();
+		   
+			return output;
+		}
 
-        #endregion
+		#endregion
 
-        #region Today's Tasks
+		#region Today's Tasks
 
 
-        public static ObservableCollection<TodaysTask> GetTodaysTasks(DateTime date)
+		public static ObservableCollection<TodaysTask> GetTodaysTasks(DateTime date)
 		{
 			using IDbConnection connection = new SQLiteConnection(GetConnectionString());
 			var query = $"SELECT * FROM td_tasks WHERE SubmitionDate like '{date.ToString(dateFormat)}%' ORDER BY IsCompleted";
@@ -168,7 +174,7 @@ namespace Core.DataBase
 			//task.ID = GetLastRowID("td_tasks");
 
 			var id = connection.Insert(task);
-            task.ID = id;
+			task.ID = id;
 			connection.Dispose();
 		}
 

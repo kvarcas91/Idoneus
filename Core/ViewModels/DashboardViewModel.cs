@@ -197,14 +197,6 @@ namespace Core.ViewModels
             DBHelper.CreateTablesIfNotExist();
         }
 
-        private int GetTotalTasksProgress ()
-        {
-            if (CompletedTasksCount == 0) return 0;
-
-            return (CompletedTasksCount * 100) / (ActiveTasksCount + CompletedTasksCount);
-        }
-
-
         #endregion // Private Methods
 
         #region Test Methods

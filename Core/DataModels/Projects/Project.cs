@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Runtime.Serialization;
 
 namespace Core.DataModels
 {
@@ -32,7 +31,7 @@ namespace Core.DataModels
                 if (_progress != value)
                 {
                     _progress = value;
-                    NotifyPropertyChanged();
+                    //NotifyPropertyChanged();
                 }
             }
         }
