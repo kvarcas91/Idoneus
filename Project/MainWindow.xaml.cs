@@ -1,4 +1,5 @@
-﻿using Project.ViewModel;
+﻿using Core.Utils;
+using Project.ViewModel;
 using System.Windows;
 
 namespace Project
@@ -10,6 +11,8 @@ namespace Project
     {
         public MainWindow()
         {
+            
+
             InitializeComponent();
             DataContext = new MainWindowViewModel(this);
         }

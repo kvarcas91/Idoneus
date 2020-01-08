@@ -8,24 +8,9 @@
         <SolidColorBrush x:Key="TextBox.Static.Border" Color="#FFABAdB3"/>
         <SolidColorBrush x:Key="TextBox.MouseOver.Border" Color="#FF7EB4EA"/>
         <SolidColorBrush x:Key="TextBox.Focus.Border" Color="#FF569DE5"/>
-    
-        <Style x:Key="BaseTextBox" TargetType="{x:Type TextBox}">
 
-       
+    <Style x:Key="BaseTextBox" TargetType="{x:Type TextBox}">
 
-
-        <Style.Resources>
-            <VisualBrush x:Key="CueBannerBrush" AlignmentX="Left" AlignmentY="Center" Stretch="None">
-                <VisualBrush.Visual>
-                    <!--<Label Content="Value="{Binding Path=(prop:Extensions.Hint), RelativeSource={RelativeSource Self}}" Foreground="LightGray" />-->
-                    <Label Content="{Binding Path=(prop:AttachedProperties.Hint), RelativeSource={RelativeSource TemplatedParent}}" Foreground="Gray"/>
-                </VisualBrush.Visual>
-            </VisualBrush>
-        </Style.Resources>
-
-        <Setter Property="prop:AttachedProperties.Hint" Value="Comment"/>
-        <Setter Property="Text" Value="{Binding Path=(prop:AttachedProperties.Hint), RelativeSource={RelativeSource TemplatedParent}}"/>
-       
         <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"/>
             <Setter Property="BorderBrush" Value="{StaticResource TextBox.Static.Border}"/>
             <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
@@ -62,24 +47,7 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-            <Style.Triggers>
-            <Trigger Property="Text" Value="{x:Static sys:String.Empty}">
-                <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
-            </Trigger>
-            <Trigger Property="Text" Value="{x:Null}">
-                <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
-            </Trigger>
-            <!--<Trigger Property="IsMouseCaptured" Value="True">
-                <Setter Property="Background" Value="White" />
-            </Trigger>-->
-            <MultiTrigger>
-                    <MultiTrigger.Conditions>
-                        <Condition Property="IsInactiveSelectionHighlightEnabled" Value="true"/>
-                        <Condition Property="IsSelectionActive" Value="false"/>
-                    </MultiTrigger.Conditions>
-                    <Setter Property="SelectionBrush" Value="{DynamicResource {x:Static SystemColors.InactiveSelectionHighlightBrushKey}}"/>
-                </MultiTrigger>
-            </Style.Triggers>
+           
         </Style>
 
 

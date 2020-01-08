@@ -8,8 +8,7 @@
              d:DesignHeight="700" d:DesignWidth="1100"
              xmlns:vm="clr-namespace:Core.ViewModels;assembly=Core"
              xmlns:converters="clr-namespace:Project.Converters"
-             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             xmlns:prop="clr-namespace:Project.Extentions">
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
 
 
     <UserControl.DataContext>

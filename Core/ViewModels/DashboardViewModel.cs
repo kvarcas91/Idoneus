@@ -1,4 +1,6 @@
-﻿using Core.DataModels;
+﻿using Core.DataBase;
+using Core.DataModels;
+using Core.Utils;
 using Core.ViewModels.Base;
 using System;
 using System.Collections.ObjectModel;
@@ -25,6 +27,7 @@ namespace Core.ViewModels
         public ICommand CleanCompletedTasksCommand { get; set; }
         public ICommand SelectTaskCommand { get; set; }
         public ICommand AddNewDailyTaskCommand { get; set; }
+        public ICommand AddNewNoteCommand { get; set; }
         public ICommand OpenProjectCommand { get; set; }
 
         #endregion // ICommand Properties
@@ -59,15 +62,8 @@ namespace Core.ViewModels
 
         public DashboardViewModel()
         {
-            
-            Projects = FakeData.GetProjects();
-            Tasks = FakeData.GetTasks();
-            Notes = FakeData.GetNotes();
 
-            //Projects = new ObservableCollection<IProject>();
-            //Tasks = new ObservableCollection<ITask>();
-            //Notes = new ObservableCollection<Note>();
-
+            GetData();
             SetUpCommands();
             InitTest();
         }
@@ -82,6 +78,7 @@ namespace Core.ViewModels
             ShowAddTaskPopupCommand = new RelayCommand(ShowAddTaskPopup);
             CleanCompletedTasksCommand = new RelayCommand(CleanCompletedTasks);
             AddNewDailyTaskCommand = new ParameterizedRelayCommand<string>(AddNewDailyTask);
+            AddNewNoteCommand = new ParameterizedRelayCommand<string>(AddNewNote);
             OpenProjectCommand = new ParameterizedRelayCommand<IProject>(OpenProject);
         }
 
@@ -123,6 +120,21 @@ namespace Core.ViewModels
 
         }
 
+        private void AddNewNote(string noteContent)
+        {
+            if (string.IsNullOrWhiteSpace(noteContent)) return;
+
+            Notes.Insert(0, new Note
+            {
+                Content = noteContent.Trim(),
+                SubmitionDate = DateTime.Now
+            });
+
+            AddTaskPopupVisible ^= true;
+
+
+        }
+
         private void SelectTask(ITask task)
         {
             var index = Tasks.IndexOf(task);
@@ -133,12 +145,28 @@ namespace Core.ViewModels
             Tasks.Move(index, newIndex);
         }
 
-        
-
         #endregion  ICommand Methods
 
         #region Private Methods
 
+        private void GetData ()
+        {
+            FileHelper.CreateFolderIfNotExist("./Database");
+
+            if (!FileHelper.FileExists("./Database/db.db"))
+                DBHelper.CreateTablesIfNotExist();
+
+            //Projects = FakeData.GetProjects();
+            Projects = new ObservableCollection<IProject>(DBHelper.GetProjects(ViewType.All));
+            Tasks = FakeData.GetTasks();
+            Notes = FakeData.GetNotes();
+
+
+
+            //Projects = new ObservableCollection<IProject>();
+            //Tasks = new ObservableCollection<ITask>();
+            //Notes = new ObservableCollection<Note>();
+        }
 
 
         #endregion // Private Methods

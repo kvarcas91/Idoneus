@@ -9,7 +9,7 @@
              mc:Ignorable="d" 
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              d:DesignHeight="700" d:DesignWidth="1100">
-  
+
 
     <UserControl.DataContext>
         <vm:DashboardViewModel/>
@@ -146,7 +146,7 @@
 
             </Border>
 
-            <!-- Today's Tasks -->
+            <!-- Notes -->
             <Border Grid.Row="0" Grid.Column="0"
                     Grid.RowSpan="2"
                     Background="{StaticResource BackgroundLightBrush}"
@@ -186,17 +186,6 @@
                                                          Style="{StaticResource GrowPackIcon}"/>
                             </Button>
 
-                            <Button Grid.Column="2"
-                                    Background="Transparent"
-                                    BorderThickness="0"
-                                    Style="{StaticResource PackButtonBase}"
-                                    Command="{Binding ShowAddTaskPopupCommand}"
-                                        ToolTip="Add new task">
-                                <materialDesign:PackIcon Kind="AddCircleOutline"
-                                                         Foreground="{StaticResource LightBlueColorBrush}"
-                                                         Style="{StaticResource GrowPackIcon}"/>
-                            </Button>
-
                         </Grid>
 
                         <Separator Margin="5"/>
@@ -208,20 +197,62 @@
                           Visibility="{Binding Tasks.Count, Converter={converters:ListItemCountToVisibilityConverter}, ConverterParameter=1}">
                         <Grid.RowDefinitions>
 
-                            <!-- Header -->
-                            <RowDefinition Height="Auto"/>
-
                             <!-- Content -->
                             <RowDefinition Height="*"/>
+
+                            <!-- Header -->
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
 
 
                         <!-- Content -->
                         <ListView ItemsSource="{Binding Notes}"
-                                  Grid.Row="1"
+                                  Grid.Row="0"
+                                  Margin="0 0 0 10"
                                   Style="{StaticResource NotesListViewStyle}"/>
 
+
+                        <Grid Grid.Row="1" 
+                            Margin="-10"
+                            MaxHeight="100"
+                            Opacity="0.5"
+                            Background="White">
+
+                            <Grid.ColumnDefinitions>
+
+                                <!-- Add Comment textbox -->
+                                <ColumnDefinition Width="*"/>
+
+                                <!-- Send button -->
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBox x:Name="AddNoteTextBox"
+                                            Grid.Column="0"
+                                                 Padding="5"
+                                            Style="{StaticResource BaseTextBox}"
+                                            />
+                            <TextBlock Grid.Column="0"
+                                                   Text="Add Note here..."
+                                                   Style="{StaticResource NoteHint}"/>
+
+                            <!-- Send comment -->
+                            <Button Grid.Column="1"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                Margin="10 0"
+                                               Command="{Binding AddNewNoteCommand}"
+                                                CommandParameter="{Binding Text, ElementName=AddNoteTextBox}"
+                                                Style="{StaticResource PackButtonBase}"
+                                                ToolTip="Add note"
+                                                  >
+                                <materialDesign:PackIcon Kind="Send"
+                                                 Foreground="{StaticResource LightBlueColorBrush}"
+                                                 Style="{StaticResource GrowPackIcon}"/>
+                            </Button>
+
+                        </Grid>
 
                     </Grid>
 
@@ -269,7 +300,7 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
 
-                        
+
 
                         <!-- Content -->
                         <ListView x:Name="projectSnippetListView"
@@ -282,9 +313,9 @@
                                              Grid.RowSpan="2"
                                              Visibility="{Binding Projects.Count, Converter={converters:ListItemCountToVisibilityConverter}}"
                                              Style="{StaticResource EmptyIconView}"/>
-                    
+
                 </Grid>
-                
+
 
             </Border>
 
@@ -300,7 +331,7 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    
+
                     <!-- Header -->
                     <StackPanel Orientation="Vertical">
 
@@ -327,16 +358,6 @@
                                                          Style="{StaticResource GrowPackIcon}"/>
                             </Button>
 
-                            <Button Grid.Column="2"
-                                    Background="Transparent"
-                                    BorderThickness="0"
-                                    Style="{StaticResource PackButtonBase}"
-                                    Command="{Binding ShowAddTaskPopupCommand}"
-                                        ToolTip="Add new task">
-                                <materialDesign:PackIcon Kind="AddCircleOutline"
-                                                         Foreground="{StaticResource LightBlueColorBrush}"
-                                                         Style="{StaticResource GrowPackIcon}"/>
-                            </Button>
 
                         </Grid>
 
@@ -347,6 +368,10 @@
                     <!-- Add Task -->
                     <Grid Grid.Row="1"
                           Visibility="{Binding Tasks.Count, Converter={converters:ListItemCountToVisibilityConverter}, ConverterParameter=1}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="176*"/>
+                            <ColumnDefinition Width="13*"/>
+                        </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
 
                             <!-- Content -->
@@ -356,19 +381,20 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
-                       
+
 
                         <!-- Content -->
                         <ListView x:Name="TaskListView"
                             Grid.Row="0" ItemsSource="{Binding Tasks}"
-                              Style="{StaticResource TodayTaskListView}"/>
+                              Style="{StaticResource TodayTaskListView}" Grid.ColumnSpan="2" Margin="0,0,-0.4,0.4"/>
 
 
-                        <Grid Grid.Row="1" 
-                                          Margin="-10"
-                                          MaxHeight="100"
-                                          Opacity="0.5"
-                                          Background="White">
+                        <Grid 
+                                Grid.Row="1"
+                            Margin="-10"
+                                MaxHeight="100"
+                                Opacity="0.5"
+                                Background="White" Grid.ColumnSpan="2" Grid.RowSpan="2">
 
                             <Grid.ColumnDefinitions>
 
@@ -396,7 +422,7 @@
                                                 Command="{Binding AddNewDailyTaskCommand}"
                                                 CommandParameter="{Binding Text, ElementName=SendTaskTextBox}"
                                                 Style="{StaticResource PackButtonBase}"
-                                                ToolTip="Add Comment"
+                                                ToolTip="Add daily task"
                                                   >
                                 <materialDesign:PackIcon Kind="Send"
                                                  Foreground="{StaticResource LightBlueColorBrush}"
@@ -413,11 +439,11 @@
                                              Visibility="{Binding Tasks.Count, Converter={converters:ListItemCountToVisibilityConverter}}"
                                              Style="{StaticResource EmptyIconView}"/>
 
-                   
-                    
+
+
                 </Grid>
-                
-              
+
+
             </Border>
         </Grid>
 

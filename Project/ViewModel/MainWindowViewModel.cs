@@ -1,4 +1,5 @@
-﻿using Core.ViewModels.Base;
+﻿using Core.Utils;
+using Core.ViewModels.Base;
 using Project.Utils;
 using System;
 using System.Collections.Generic;
@@ -186,6 +187,9 @@ namespace Project.ViewModel
                 // Fire off resize events
                 WindowResized();
             };
+
+            // Check if DB folder exists
+            
         }
 
         #endregion

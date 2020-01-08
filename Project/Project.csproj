@@ -26,6 +26,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -35,6 +36,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Resources\Images\main.ico</ApplicationIcon>
@@ -88,8 +90,6 @@
     <Compile Include="Converters\ProgressBar\RotateTransformCentreConverter.cs" />
     <Compile Include="Converters\ProgressBar\StartPointConverter.cs" />
     <Compile Include="Converters\ProgressBar\ValueConverter.cs" />
-    <Compile Include="Extentions\AttachedProperties.cs" />
-    <Compile Include="Extentions\WatermarkAdorner.cs" />
     <Compile Include="Utils\WindowResizer.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="Views\DashboardView.xaml.cs">
