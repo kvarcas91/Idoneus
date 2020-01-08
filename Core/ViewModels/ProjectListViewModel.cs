@@ -61,6 +61,7 @@ namespace Core.ViewModels
             DBHelper.InsertTask(task, CurrentProject.ID);
             CurrentProject.Tasks.Add(task);
             ((Project)CurrentProject).UpdateProgress();
+            NewTaskContent = string.Empty;
             UpdateCounters();
         }
 

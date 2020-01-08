@@ -556,7 +556,7 @@
 
                                     <!-- Content -->
                                     <ListView Grid.Row="0" ItemsSource="{Binding CurrentProject.Tasks}"
-                                              Style="{StaticResource ProjectListViewSnippet}"
+                                              Style="{StaticResource ProjectTaskViewStyle}"
                                                Visibility="{Binding  CurrentProject.Tasks.Count, 
                                     Converter={converters:ListItemCountToVisibilityConverter}, 
                                     ConverterParameter=1}"/>
@@ -581,6 +581,7 @@
                                         <TextBox x:Name="SendTaskTextBox"
                                             Grid.Column="0"
                                                  Padding="5"
+                                                 TextWrapping="Wrap"
                                                  Text="{Binding NewTaskContent, Mode=TwoWay}"
                                             Style="{StaticResource BaseTextBox}"
                                             />
@@ -600,9 +601,11 @@
                                             <ComboBox Grid.Column="1"
                                                     SelectedIndex="1" 
                                                     x:Name="dueCombo"
-                                                    MinWidth="100" FontSize="12"
+                                                    MinWidth="100" 
                                                   Background="Transparent"
                                                       Margin="5 0 5 0"
+                                                      VerticalAlignment="Bottom"
+                                                      FontSize="{StaticResource XSmall}"
                                                     ItemsSource="{Binding Source={StaticResource dataFromEnum}}"
                                                     SelectedItem="{Binding Path=NewTaskPriority, Mode=TwoWay}"
                                                     HorizontalContentAlignment="Center">

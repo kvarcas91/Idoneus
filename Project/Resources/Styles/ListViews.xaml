@@ -408,4 +408,108 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <!-- Contributors list view -->
+    <Style x:Key="ProjectTaskViewStyle" TargetType="{x:Type ListView}" BasedOn="{StaticResource ListView}">
+        <Setter Property="ItemTemplate">
+            <Setter.Value>
+                <DataTemplate>
+
+
+                    <Grid>
+                        <Grid.RowDefinitions>
+
+                            <!-- Content -->
+                            <RowDefinition Height="30"/>
+
+                            <!-- Separator -->
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+
+
+                            <!-- Project header -->
+                            <ColumnDefinition Width="*"/>
+
+                            <!-- completed tasks / Total tasks -->
+                            <ColumnDefinition Width="Auto"/>
+
+                            <!-- Progress bar -->
+                            <ColumnDefinition Width="Auto"/>
+
+                            <!-- Progress percentage -->
+                            <ColumnDefinition Width="60"/>
+
+
+                        </Grid.ColumnDefinitions>
+
+
+                        <CheckBox IsChecked="{Binding IsCompleted}"
+                                   >
+                            <!-- Project summary -->
+                            <TextBlock Grid.Column="0"
+                                   Text="{Binding Content}"
+                                   TextTrimming="WordEllipsis"
+                                       VerticalAlignment="Center"
+                                   Style="{StaticResource RegularListItemSnippetText}"
+                                       Foreground="{Binding IsCompleted, Converter={converters:IsCompletedToColorConverter}}"
+                                                   TextDecorations="{Binding IsCompleted,
+                                                                     Converter={converters:BoolToTextDecorationConverter}}"/>
+                        </CheckBox>
+
+                        <!-- Completed tasks / All tasks -->
+                        <TextBlock Grid.Column="1"
+                                   Style="{StaticResource RegularListItemSnippetText}"
+                                   Margin="0 0 10 0">
+                            <Run Text="{Binding CompletedSubTasksCount}"/>
+                            <Run Text="/"/>
+                            <Run Text="{Binding SubTasks.Count, Mode=OneWay}"/>
+                        </TextBlock>
+
+                        <!-- Project Progress Bar -->
+                        <ProgressBar Grid.Column="2"
+                                     Width="150"
+                                     Value="{Binding Progress, Mode=TwoWay}"
+                                     Style="{StaticResource HorizontalProgressBar}"
+                                     Background="{StaticResource LightGreyBrush}"
+                                     BorderThickness="0"
+                                     Height="5"
+                                     Foreground="{Binding Priority, Converter={converters:PriorityToColorConverter}}"/>
+
+                        <TextBlock Grid.Column="3"
+                                   Style="{StaticResource RegularListItemSnippetText}"
+                                   Margin="10 0 10 0">
+                            <Run Text="{Binding Progress, Mode=TwoWay}"/>
+                            <Run Text="%"/>
+                        </TextBlock>
+
+
+                        <Separator Grid.Row="1" Grid.ColumnSpan="5" Height="1"
+                                   Foreground="{StaticResource LightGreyBrush}"/>
+
+                    </Grid>
+
+
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+
+        <!-- Disable onMouseOver and default style -->
+        <Setter Property="ItemContainerStyle">
+            <Setter.Value>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                <ContentPresenter />
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Setter.Value>
+        </Setter>
+       
+    </Style>
 </ResourceDictionary>

@@ -1,8 +1,10 @@
-﻿using Core.Utils;
+﻿using Core.Helpers;
+using Core.Utils;
 using Core.ViewModels.Base;
 using Dapper.Contrib.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,7 +18,7 @@ namespace Core.DataModels
         public IList<IPerson> Contributors { get; set; }
 
         [Computed]
-        public IList<ISubTask> SubTasks { get; }
+        public IList<ISubTask> SubTasks { get; } = new ObservableCollection<ISubTask>();
 
         [Key]
         public long ID { get; set; }
@@ -30,14 +32,45 @@ namespace Core.DataModels
         public bool IsCompleted { get; set; }
         public string Content { get; set; }
 
+        [Computed]
+        public int CompletedSubTasksCount { get; set; }
+
+        public void UpdateProgress()
+        {
+            if (IsCompleted)
+            {
+                Progress = 100;
+                return;
+            }
+            var count = 0;
+
+            foreach (var item in SubTasks)
+            {
+                if (item is ISubTask task)
+                {
+                    if (task.IsCompleted) count++;
+                }
+            }
+
+            CompletedSubTasksCount = count;
+
+            Progress = IntHelper.GetPercentage(SubTasks.Count, CompletedSubTasksCount);
+        }
+
+
         public bool AddElement(IElement element)
         {
-            throw new NotImplementedException();
+            if (element is ISubTask task) SubTasks.Add(task);
+            return true;
         }
 
         public bool AddElements(IList<IElement> elements)
         {
-            throw new NotImplementedException();
+            foreach (var element in elements)
+            {
+                AddElement(element);
+            }
+            return true;
         }
 
         public bool AddPerson(IPerson person)

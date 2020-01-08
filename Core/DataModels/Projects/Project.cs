@@ -1,5 +1,6 @@
 ﻿using Core.Helpers;
 using Core.Utils;
+using Dapper.Contrib.Extensions;
 using PropertyChanged;
 using System;
 using System.Collections.Generic;
@@ -36,6 +37,8 @@ namespace Core.DataModels
             }
         }
         public string Path { get; set; }
+
+        [Computed]
         public int CompletedTasksCount { get; set; }
 
         private decimal _progress = 0;

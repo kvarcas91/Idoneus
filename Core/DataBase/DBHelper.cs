@@ -97,7 +97,8 @@ namespace Core.DataBase
 				$"INNER JOIN projects pr on pr.ID = p.projectID WHERE pr.ID = {projectID} order by t.OrderNumber");
 			foreach (var task in output)
 			{
-				//task.AddElements(GetSubTasks(task.ID));
+                task.UpdateProgress();
+				task.AddElements(GetSubTasks(task.ID));
 				//task.AddPersons(GetTaskContributors(task.ID));
 				//task.Progress = GetTaskProgress(task.ID);
 			}
@@ -129,12 +130,24 @@ namespace Core.DataBase
 		}
 
 
-		#endregion // Tasks
+        #endregion // Tasks
 
-		#region Today's Tasks
+        #region SubTasks
+
+        private static IList<IElement> GetSubTasks(long taskID)
+        {
+           
+            var output = new List<IElement>();
+           
+            return output;
+        }
+
+        #endregion
+
+        #region Today's Tasks
 
 
-		public static ObservableCollection<TodaysTask> GetTodaysTasks(DateTime date)
+        public static ObservableCollection<TodaysTask> GetTodaysTasks(DateTime date)
 		{
 			using IDbConnection connection = new SQLiteConnection(GetConnectionString());
 			var query = $"SELECT * FROM td_tasks WHERE SubmitionDate like '{date.ToString(dateFormat)}%' ORDER BY IsCompleted";
