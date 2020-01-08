@@ -81,7 +81,7 @@
                         <!-- Project Progress Bar -->
                         <ProgressBar Grid.Column="3"
                                      Width="150"
-                                     Value="{Binding Progress}"
+                                     Value="{Binding Progress, Mode=TwoWay}"
                                      Style="{StaticResource HorizontalProgressBar}"
                                      Background="{StaticResource LightGreyBrush}"
                                      BorderThickness="0"
@@ -91,7 +91,7 @@
                         <TextBlock Grid.Column="4"
                                    Style="{StaticResource RegularListItemSnippetText}"
                                    Margin="10 0 10 0">
-                            <Run Text="{Binding Progress}"/>
+                            <Run Text="{Binding Progress, Mode=TwoWay}"/>
                             <Run Text="%"/>
                         </TextBlock>
 
@@ -238,7 +238,7 @@
 
                             <Grid.InputBindings>
                                 <MouseBinding Gesture="LeftClick" 
-                                          Command="{Binding ElementName=projectListView, Path=DataContext.TestCommand}"
+                                          Command="{Binding ElementName=projectListView, Path=DataContext.SelectProjectCommand}"
                                           CommandParameter="{Binding}"/>
                             </Grid.InputBindings>
 

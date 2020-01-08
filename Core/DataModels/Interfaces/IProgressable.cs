@@ -3,7 +3,7 @@
     public interface IProgressable
     {
 
-        double Progress { get; set; }
+        decimal Progress { get; set; }
 
     }
 }

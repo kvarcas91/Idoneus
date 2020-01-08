@@ -128,7 +128,7 @@ namespace Core.DataModels
 
             foreach (var item in projects)
             {
-                ((Project)item).SetCompletedTasksCount();
+                ((Project)item).UpdateProgress();
             }
 
             return projects;

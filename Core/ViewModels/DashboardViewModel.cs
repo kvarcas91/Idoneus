@@ -1,5 +1,6 @@
 ﻿using Core.DataBase;
 using Core.DataModels;
+using Core.Helpers;
 using Core.Utils;
 using Core.ViewModels.Base;
 using System;
@@ -43,7 +44,7 @@ namespace Core.ViewModels
 
         #region Info Box
 
-        public double TotalTasksProgress { get; set; }
+        public decimal TotalTasksProgress { get; set; }
 
         public int TotalProjectCount { get; set; }
         public int ActiveTasksCount { get; set; }
@@ -114,7 +115,7 @@ namespace Core.ViewModels
 
         private void AddNewDailyTask (string taskContent)
         {
-            if (string.IsNullOrWhiteSpace(taskContent)) return;
+            if (!StringHelper.CanUse(taskContent)) return;
 
             var task = new TodaysTask
             {
@@ -134,7 +135,7 @@ namespace Core.ViewModels
 
         private void AddNewNote(string noteContent)
         {
-            if (string.IsNullOrWhiteSpace(noteContent)) return;
+            if (!StringHelper.CanUse(noteContent)) return;
 
             Notes.Insert(0, new Note
             {
@@ -185,7 +186,8 @@ namespace Core.ViewModels
             ActiveTasksCount = DBHelper.GetAllTasks(false);
             OverdueTasksCount = DBHelper.GetOverdueTasks();
             CompletedTasksCount = DBHelper.GetAllTasks(true);
-            TotalTasksProgress = GetTotalTasksProgress();
+            TotalTasksProgress = IntHelper.GetPercentage( (ActiveTasksCount + CompletedTasksCount), CompletedTasksCount);
+            //TotalTasksProgress = GetTotalTasksProgress();
             TotalProjectCount = DBHelper.GetPublishedProjectsCount();
         }
 

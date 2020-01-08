@@ -16,12 +16,12 @@
 
 
 
-    <StackPanel Background="{StaticResource PrimaryColorBrush}"
+    <StackPanel Background="White"
                 Orientation="Vertical">
 
 
 
-        <StackPanel Background="{StaticResource SecondaryColorBrush}"
+        <StackPanel Background="White"
                     Height="100">
             <!--Icon-->
             <Button Style="{StaticResource SystemIconButton}" 
@@ -61,9 +61,9 @@
                     </Grid.ColumnDefinitions>
 
                     <materialDesign:PackIcon Kind="ViewDashboard"
-                                         Foreground="White"/>
+                                         Foreground="{StaticResource SecondaryColorBrush}"/>
 
-                    <TextBlock Text="DashBoard" Grid.Column="1" Foreground="White"
+                    <TextBlock Text="DashBoard" Grid.Column="1" Foreground="{StaticResource SecondaryColorBrush}"
                                FontFamily="{StaticResource PlayFairRegular}"/>
                 </Grid>
             </Button>
@@ -78,9 +78,9 @@
                     </Grid.ColumnDefinitions>
 
                     <materialDesign:PackIcon Kind="Folder"
-                                         Foreground="White"/>
+                                         Foreground="{StaticResource SecondaryColorBrush}"/>
 
-                    <TextBlock Text="Projects" Grid.Column="1" Foreground="White"
+                    <TextBlock Text="Projects" Grid.Column="1" Foreground="{StaticResource SecondaryColorBrush}"
                                FontFamily="{StaticResource PlayFairRegular}"/>
                 </Grid>
             </Button>
@@ -95,9 +95,9 @@
                     </Grid.ColumnDefinitions>
 
                     <materialDesign:PackIcon Kind="CalendarTask"
-                                         Foreground="White"/>
+                                         Foreground="{StaticResource SecondaryColorBrush}"/>
 
-                    <TextBlock Text="Tasks" Grid.Column="1" Foreground="White"
+                    <TextBlock Text="Tasks" Grid.Column="1" Foreground="{StaticResource SecondaryColorBrush}"
                                FontFamily="{StaticResource PlayFairRegular}"/>
                 </Grid>
             </Button>

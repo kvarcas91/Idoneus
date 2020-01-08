@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Core.Utils
+namespace Core.Helpers
 {
     public class FileHelper
     {

@@ -8,12 +8,23 @@
              d:DesignHeight="700" d:DesignWidth="1100"
              xmlns:vm="clr-namespace:Core.ViewModels;assembly=Core"
              xmlns:converters="clr-namespace:Project.Converters"
+             xmlns:System="clr-namespace:System;assembly=mscorlib"
+             xmlns:StyleAlias="clr-namespace:Core.Utils;assembly=Core"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
 
 
     <UserControl.DataContext>
         <vm:ProjectListViewModel/>
     </UserControl.DataContext>
+
+    <UserControl.Resources>
+        <ObjectDataProvider x:Key="dataFromEnum" MethodName="GetValues"
+                            ObjectType="{x:Type System:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="StyleAlias:Priority"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </UserControl.Resources>
 
     <Grid Background="White">
 
@@ -239,6 +250,8 @@
                     <Grid x:Name="basicInfoGrid"
                         Grid.Row="0"
                           Margin="0 10 0 10"
+                          Height="80"
+                          MaxHeight="120"
                           Style="{StaticResource ProjectsInfoControlAnimation}">
 
                         <Grid.ColumnDefinitions>
@@ -257,8 +270,7 @@
                         <!-- Description -->
                         <Border Grid.Column="0" Margin="30 0 30 0"
                                 Padding="10"
-                                Background="{StaticResource BackgroundLightBrush}"
-                                Height="100">
+                                Background="{StaticResource BackgroundLightBrush}">
 
                             <StackPanel Orientation="Vertical"
                                         >
@@ -463,10 +475,10 @@
                         <Grid.ColumnDefinitions>
                             
                             <!-- Tasks -->
-                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="*"/>
                             
                             <!-- Files and comments -->
-                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
                             
                         </Grid.ColumnDefinitions>
 
@@ -561,42 +573,60 @@
                                             <!-- Add Comment textbox -->
                                             <ColumnDefinition Width="*"/>
 
-                                            <!-- Priority combo -->
+                                            <!-- Controls -->
                                             <ColumnDefinition Width="Auto"/>
-                                            
-                                            <!-- Send button -->
-                                            <ColumnDefinition Width="Auto"/>
+                                           
                                         </Grid.ColumnDefinitions>
 
                                         <TextBox x:Name="SendTaskTextBox"
                                             Grid.Column="0"
                                                  Padding="5"
+                                                 Text="{Binding NewTaskContent, Mode=TwoWay}"
                                             Style="{StaticResource BaseTextBox}"
                                             />
                                         <TextBlock Grid.Column="0"
                                                    Text="Add Task here..."
                                                    Style="{StaticResource TaskHint}"/>
 
-                                        <ComboBox Grid.Column="1" SelectedIndex="0"
-                                                  Margin="5 0 5 0"
-                                                  VerticalAlignment="Bottom">
-                                            Default
-                                        </ComboBox>
+                                        <StackPanel Grid.Column="1"
+                                            Orientation="Horizontal">
 
-                                        <!-- Send comment -->
-                                        <Button Grid.Column="2"
+                                            <DatePicker Grid.Column="1"
+                                                        BorderThickness="0"
+                                                        VerticalAlignment="Bottom"
+                                                        Margin="5 0 5 0"
+                                                        SelectedDate="{Binding NewTaskSelectedDate, Mode=TwoWay}"/>
+
+                                            <ComboBox Grid.Column="1"
+                                                    SelectedIndex="1" 
+                                                    x:Name="dueCombo"
+                                                    MinWidth="100" FontSize="12"
+                                                  Background="Transparent"
+                                                      Margin="5 0 5 0"
+                                                    ItemsSource="{Binding Source={StaticResource dataFromEnum}}"
+                                                    SelectedItem="{Binding Path=NewTaskPriority, Mode=TwoWay}"
+                                                    HorizontalContentAlignment="Center">
+
+                                            </ComboBox>
+
+                                            <!-- Send comment -->
+                                            <Button Grid.Column="2"
                                                 Background="Transparent"
                                                 BorderThickness="0"
-                                                Margin="10 0"
+                                                Margin="10 0 3 3"
                                                Command="{Binding AddNewTaskCommand}"
                                                 CommandParameter="{Binding Text, ElementName=AddNewTaskTextBox}"
                                                 Style="{StaticResource PackButtonBase}"
                                                 ToolTip="Add note"
                                                   >
-                                            <materialDesign:PackIcon Kind="Send"
+                                                <materialDesign:PackIcon Kind="Send"
                                                  Foreground="{StaticResource LightBlueColorBrush}"
                                                  Style="{StaticResource GrowPackIcon}"/>
-                                        </Button>
+                                            </Button>
+
+                                        </StackPanel>
+                                        
+                                        
 
                                     </Grid>
 
@@ -617,6 +647,8 @@
                         <Border Grid.Row="0" Grid.Column="1"
                             Margin="10 0 10 10"
                             Padding="10"
+                                Width="250"
+                                 Style="{StaticResource ProjectsCommentFileAnimation}"
                             Background="{StaticResource BackgroundLightBrush}">
 
                             <Grid>
@@ -710,6 +742,8 @@
                         <Border Grid.Row="1" Grid.Column="1"
                             Margin="10"
                             Padding="10"
+                                Width="250"
+                                 Style="{StaticResource ProjectsCommentFileAnimation}"
                             Background="{StaticResource BackgroundLightBrush}">
 
                             <Grid>

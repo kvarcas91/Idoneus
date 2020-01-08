@@ -1,6 +1,8 @@
-﻿namespace Core.DataModels
+﻿using Core.ViewModels.Base;
+
+namespace Core.DataModels
 {
-    public interface IElement
+    public interface IElement 
     {
 
         /// <summary>

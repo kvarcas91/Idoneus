@@ -1,5 +1,6 @@
 ﻿using Core.Utils;
 using Core.ViewModels.Base;
+using Dapper.Contrib.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,18 +9,23 @@ using System.Threading.Tasks;
 
 namespace Core.DataModels
 {
+    [Table("tasks")]
     public class Task : ITask
     {
+        [Computed]
+        public IList<IPerson> Contributors { get; set; }
 
-        public IList<IPerson> Contributors => throw new NotImplementedException();
+        [Computed]
+        public IList<ISubTask> SubTasks { get; }
 
-        public IList<ISubTask> SubTasks => throw new NotImplementedException();
-
+        [Key]
         public long ID { get; set; }
+
+        [Computed]
         public DateTime SubmitionDate { get; set; }
         public DateTime DueDate { get; set; }
         public Priority Priority { get; set; }
-        public double Progress { get; set; }
+        public decimal Progress { get; set; }
         public uint OrderNumber { get; set; }
         public bool IsCompleted { get; set; }
         public string Content { get; set; }

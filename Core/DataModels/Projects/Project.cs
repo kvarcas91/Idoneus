@@ -1,11 +1,17 @@
-﻿using Core.Utils;
+﻿using Core.Helpers;
+using Core.Utils;
+using PropertyChanged;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
 
 namespace Core.DataModels
 {
-    public class Project : IProject
+    [ImplementPropertyChanged]
+    public class Project : IProject, INotifyPropertyChanged
     {
         public string Header { get; set; }
         public bool IsArchived { get; set; }
@@ -17,11 +23,26 @@ namespace Core.DataModels
         public DateTime SubmitionDate { get; set; }
         public DateTime DueDate { get; set; }
         public Priority Priority { get; set; }
-        public double Progress { get; set; }
+        public decimal Progress
+        {
+            get => _progress;
+            set
+            {
+                if (_progress != value)
+                {
+                    _progress = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
         public string Path { get; set; }
         public int CompletedTasksCount { get; set; }
 
-        public void SetCompletedTasksCount ()
+        private decimal _progress = 0;
+
+        public event PropertyChangedEventHandler PropertyChanged = (sender, e) => { };
+
+        public void UpdateProgress ()
         {
             var count = 0;
            
@@ -34,7 +55,12 @@ namespace Core.DataModels
             }
 
             CompletedTasksCount = count;
+
+            Progress = IntHelper.GetPercentage(Tasks.Count, CompletedTasksCount);
+
+            //Progress = Tasks.Count == 0 ? 0 : (CompletedTasksCount * 100) / Tasks.Count;
         }
+
         public bool AddElement(IElement element)
         {
             throw new NotImplementedException();
@@ -74,5 +100,11 @@ namespace Core.DataModels
         {
             throw new NotImplementedException();
         }
+
+        private void NotifyPropertyChanged([CallerMemberName] string name = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
     }
 }
