@@ -1,6 +1,7 @@
 ﻿using Core.Utils;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Core.DataModels
 {
@@ -10,7 +11,7 @@ namespace Core.DataModels
         public bool IsArchived { get; set; }
         public IList<IElement> Comments { get; set; }
         public IList<IContributor> Contributors { get; set; }
-        public IList<IElement> Tasks { get; set; }
+        public ObservableCollection<IElement> Tasks { get; set; }
         public long ID { get; set; }
         public string Content { get; set; }
         public DateTime SubmitionDate { get; set; }

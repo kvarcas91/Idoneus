@@ -52,8 +52,8 @@
                     Orientation="Horizontal"
                             HorizontalAlignment="Right">
 
-                    <ComboBox Text="Test combo" Width="100"
-                              Style="{StaticResource ProjectSideBarControlOpacity}"/>
+                    <!--<ComboBox Text="Test combo" Width="100"
+                              Style="{StaticResource ProjectSideBarControlOpacity}"/>-->
 
                     <!-- Expand / Collapse -->
                     <Button Grid.Column="2"
@@ -174,7 +174,8 @@
 
                         <TextBlock Grid.Row="1"
                                    Text="{Binding CurrentProject.SubmitionDate, 
-                                          Converter={converters:DateTimeToStringConverter}}"
+                                          Converter={converters:DateTimeToStringConverter},
+                                           ConverterParameter=1}"
                                    Style="{StaticResource RegularListItemSnippetText}"
                                    Margin="20 -5"/>
                     </Grid>
@@ -468,7 +469,8 @@
                             <ColumnDefinition Width="*"/>
                             
                         </Grid.ColumnDefinitions>
-                        
+
+
                         <!-- Tasks -->
                         <Border Grid.Row="0" Grid.Column="0"
                             Grid.RowSpan="2"
@@ -527,22 +529,77 @@
                                 </StackPanel>
 
                                 <Grid Grid.Row="1"
-                                      Visibility="{Binding Projects.Count, Converter={converters:ListItemCountToVisibilityConverter}, ConverterParameter=1}">
+                                     >
 
                                     <Grid.RowDefinitions>
 
-                                        <!-- Header -->
-                                        <RowDefinition Height="Auto"/>
-
                                         <!-- Content -->
                                         <RowDefinition Height="*"/>
+
+                                        <!-- Header -->
+                                        <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
 
 
 
                                     <!-- Content -->
-                                    <ListView Grid.Row="1" ItemsSource="{Binding CurrentProject.Tasks}"
-                                              Style="{StaticResource ProjectListViewSnippet}"/>
+                                    <ListView Grid.Row="0" ItemsSource="{Binding CurrentProject.Tasks}"
+                                              Style="{StaticResource ProjectListViewSnippet}"
+                                               Visibility="{Binding  CurrentProject.Tasks.Count, 
+                                    Converter={converters:ListItemCountToVisibilityConverter}, 
+                                    ConverterParameter=1}"/>
+
+
+                                    <Grid Grid.Row="1" 
+                            Margin="-10 0 -10 -10"
+                            MaxHeight="100"
+                            Opacity="0.5"
+                            Background="White">
+
+                                        <Grid.ColumnDefinitions>
+
+                                            <!-- Add Comment textbox -->
+                                            <ColumnDefinition Width="*"/>
+
+                                            <!-- Priority combo -->
+                                            <ColumnDefinition Width="Auto"/>
+                                            
+                                            <!-- Send button -->
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBox x:Name="SendTaskTextBox"
+                                            Grid.Column="0"
+                                                 Padding="5"
+                                            Style="{StaticResource BaseTextBox}"
+                                            />
+                                        <TextBlock Grid.Column="0"
+                                                   Text="Add Task here..."
+                                                   Style="{StaticResource TaskHint}"/>
+
+                                        <ComboBox Grid.Column="1" SelectedIndex="0"
+                                                  Margin="5 0 5 0"
+                                                  VerticalAlignment="Bottom">
+                                            Default
+                                        </ComboBox>
+
+                                        <!-- Send comment -->
+                                        <Button Grid.Column="2"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                Margin="10 0"
+                                               Command="{Binding AddNewTaskCommand}"
+                                                CommandParameter="{Binding Text, ElementName=AddNewTaskTextBox}"
+                                                Style="{StaticResource PackButtonBase}"
+                                                ToolTip="Add note"
+                                                  >
+                                            <materialDesign:PackIcon Kind="Send"
+                                                 Foreground="{StaticResource LightBlueColorBrush}"
+                                                 Style="{StaticResource GrowPackIcon}"/>
+                                        </Button>
+
+                                    </Grid>
+
                                 </Grid>
 
                                 <!-- Empty view -->
@@ -596,7 +653,7 @@
 
                                     <!-- Add Comment -->
                                     <Grid Grid.Row="1" 
-                                          Margin="-10"
+                                          Margin="-10 0 -10 -10"
                                           MaxHeight="100"
                                           Opacity="0.5"
                                           Background="White">
@@ -613,7 +670,8 @@
                                         <TextBox x:Name="SendCommentTextBox"
                                             Grid.Column="0"
                                                  Padding="5"
-                                            Style="{StaticResource BaseTextBox}"
+                                                
+                                        Style="{StaticResource BaseTextBox}"
                                             />
                                         <TextBlock Grid.Column="0"
                                                    Text="Add comment here..."
@@ -624,7 +682,8 @@
                                                 Background="Transparent"
                                                 BorderThickness="0"
                                                 Margin="10 0"
-                                              
+                                                Command="{Binding AddCommentCommand}"
+                                                CommandParameter="{Binding Text, ElementName=SendCommentTextBox}"
                                                 Style="{StaticResource PackButtonBase}"
                                                 ToolTip="Add Comment"
                                                   >

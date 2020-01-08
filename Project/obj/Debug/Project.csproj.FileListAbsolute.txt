@@ -52,3 +52,5 @@ C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\bin\Debug\Dapper.dll
 C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\bin\Debug\System.Data.SQLite.xml
 C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\bin\Debug\System.Data.SQLite.dll.config
 C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\bin\Debug\Dapper.xml
+C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\bin\Debug\Dapper.Contrib.dll
+C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Project\bin\Debug\Dapper.Contrib.xml

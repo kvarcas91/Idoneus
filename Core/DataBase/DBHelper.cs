@@ -3,13 +3,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Data;
 using System.Data.SQLite;
 using Dapper;
 using Core.DataModels;
 using Core.Utils;
 using System.Diagnostics;
+using System.Collections.ObjectModel;
+using Dapper.Contrib.Extensions;
 
 namespace Core.DataBase
 {
@@ -17,6 +18,7 @@ namespace Core.DataBase
 	{
 
         private static readonly object _lock = new object();
+        private static readonly string dateFormat = "yyyy-MM-dd";
 
         #region Projects
 
@@ -42,6 +44,7 @@ namespace Core.DataBase
 
             foreach (var project in output)
             {
+                project.Tasks = GetProjectTasks(project.ID);
                 //project.Progress = GetProjectProgress(project.ID);
                 //project.AddPersons(GetProjectContributors(project.ID));
 
@@ -51,8 +54,113 @@ namespace Core.DataBase
             return output.ConvertAll(o => (IProject)o);
         }
 
+        public static int GetPublishedProjectsCount ()
+        {
+            return GetCount("projects");
+        }
+
 
         #endregion // Projects
+
+        #region Tasks
+
+        public static ObservableCollection<IElement> GetProjectTasks(long projectID)
+        {
+            using IDbConnection connection = new SQLiteConnection(GetConnectionString());
+            var output = connection.Query<Task>(
+                "SELECT t.ID, t.Content, t.IsCompleted, t.Priority, t.DueDate, t.OrderNumber " +
+                "FROM tasks t " +
+                "INNER JOIN project_tasks p ON p.taskID = t.ID " +
+                $"INNER JOIN projects pr on pr.ID = p.projectID WHERE pr.ID = {projectID} order by t.OrderNumber");
+            foreach (var task in output)
+            {
+                //task.AddElements(GetSubTasks(task.ID));
+                //task.AddPersons(GetTaskContributors(task.ID));
+                //task.Progress = GetTaskProgress(task.ID);
+            }
+            connection.Dispose();
+            return new ObservableCollection<IElement>(output);
+        }
+
+        /// <summary>
+        /// Returns tasks count based on a given parameter
+        /// </summary>
+        /// <param name="isCompleted">If the tasks are completed</param>
+        /// <returns></returns>
+        public static int GetAllTasks (bool isCompleted)
+        {
+            using IDbConnection connection = new SQLiteConnection(GetConnectionString());
+            var count = GetCount("tasks", "IsCompleted", (Convert.ToInt32(isCompleted)).ToString());
+
+            connection.Dispose();
+            return count;
+        }
+
+        public static int GetOverdueTasks()
+        {
+            using IDbConnection connection = new SQLiteConnection(GetConnectionString());
+            var count = GetCount("tasks", "DueDate", "<", DateTime.Now.ToString("yyyy-MM-dd"));
+
+            connection.Dispose();
+            return count;
+        }
+
+
+        #endregion // Tasks
+
+        #region Today's Tasks
+
+
+        public static ObservableCollection<TodaysTask> GetTodaysTasks(DateTime date)
+        {
+            using IDbConnection connection = new SQLiteConnection(GetConnectionString());
+            var query = $"SELECT * FROM td_tasks WHERE SubmitionDate like '{date.ToString(dateFormat)}%' ORDER BY IsCompleted";
+            List<TodaysTask> output = connection.Query<TodaysTask>(query).ToList();
+
+            connection.Dispose();
+
+            return new ObservableCollection<TodaysTask>(output);
+
+        }
+
+        public static void InsertTodaysTask (TodaysTask task)
+        {
+
+            using IDbConnection connection = new SQLiteConnection(GetConnectionString());
+            //var sql = @"insert into td_tasks (Content, SubmitionDate, IsCompleted) values (@Content, @SubmitionDate, @IsCompleted)";
+            //connection.Execute(sql, task);
+            //task.ID = GetLastRowID("td_tasks");
+
+            connection.Insert(task);
+            connection.Dispose();
+        }
+
+        public static void UpdateTodaysTask (TodaysTask task)
+        {
+            using IDbConnection connection = new SQLiteConnection(GetConnectionString());
+            connection.Update(task);
+            connection.Dispose();
+        }
+
+        public static void DeleteTodaysTask (TodaysTask task)
+        {
+            using IDbConnection connection = new SQLiteConnection(GetConnectionString());
+            connection.Delete(task);
+            connection.Dispose();
+        }
+
+        public static void DeleteAllTodaysTask (IList<TodaysTask> tasks)
+        {
+            using IDbConnection connection = new SQLiteConnection(GetConnectionString());
+            foreach (var task in tasks)
+            {
+                connection.Delete(task);
+            }
+            connection.Dispose();
+        }
+
+        #endregion // Today's Tasks
+
 
         #region Support DB Methods
 
@@ -86,22 +194,72 @@ namespace Core.DataBase
                 using IDbConnection connection = new SQLiteConnection(GetConnectionString());
 
                 var query = @"CREATE TABLE projects (
-						ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-						SubmitionDate TEXT NOT NULL,
-						Content TEXT NOT NULL,
-						Path TEXT NOT NULL,
-						DueDate TEXT NOT NULL,
-						Header TEXT NOT NULL,
-						Priority INTEGER NOT NULL,
-						IsArchived INTEGER,
-						OrderNumber INTEGER)";
+                                ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+						        SubmitionDate TEXT NOT NULL,
+						        Content TEXT NOT NULL,
+						        Path TEXT NOT NULL,
+						        DueDate TEXT NOT NULL,
+						        Header TEXT NOT NULL,
+						        Priority INTEGER NOT NULL,
+						        IsArchived INTEGER,
+						        OrderNumber INTEGER);
+
+                            CREATE TABLE tasks (
+                                ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                                Content TEXT NOT NULL,
+	                            Priority INTEGER NOT NULL,
+	                            DueDate TEXT NOT NULL,
+	                            IsCompleted INTEGER NOT NULL,
+	                            OrderNumber INTEGER);
+
+                            CREATE TABLE td_tasks (
+                                ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                                Content TEXT NOT NULL,
+	                            IsCompleted INTEGER NOT NULL,
+	                            SubmitionDate TEXT NOT NULL);";
 
                 connection.Execute(query);
             }
 			
 		}
 
-		private static string GetConnectionString(string id = "Default")
+        private static int GetLastRowID(string table)
+        {
+            using IDbConnection connection = new SQLiteConnection(GetConnectionString());
+            var count = connection.ExecuteScalar<int>($"select seq from sqlite_sequence where name='{table}'");
+            //var count = connection.Query("SELECT COUNT(*) FROM projects;");
+            connection.Dispose();
+            return count;
+        }
+
+        public static int GetCount(string table)
+        {
+            using IDbConnection connection = new SQLiteConnection(GetConnectionString());
+            var count = connection.ExecuteScalar<int>($"SELECT COUNT(*) FROM {table}");
+            //var count = connection.Query("SELECT COUNT(*) FROM projects;");
+            connection.Dispose();
+            return count;
+        }
+        public static int GetCount(string table, string columnName, string param)
+        {
+            using IDbConnection connection = new SQLiteConnection(GetConnectionString());
+            var count = connection.ExecuteScalar<int>($"SELECT COUNT(*) FROM {table} WHERE {columnName} = '{param}'");
+            //var count = connection.Query("SELECT COUNT(*) FROM projects;");
+            connection.Dispose();
+            return count;
+        }
+
+        public static int GetCount(string table, string columnName, string op, string param)
+        {
+            using IDbConnection connection = new SQLiteConnection(GetConnectionString());
+            var sql = $"SELECT COUNT(*) FROM {table} WHERE {columnName} {op} '{param}'";
+            var count = connection.ExecuteScalar<int>(sql);
+            //var count = connection.Query("SELECT COUNT(*) FROM projects;");
+            connection.Dispose();
+            return count;
+        }
+
+        private static string GetConnectionString(string id = "Default")
 		{
 			return ConfigurationManager.ConnectionStrings[id].ConnectionString;
 		}

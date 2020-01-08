@@ -3,6 +3,7 @@ using Core.DataModels;
 using Core.Utils;
 using Core.ViewModels.Base;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Windows.Input;
@@ -16,7 +17,7 @@ namespace Core.ViewModels
         #region Observable Items
 
         public ObservableCollection<IProject> Projects { get; set; }
-        public ObservableCollection<ITask> Tasks { get; set; }
+        public ObservableCollection<TodaysTask> Tasks { get; set; }
         public ObservableCollection<Note> Notes { get; set; }
 
         #endregion // Observable Items
@@ -42,15 +43,12 @@ namespace Core.ViewModels
 
         #region Info Box
 
-        public double TotalTasksProgress
-        {
-            get => CompletedTasksCount * 100 / (CompletedTasksCount + OverdueTasksCount);
-            set => TotalTasksProgress = value;
-        }
-        public int TotalProjectCount { get; set; } = 495;
-        public int ActiveTasksCount { get; set; } = 2469;
-        public int CompletedTasksCount { get; set; } = 120;
-        public int OverdueTasksCount { get; set; } = 100;
+        public double TotalTasksProgress { get; set; }
+
+        public int TotalProjectCount { get; set; }
+        public int ActiveTasksCount { get; set; }
+        public int CompletedTasksCount { get; set; }
+        public int OverdueTasksCount { get; set; }
 
         #endregion // Info Box
 
@@ -74,7 +72,7 @@ namespace Core.ViewModels
 
         private void SetUpCommands ()
         {
-            SelectTaskCommand = new ParameterizedRelayCommand<ITask>(SelectTask);
+            SelectTaskCommand = new ParameterizedRelayCommand<TodaysTask>(SelectTask);
             ShowAddTaskPopupCommand = new RelayCommand(ShowAddTaskPopup);
             CleanCompletedTasksCommand = new RelayCommand(CleanCompletedTasks);
             AddNewDailyTaskCommand = new ParameterizedRelayCommand<string>(AddNewDailyTask);
@@ -100,22 +98,36 @@ namespace Core.ViewModels
 
         private void CleanCompletedTasks ()
         {
+            var list = new List<TodaysTask>();
             for (int i = Tasks.Count-1; i >= 0; i--)
             {
-                if (Tasks[i].IsCompleted) Tasks.Remove(Tasks[i]);
+                if (Tasks[i].IsCompleted)
+                {
+                    list.Add(Tasks[i]);
+                    Tasks.Remove(Tasks[i]);
+                    
+                }
             }
+
+            DBHelper.DeleteAllTodaysTask(list);
         }
 
         private void AddNewDailyTask (string taskContent)
         {
             if (string.IsNullOrWhiteSpace(taskContent)) return;
-            
-            Tasks.Insert(0, new Task
-            {
-                Content = taskContent.Trim()
-            });
 
-            AddTaskPopupVisible ^= true;
+            var task = new TodaysTask
+            {
+                Content = taskContent.Trim(),
+                SubmitionDate = DateTime.Now,
+                DueDate = DateTime.Now
+            };
+
+            DBHelper.InsertTodaysTask(task);
+
+            Tasks.Insert(0, task);
+
+            //AddTaskPopupVisible ^= true;
 
 
         }
@@ -130,18 +142,19 @@ namespace Core.ViewModels
                 SubmitionDate = DateTime.Now
             });
 
-            AddTaskPopupVisible ^= true;
+            //AddTaskPopupVisible ^= true;
 
 
         }
 
-        private void SelectTask(ITask task)
+        private void SelectTask(TodaysTask task)
         {
             var index = Tasks.IndexOf(task);
 
             // If task is completed - move it to the end. Otherwise, move to front
             var newIndex = task.IsCompleted ? Tasks.Count - 1 : 0;
 
+            DBHelper.UpdateTodaysTask(task);
             Tasks.Move(index, newIndex);
         }
 
@@ -153,19 +166,40 @@ namespace Core.ViewModels
         {
             FileHelper.CreateFolderIfNotExist("./Database");
 
-            if (!FileHelper.FileExists("./Database/db.db"))
-                DBHelper.CreateTablesIfNotExist();
+            if (!FileHelper.FileExists("./Database/db.db")) NotifyDBMissing();
+                
 
-            //Projects = FakeData.GetProjects();
             Projects = new ObservableCollection<IProject>(DBHelper.GetProjects(ViewType.All));
-            Tasks = FakeData.GetTasks();
+
+            // Counters
+            UpdateCounters();
+
+            Tasks = DBHelper.GetTodaysTasks (DateTime.Now);
             Notes = FakeData.GetNotes();
 
 
+        }
 
-            //Projects = new ObservableCollection<IProject>();
-            //Tasks = new ObservableCollection<ITask>();
-            //Notes = new ObservableCollection<Note>();
+        private void UpdateCounters ()
+        {
+            ActiveTasksCount = DBHelper.GetAllTasks(false);
+            OverdueTasksCount = DBHelper.GetOverdueTasks();
+            CompletedTasksCount = DBHelper.GetAllTasks(true);
+            TotalTasksProgress = GetTotalTasksProgress();
+            TotalProjectCount = DBHelper.GetPublishedProjectsCount();
+        }
+
+        private void NotifyDBMissing ()
+        {
+            // Give message
+            DBHelper.CreateTablesIfNotExist();
+        }
+
+        private int GetTotalTasksProgress ()
+        {
+            if (CompletedTasksCount == 0) return 0;
+
+            return (CompletedTasksCount * 100) / (ActiveTasksCount + CompletedTasksCount);
         }
 
 

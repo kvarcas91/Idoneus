@@ -1,4 +1,5 @@
-﻿using Core.DataModels;
+﻿using Core.DataBase;
+using Core.DataModels;
 using Core.ViewModels.Base;
 using System;
 using System.Collections.Generic;
@@ -12,11 +13,22 @@ namespace Core.ViewModels
 {
     public class ProjectListViewModel : BaseViewModel
     {
+        
+        private static ProjectListViewModel _instance;
+        public static ProjectListViewModel Instance
+        {
+            get
+            {
+                if (_instance == null) _instance = new ProjectListViewModel();
+                return _instance;
+            }
+            set => _instance = value;
+        }
 
         #region Observable Collections
 
         public ObservableCollection<IProject> Projects { get; set; }
-        public ObservableCollection<ITask> Tasks { get; set; }
+        //public IList<IElement> Tasks { get; set; }
         public ObservableCollection<IComment> Comments { get; set; }
 
         #endregion // Observable Collections
@@ -37,7 +49,14 @@ namespace Core.ViewModels
 
         #region Public Properties
 
-        public IProject CurrentProject { get; set; } 
+        public IProject CurrentProject { get; set; }
+
+        #region Counters
+
+       
+
+        #endregion // Counters
+
 
         #region Visilibity
 
@@ -74,6 +93,8 @@ namespace Core.ViewModels
             ExpandTaskPanelCommand = new RelayCommand(ExpandTaskPanel);
         }
 
+       
+
         private void CollapseProjectList ()
         {
             IsProjectListSideBarExpanded ^= true;
@@ -91,16 +112,22 @@ namespace Core.ViewModels
         public ProjectListViewModel()
         {
 
-            Projects = FakeData.GetProjects();
-            Tasks = FakeData.GetTasks();
+            Instance = this;
 
-            //CurrentProject = (IProject)IoC.Get<ApplicationViewModel>().Parameters;
+            //Projects = FakeData.GetProjects();
+            Projects = new ObservableCollection<IProject>(DBHelper.GetProjects(Utils.ViewType.All));
+            //Tasks = FakeData.GetTasks();
+           
+            CurrentProject = (IProject)IoC.Get<ApplicationViewModel>().Parameters;
 
-            CurrentProject = FakeData.GetProject();
+            //CurrentProject?.Tasks =
 
-            IsProjectListSideBarExpanded = (CurrentProject == null);
+           //CurrentProject = FakeData.GetProject();
+
+           IsProjectListSideBarExpanded = (CurrentProject == null);
 
             SetUpCommands();
+
             InitTest();
         }
 

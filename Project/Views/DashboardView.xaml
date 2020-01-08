@@ -194,7 +194,7 @@
 
                     <!-- Content -->
                     <Grid Grid.Row="1"
-                          Visibility="{Binding Tasks.Count, Converter={converters:ListItemCountToVisibilityConverter}, ConverterParameter=1}">
+                          >
                         <Grid.RowDefinitions>
 
                             <!-- Content -->
@@ -210,11 +210,14 @@
                         <ListView ItemsSource="{Binding Notes}"
                                   Grid.Row="0"
                                   Margin="0 0 0 10"
-                                  Style="{StaticResource NotesListViewStyle}"/>
+                                  Style="{StaticResource NotesListViewStyle}"
+                                  Visibility="{Binding Notes.Count, 
+                        Converter={converters:ListItemCountToVisibilityConverter}, 
+                        ConverterParameter=1}"/>
 
 
                         <Grid Grid.Row="1" 
-                            Margin="-10"
+                            Margin="-10 0 -10 -10"
                             MaxHeight="100"
                             Opacity="0.5"
                             Background="White">
@@ -367,11 +370,8 @@
 
                     <!-- Add Task -->
                     <Grid Grid.Row="1"
-                          Visibility="{Binding Tasks.Count, Converter={converters:ListItemCountToVisibilityConverter}, ConverterParameter=1}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="176*"/>
-                            <ColumnDefinition Width="13*"/>
-                        </Grid.ColumnDefinitions>
+                          >
+                        
                         <Grid.RowDefinitions>
 
                             <!-- Content -->
@@ -386,12 +386,16 @@
                         <!-- Content -->
                         <ListView x:Name="TaskListView"
                             Grid.Row="0" ItemsSource="{Binding Tasks}"
-                              Style="{StaticResource TodayTaskListView}" Grid.ColumnSpan="2" Margin="0,0,-0.4,0.4"/>
+                              Style="{StaticResource TodayTaskListView}" 
+                                  Grid.ColumnSpan="2" 
+                                  Visibility="{Binding Tasks.Count, 
+                        Converter={converters:ListItemCountToVisibilityConverter}, 
+                        ConverterParameter=1}"/>
 
 
                         <Grid 
                                 Grid.Row="1"
-                            Margin="-10"
+                            Margin="-10 0 -10 -10"
                                 MaxHeight="100"
                                 Opacity="0.5"
                                 Background="White" Grid.ColumnSpan="2" Grid.RowSpan="2">
