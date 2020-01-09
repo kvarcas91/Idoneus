@@ -43,6 +43,9 @@ namespace Core.ViewModels
         public ICommand ExpandTaskPanelCommand { get; set; }
         public ICommand AddNewTaskCommand { get; set; }
         public ICommand SelectTaskCommand { get; set; }
+        public ICommand ExpandTaskCommand { get; set; }
+        public ICommand ExpandSubTaskPanelCommand { get; set; }
+        public ICommand AddSubTaskCommand { get; set; }
 
         #endregion // Icommand Properties
 
@@ -65,12 +68,60 @@ namespace Core.ViewModels
             UpdateCounters();
         }
 
-        private void SelectTask (ITask task)
+        private void SelectTask (IElement param)
         {
             //task.IsCompleted ^= true;
-            ((Task)task).UpdateProgress();
-            DBHelper.UpdateTask((Task)task);
+            if (param is Task task)
+            {
+                task.UpdateProgress();
+                DBHelper.UpdateTask(task);
+            }
+            if (param is SubTask subTask)
+            {
+                //subTask.IsCompleted ^= true;
+                var parent = CurrentProject.Tasks[subTask.ParentIndex];
+                ((Task)parent).UpdateProgress();
+                
+            }
             UpdateCounters();
+        }
+
+        private void ExpandTask (IElement param)
+        {
+            if (param is Task task)
+            {
+                task.IsExpanded ^= true;
+            }
+        }
+
+        private void ExpandSubTaskPanel(IElement param)
+        {
+            if (param is Task task)
+            {
+                task.IsAddSubTaskPanelVisible ^= true;
+            }
+        }
+
+        private void AddSubTask(IElement param)
+        {
+
+            if (!StringHelper.CanUse(SubTaskContent)) return;
+            var subTask = new SubTask
+            {
+                Content = SubTaskContent,
+                DueDate = SubTaskDueTime,
+                Priority = SubTaskPriority
+            };
+
+            if (param is Task task)
+            {
+                task.IsAddSubTaskPanelVisible ^= true;
+                task.IsExpanded ^= true;
+                subTask.ParentIndex = CurrentProject.Tasks.IndexOf(task);
+                task.AddElement(subTask);
+                task.UpdateProgress();
+                UpdateCounters();
+            }
         }
 
         #endregion // Icommand Methods
@@ -86,6 +137,14 @@ namespace Core.ViewModels
         public DateTime NewTaskSelectedDate { get; set; } = DateTime.UtcNow;
 
         #endregion // New Task Properties
+
+        #region New SubTask Command
+
+        public string SubTaskContent { get; set; } = string.Empty;
+        public Priority SubTaskPriority { get; set; } = Priority.Low;
+        public DateTime SubTaskDueTime { get; set; } = DateTime.UtcNow;
+
+        #endregion
 
         #region Project Properties
 
@@ -135,7 +194,10 @@ namespace Core.ViewModels
             ExpandTaskPanelCommand = new RelayCommand(ExpandTaskPanel);
             AddNewTaskCommand = new RelayCommand(AddNewTask);
             SelectProjectCommand = new ParameterizedRelayCommand<IProject>(SelectProject);
-            SelectTaskCommand = new ParameterizedRelayCommand<ITask>(SelectTask);
+            SelectTaskCommand = new ParameterizedRelayCommand<IElement>(SelectTask);
+            ExpandTaskCommand = new ParameterizedRelayCommand<IElement>(ExpandTask);
+            ExpandSubTaskPanelCommand = new ParameterizedRelayCommand<IElement>(ExpandSubTaskPanel);
+            AddSubTaskCommand = new ParameterizedRelayCommand<IElement>(AddSubTask);
         }
 
         private void SelectProject (IProject project)
@@ -170,7 +232,12 @@ namespace Core.ViewModels
 
             Projects = new ObservableCollection<IProject>(DBHelper.GetProjects(ViewType.All));
 
-            CurrentProject = (IProject)IoC.Get<ApplicationViewModel>().Parameters;
+            var index = IoC.Get<ApplicationViewModel>().Parameters;
+            if (index != null)
+            {
+                
+                CurrentProject = Projects[(int)index];
+            }
 
             IsProjectListSideBarExpanded = (CurrentProject == null);
 

@@ -98,6 +98,7 @@
     <Compile Include="DataModels\Projects\Project.cs" />
     <Compile Include="DataModels\Tasks\ISubTask.cs" />
     <Compile Include="DataModels\Tasks\ITask.cs" />
+    <Compile Include="DataModels\Tasks\ObservableCollenction.cs" />
     <Compile Include="DataModels\Tasks\SubTask.cs" />
     <Compile Include="DataModels\Tasks\Task.cs" />
     <Compile Include="DataModels\Tasks\TodaysTask.cs" />

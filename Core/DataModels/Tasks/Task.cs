@@ -1,16 +1,12 @@
 ﻿using Core.Helpers;
 using Core.Utils;
-using Core.ViewModels.Base;
 using Dapper.Contrib.Extensions;
 using PropertyChanged;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Core.DataModels
 {
@@ -25,12 +21,13 @@ namespace Core.DataModels
         public IList<IPerson> Contributors { get; set; }
 
         [Computed]
-        public IList<ISubTask> SubTasks { get; } = new ObservableCollection<ISubTask>();
+        public ObservableCollection<ISubTask> SubTasks { get; } = new ObservableCollection<ISubTask>();
 
         [Computed]
         public DateTime SubmitionDate { get; set; }
         public DateTime DueDate { get; set; }
         public Priority Priority { get; set; }
+
         [Computed]
         public decimal Progress { get; set; }
         public uint OrderNumber { get; set; }
@@ -38,7 +35,14 @@ namespace Core.DataModels
         public string Content { get; set; }
 
         [Computed]
+        public bool IsExpanded { get; set; }
+
+        [Computed]
+        public bool IsAddSubTaskPanelVisible { get; set; }
+
+        [Computed]
         public int CompletedSubTasksCount { get; set; }
+
 
         public event PropertyChangedEventHandler PropertyChanged = (sender, e) => { };
 
@@ -47,7 +51,7 @@ namespace Core.DataModels
             if (IsCompleted)
             {
                 Progress = 100;
-                return;
+                //return;
             }
             var count = 0;
 
@@ -60,6 +64,8 @@ namespace Core.DataModels
             }
 
             CompletedSubTasksCount = count;
+            
+            if (SubTasks.Count !=0 && Equals(count, SubTasks.Count)) IsCompleted = true;
 
             Progress = IntHelper.GetPercentage(SubTasks.Count, CompletedSubTasksCount);
         }

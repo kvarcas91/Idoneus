@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Core.DataModels
 {
@@ -9,7 +10,7 @@ namespace Core.DataModels
 
         IList<IPerson> Contributors { get; }
 
-        IList<ISubTask> SubTasks { get;}
+        ObservableCollection<ISubTask> SubTasks { get; }
 
     }
 }

@@ -74,7 +74,6 @@ namespace Core.ViewModels
         private void SetUpCommands ()
         {
             SelectTaskCommand = new ParameterizedRelayCommand<TodaysTask>(SelectTask);
-            ShowAddTaskPopupCommand = new RelayCommand(ShowAddTaskPopup);
             CleanCompletedTasksCommand = new RelayCommand(CleanCompletedTasks);
             AddNewDailyTaskCommand = new ParameterizedRelayCommand<string>(AddNewDailyTask);
             AddNewNoteCommand = new ParameterizedRelayCommand<string>(AddNewNote);
@@ -83,19 +82,10 @@ namespace Core.ViewModels
 
         private void OpenProject(IProject project)
         {
-            IoC.Get<ApplicationViewModel>().GoTo(ApplicationPage.Projects, project);
+            var index = Projects.IndexOf(project);
+            IoC.Get<ApplicationViewModel>().GoTo(ApplicationPage.Projects, index);
         }
 
-        private void ShowAddTaskPopup ()
-        {
-            AddTaskPopupVisible ^= true;
-            Debug.WriteLine("pop up");
-            //Tasks.Add(new Task
-            //{
-            //    Content = "test from UI"
-            //}
-            //);
-        }
 
         private void CleanCompletedTasks ()
         {

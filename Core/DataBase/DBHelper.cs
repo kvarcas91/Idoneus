@@ -265,7 +265,15 @@ namespace Core.DataBase
 								projectID INTEGER NOT NULL,
 								taskID   INTEGER NOT NULL,
 								FOREIGN KEY(projectID) REFERENCES projects(ID),
-								FOREIGN KEY(taskID) REFERENCES tasks(ID));";
+								FOREIGN KEY(taskID) REFERENCES tasks(ID));
+
+							CREATE TABLE subtasks(
+								ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+								Content TEXT NOT NULL,
+								Priority INTEGER NOT NULL,
+								DueDate TEXT NOT NULL,
+								IsCompleted INTEGER NOT NULL,
+								OrderNumber INTEGER);";
 
 
 				connection.Execute(query);
@@ -290,6 +298,7 @@ namespace Core.DataBase
 			connection.Dispose();
 			return count;
 		}
+
 		public static int GetCount(string table, string columnName, string param)
 		{
 			using IDbConnection connection = new SQLiteConnection(GetConnectionString());
