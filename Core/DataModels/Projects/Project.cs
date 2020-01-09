@@ -16,7 +16,7 @@ namespace Core.DataModels
         public string Header { get; set; }
         public bool IsArchived { get; set; }
         public IList<IElement> Comments { get; set; }
-        public IList<IContributor> Contributors { get; set; }
+        public IList<IContributor> Contributors { get; set; } = new ObservableCollection<IContributor>();
         public ObservableCollection<IElement> Tasks { get; set; }
         public long ID { get; set; }
         public string Content { get; set; }
@@ -92,12 +92,17 @@ namespace Core.DataModels
 
         public bool AddPerson(IPerson person)
         {
-            throw new NotImplementedException();
+            if (person is IContributor contributor) Contributors.Add(contributor);
+            return true;
         }
 
-        public bool AddPersons(IList<IPerson> person)
+        public bool AddPersons(IList<IPerson> persons)
         {
-            throw new NotImplementedException();
+            foreach (var person in persons)
+            {
+                AddPerson(person);
+            }
+            return true;
         }
 
         public bool RemoveElement(IElement element)

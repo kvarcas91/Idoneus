@@ -37,6 +37,13 @@
         <Setter Property="Margin" Value="5"/>
     </Style>
 
+    <Style x:Key="TaskDate" TargetType="{x:Type TextBlock}">
+        <Setter Property="FontFamily" Value="Arial"/>
+        <Setter Property="FontSize" Value="{StaticResource XSmall}"/>
+        <Setter Property="Foreground" Value="Gray"/>
+        <Setter Property="Margin" Value="10 5 0 0"/>
+    </Style>
+
     <!-- Shows Empty List -->
     <Style x:Key="EmptyList" TargetType="{x:Type TextBlock}">
         <Setter Property="FontFamily" Value="{StaticResource PlayFairItalic}"/>
@@ -103,65 +110,6 @@
             </DataTrigger>
         </Style.Triggers>
     </Style>
-
-
-
-    <!--<Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource BaseStyle}">
-
-        <Setter Property="FontSize" Value="{StaticResource Large}" />
-        <Setter Property="FontFamily" Value="{StaticResource PlayFairRegular}" />
-        <Setter Property="Padding" Value="10" />
-        <Setter Property="Margin" Value="0 5 0 5" />
-        <Setter Property="BorderBrush" Value="White" />
-        <Setter Property="BorderThickness" Value="0 0 0 1" />
-
-
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type TextBox}">
-
-                    
-
-                        <Border x:Name="border" 
-                                CornerRadius="10"
-                                BorderBrush="{TemplateBinding BorderBrush}" 
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                Background="{TemplateBinding Background}"
-                                SnapsToDevicePixels="True">
-
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-
-                            <Button Style="{StaticResource IconButton}" Grid.Column="1"
-                            Content="{StaticResource UserIcon}"
-                                    HorizontalAlignment="Right"
-                                    VerticalAlignment="Center"
-                            Height="20"/>
-                            <ScrollViewer Grid.Column="0" x:Name="PART_ContentHost" Focusable="False" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
-
-                        </Grid>
-                    </Border>
-                   
-
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="Opacity" TargetName="border" Value="0.56"/>
-                        </Trigger>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="BorderBrush" TargetName="border" Value="#FF7EB4EA"/>
-                        </Trigger>
-                        <Trigger Property="IsKeyboardFocused" Value="True">
-                            <Setter Property="BorderBrush" TargetName="border" Value="#FF569DE5"/>
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-
-    </Style>-->
 
 
 </ResourceDictionary>

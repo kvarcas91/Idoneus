@@ -93,6 +93,7 @@ namespace Core.ViewModels
             if (param is Task task)
             {
                 task.IsExpanded ^= true;
+                if (!task.IsExpanded) task.IsAddSubTaskPanelVisible = false;
             }
         }
 

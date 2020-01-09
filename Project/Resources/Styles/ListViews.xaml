@@ -32,8 +32,6 @@
         <Setter Property="BorderThickness" Value="0"/>
     </Style>
 
-
-
     <!-- Project snippet list view from dashboard -->
     <Style x:Key="ProjectListViewSnippet" TargetType="{x:Type ListView}" BasedOn="{StaticResource ListView}">
         <Setter Property="ItemTemplate">
@@ -480,14 +478,19 @@
                                 Height="10"
                                 Margin="3"/>
 
-                        <!-- Task content -->
-                        <CheckBox Grid.Row="0" Grid.Column="1" 
+                        <!-- Task content and deadline -->
+                        <StackPanel Grid.Row="0" Grid.Column="1"
+                            Orientation="Vertical">
+
+
+                            <!-- Task content -->
+                            <CheckBox Grid.Row="0" Grid.Column="1" 
                                               x:Name="IsCompleted"
                                               IsChecked="{Binding IsCompleted, Mode=TwoWay}"
                                   Command="{Binding ElementName=projectTaskList, Path=DataContext.SelectTaskCommand}"
                                 CommandParameter="{Binding}"
                               Style="{StaticResource ProjectListTaskCheckBox}">
-                            <TextBlock Text="{Binding Content}"
+                                <TextBlock Text="{Binding Content}"
                                                    TextAlignment="Justify"
                                                    TextWrapping="Wrap"
                                    Margin="0 3 0 0"
@@ -495,7 +498,12 @@
                                        Foreground="{Binding IsCompleted, Converter={converters:IsCompletedToColorConverter}}"
                                                    TextDecorations="{Binding IsCompleted,
                                                                      Converter={converters:BoolToTextDecorationConverter}}"/>
-                        </CheckBox>
+                            </CheckBox>
+
+                            <TextBlock Text="{Binding DueDate, Converter={converters:DateTimeToStringConverter}, ConverterParameter=1}"
+                                       Style="{StaticResource TaskDate}"/>
+
+                        </StackPanel>
 
                         <!-- Completed subTasks tasks / All subTasks tasks -->
                         <TextBlock Grid.Column="2"
@@ -516,6 +524,7 @@
                                      Height="5"
                                      Foreground="{Binding Priority, Converter={converters:PriorityToColorConverter}}"/>
 
+                        <!-- Progress percentage -->
                         <TextBlock Grid.Column="4"
                                    Style="{StaticResource RegularListItemSnippetText}"
                                    Margin="10 0 10 0">
@@ -536,50 +545,69 @@
                                                                              
                                                                      Width="12" Height="12"/>
                         </Button>
-                        
-                        <!-- Control buttons row -->
-                        <StackPanel Grid.Row="1" Grid.ColumnSpan="6"
-                                    Orientation="Horizontal" HorizontalAlignment="Right"
-                                    Visibility="{Binding IsExpanded,
+
+                        <!-- Contributors and control buttons -->
+                        <Grid Grid.Row="1" Grid.ColumnSpan="6"
+                              Visibility="{Binding IsExpanded,
                                                        Converter={StaticResource boolToVisibility}}">
-                            <!-- Add -->
-                            <Button 
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <ListView x:Name="contributorsListView"
+                                          Style="{StaticResource ContributorListView}"
+                                      Margin="20 0 0 0"
+                                          ItemsSource="{Binding Contributors}"/>
+
+                            <!-- Control buttons row -->
+                            <StackPanel Grid.Column="1"
+                                    Orientation="Horizontal" HorizontalAlignment="Right"
+                                    >
+
+
+
+                                <!-- Add -->
+                                <Button 
                                                 Style="{StaticResource ControlButton}"
                                                 Command="{Binding ElementName=projectTaskList, 
                                                                   Path=DataContext.ExpandSubTaskPanelCommand}"
                                                 CommandParameter="{Binding}"
                                                 ToolTip="Add sub-task">
-                                <materialDesign:PackIcon Kind="Add" 
+                                    <materialDesign:PackIcon Kind="Add" 
                                                                      Foreground="Black"
                                                                      Width="16" Height="16"/>
-                            </Button>
+                                </Button>
 
-                            <!-- Edit -->
-                            <Button 
+                                <!-- Edit -->
+                                <Button 
                                                 Style="{StaticResource ControlButton}"
                                                 Command="{Binding ElementName=projectTaskList, 
                                                                   Path=DataContext.EditTaskCommand}"
                                                 CommandParameter="{Binding}"
                                                 ToolTip="Edit task">
-                                <materialDesign:PackIcon Kind="Edit" 
+                                    <materialDesign:PackIcon Kind="Edit" 
                                                                      Foreground="Black"
                                                                      Width="16" Height="16"/>
-                            </Button>
+                                </Button>
 
-                            <!-- Delete -->
-                            <Button 
+                                <!-- Delete -->
+                                <Button 
                                                 Style="{StaticResource ControlButton}"
                                                 Command="{Binding ElementName=projectTaskList, 
                                                           Path=DataContext.DeleteTaskCommand}"
                                                 CommandParameter="{Binding}"
                                                 ToolTip="Delete task">
-                                <materialDesign:PackIcon Kind="Delete" 
+                                    <materialDesign:PackIcon Kind="Delete" 
                                                                      Foreground="Black"
                                                                      Width="16" Height="16"/>
-                            </Button>
-                        </StackPanel>
+                                </Button>
+                            </StackPanel>
+
+                        </Grid>
 
 
+                     
                         <!-- Add subtask panel -->
                         <Grid Grid.Row="2" 
                           Grid.ColumnSpan="6"

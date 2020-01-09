@@ -18,7 +18,7 @@ namespace Core.DataModels
         public long ID { get; set; }
 
         [Computed]
-        public IList<IPerson> Contributors { get; set; }
+        public IList<IPerson> Contributors { get; set; } = new ObservableCollection<IPerson>();
 
         [Computed]
         public ObservableCollection<ISubTask> SubTasks { get; } = new ObservableCollection<ISubTask>();
@@ -87,12 +87,17 @@ namespace Core.DataModels
 
         public bool AddPerson(IPerson person)
         {
-            throw new NotImplementedException();
+            if (person is IContributor contributor) Contributors.Add(contributor);
+            return true;
         }
 
-        public bool AddPersons(IList<IPerson> person)
+        public bool AddPersons(IList<IPerson> persons)
         {
-            throw new NotImplementedException();
+            foreach (var person in persons)
+            {
+                AddPerson(person);
+            }
+            return true;
         }
 
         public bool RemoveElement(IElement element)

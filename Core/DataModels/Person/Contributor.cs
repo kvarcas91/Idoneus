@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Core.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,5 +20,10 @@ namespace Core.DataModels
         public string Initials => $"{FirstName.Substring(0, 1)}{LastName.Substring(0, 1)}";
 
         public string InitialColor { get; set; }
+
+        public Contributor()
+        {
+            InitialColor = ColorPool.GetColor();
+        }
     }
 }

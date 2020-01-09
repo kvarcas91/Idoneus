@@ -47,7 +47,7 @@ namespace Core.DataBase
 				project.Tasks = GetProjectTasks(project.ID);
 				project.UpdateProgress();
 				//project.Progress = GetProjectProgress(project.ID);
-				//project.AddPersons(GetProjectContributors(project.ID));
+				project.AddPersons(GetProjectContributors(project.ID));
 
 			}
 			connection.Dispose();
@@ -62,7 +62,6 @@ namespace Core.DataBase
 
 
 		#endregion // Projects
-
 
 		#region Tasks
 
@@ -99,7 +98,7 @@ namespace Core.DataBase
 			{
 				task.UpdateProgress();
 				task.AddElements(GetSubTasks(task.ID));
-				//task.AddPersons(GetTaskContributors(task.ID));
+				task.AddPersons(GetTaskContributors(task.ID));
 				//task.Progress = GetTaskProgress(task.ID);
 			}
 			connection.Dispose();
@@ -278,35 +277,73 @@ namespace Core.DataBase
 			connection.Dispose();
 		}
 
-		#endregion // Today's Tasks
+        #endregion // Today's Tasks
+
+        #region Contributors
+
+        public static IList<IPerson> GetProjectContributors(long projectID)
+        {
+            using IDbConnection connection = new SQLiteConnection(GetConnectionString());
+            List<Contributor> contributors = connection.Query<Contributor>(
+                "SELECT c.ID, c.FirstName, c.LastName " +
+                "FROM contributors c " +
+                "INNER JOIN project_contributors p ON p.contributorID = c.ID " +
+                $"INNER JOIN projects pr on pr.ID = p.projectID WHERE pr.ID = {projectID}").ToList();
+            connection.Dispose();
+            var output = new List<IPerson>();
+            foreach (var contributor in contributors)
+            {
+                output.Add(contributor);
+            }
+            return output;
+        }
+
+        public static IList<IPerson> GetTaskContributors(long taskID)
+        {
+            using IDbConnection connection = new SQLiteConnection(GetConnectionString());
+            List<Contributor> contributors = connection.Query<Contributor>(
+                "SELECT c.ID, c.FirstName, c.LastName " +
+                "FROM contributors c " +
+                "INNER JOIN task_contributors p ON p.contributorID = c.ID " +
+                $"INNER JOIN tasks pr on pr.ID = p.taskID WHERE pr.ID = {taskID}").ToList();
+            connection.Dispose();
+            var output = new List<IPerson>();
+            foreach (var contributor in contributors)
+            {
+                output.Add(contributor);
+            }
+            return output;
+        }
+
+        #endregion // Contributors
 
 
-		#region Support DB Methods
+        #region Support DB Methods
 
-		//private static double GetProjectprogress(long projectID)
-		//{
-		//    var ProjectTasks = GetProjectTasks(projectID);
-		//    var totalTaskCount = ProjectTasks.Count;
-		//    if (totalTaskCount == 0) return 0;
-		//    var completedTaskCount = 0;
-		//    foreach (var task in ProjectTasks)
-		//    {
-		//        if (task.IsCompleted)
-		//        {
-		//            completedTaskCount++;
-		//        }
-		//    }
-		//    return (completedTaskCount * 100) / totalTaskCount;
-		//}
+        //private static double GetProjectprogress(long projectID)
+        //{
+        //    var ProjectTasks = GetProjectTasks(projectID);
+        //    var totalTaskCount = ProjectTasks.Count;
+        //    if (totalTaskCount == 0) return 0;
+        //    var completedTaskCount = 0;
+        //    foreach (var task in ProjectTasks)
+        //    {
+        //        if (task.IsCompleted)
+        //        {
+        //            completedTaskCount++;
+        //        }
+        //    }
+        //    return (completedTaskCount * 100) / totalTaskCount;
+        //}
 
-		#endregion // Support DB Methods
+        #endregion // Support DB Methods
 
-		#region Support Methodds
+        #region Support Methodds
 
-		/// <summary>
-		/// Creates tables if database is not found
-		/// </summary>
-		public static void CreateTablesIfNotExist()
+        /// <summary>
+        /// Creates tables if database is not found
+        /// </summary>
+        public static void CreateTablesIfNotExist()
 		{
 			lock(_lock)
 			{
@@ -337,6 +374,18 @@ namespace Core.DataBase
 								IsCompleted INTEGER NOT NULL,
 								SubmitionDate TEXT NOT NULL);
 
+                            CREATE TABLE contributors ( 
+                              [ID] INTEGER NOT NULL,
+                              [FirstName] TEXT NOT NULL,
+                              [LastName] TEXT NOT NULL,
+                              CONSTRAINT[PK_Contributor] PRIMARY KEY([Id]));
+
+                            CREATE TABLE project_contributors (
+                                projectID INTEGER NOT NULL,
+	                            contributorID INTEGER NOT NULL,
+	                            FOREIGN KEY(contributorID) REFERENCES contributors(ID),
+	                            FOREIGN KEY(projectID) REFERENCES projects(ID));
+
 							CREATE TABLE project_tasks (
 								projectID INTEGER NOT NULL,
 								taskID   INTEGER NOT NULL,
@@ -358,11 +407,10 @@ namespace Core.DataBase
 								FOREIGN KEY(taskID) REFERENCES tasks(ID));
 
                             CREATE TABLE task_contributors(
-
                                 taskID INTEGER NOT NULL,
 	                            contributorID INTEGER NOT NULL,
 	                            FOREIGN KEY(taskID) REFERENCES tasks(ID),
-	                            FOREIGN KEY(contributorID) REFERENCES contributors(Id));";
+	                            FOREIGN KEY(contributorID) REFERENCES contributors(ID));";
 
 
 
