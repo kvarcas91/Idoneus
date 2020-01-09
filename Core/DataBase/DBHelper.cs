@@ -139,11 +139,35 @@ namespace Core.DataBase
             connection.Dispose();
 		}
 
-		#endregion // Tasks
+        public static void DeleteTask(IElement element)
+        {
+            using IDbConnection connection = new SQLiteConnection(GetConnectionString());
 
-		#region SubTasks
+            var task = (ITask)element;
 
-		private static IList<IElement> GetSubTasks(long taskID)
+            foreach (var subtask in task.SubTasks)
+            {
+                string subtaskQuery = $"DELETE FROM task_subtasks WHERE subtaskID = '{subtask.ID}'";
+                connection.Execute(subtaskQuery);
+            }
+
+            string taskQuery = $"DELETE FROM project_tasks WHERE taskID = '{task.ID}'";
+            string contrQuery = $"DELETE FROM task_contributors WHERE taskID = '{task.ID}'";
+
+            connection.Execute(taskQuery);
+            connection.Execute(contrQuery);
+
+            connection.Delete((Task)task);
+            connection.Dispose();
+        }
+
+       
+
+        #endregion // Tasks
+
+        #region SubTasks
+
+        private static IList<IElement> GetSubTasks(long taskID)
 		{
 			using IDbConnection connection = new SQLiteConnection(GetConnectionString());
 			List<SubTask> tasks = connection.Query<SubTask>(
@@ -193,12 +217,19 @@ namespace Core.DataBase
 			connection.Dispose();
 		}
 
-		#endregion
+        public static void DeleteSubTask(ISubTask task)
+        {
+            using IDbConnection connection = new SQLiteConnection(GetConnectionString());
+            connection.Delete((SubTask)task);
+            connection.Dispose();
+        }
 
-		#region Today's Tasks
+        #endregion
+
+        #region Today's Tasks
 
 
-		public static ObservableCollection<TodaysTask> GetTodaysTasks(DateTime date)
+        public static ObservableCollection<TodaysTask> GetTodaysTasks(DateTime date)
 		{
 			using IDbConnection connection = new SQLiteConnection(GetConnectionString());
 			var query = $"SELECT * FROM td_tasks WHERE SubmitionDate like '{date.ToString(dateFormat)}%' ORDER BY IsCompleted";
@@ -324,11 +355,19 @@ namespace Core.DataBase
 								taskID INTEGER NOT NULL,
 								subtaskID INTEGER NOT NULL,
 								FOREIGN KEY(subtaskID) REFERENCES subtasks(ID),
-								FOREIGN KEY(taskID) REFERENCES tasks(ID));";
+								FOREIGN KEY(taskID) REFERENCES tasks(ID));
+
+                            CREATE TABLE task_contributors(
+
+                                taskID INTEGER NOT NULL,
+	                            contributorID INTEGER NOT NULL,
+	                            FOREIGN KEY(taskID) REFERENCES tasks(ID),
+	                            FOREIGN KEY(contributorID) REFERENCES contributors(Id));";
 
 
 
-				connection.Execute(query);
+
+                connection.Execute(query);
 			}
 			
 		}

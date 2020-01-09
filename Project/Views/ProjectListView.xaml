@@ -325,8 +325,8 @@
                                             FontFamily="Arial"
                                             Foreground="{StaticResource DarkBlueColorBrush}"
                                             FontWeight="Bold"
-                                            FontSize="{StaticResource Regular}">
-                                                <Run Text="{Binding TotalTasksProgress}"/>
+                                            FontSize="{StaticResource Small}">
+                                                <Run Text="{Binding TotalSubTasksProgress}"/>
                                                 <Run Text="%"/>
                                         </TextBlock>
                                     </Border>
@@ -334,7 +334,7 @@
                                     <!-- Progress bar -->
                                     <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
                                          Foreground="{StaticResource LightBlueColorBrush}"
-                                         Value="{Binding TotalTasksProgress}"
+                                         Value="{Binding TotalSubTasksProgress}"
                                          Width="45"
                                          Height="45"/>
 
@@ -357,14 +357,14 @@
 
                                     <TextBlock Grid.Row="0"
                                    Style="{StaticResource InfoBoxContent}">
-                            <Run Text="{Binding OverdueTasksCount}"
+                            <Run Text="{Binding OverdueSubTasksCount}"
                                  FontFamily="Arial"/>
                             <Run Text="Overdue"/>
                                     </TextBlock>
 
                                     <TextBlock Grid.Row="1"
                                    Style="{StaticResource InfoBoxContent}">
-                            <Run Text="{Binding CompletedTasksCount}"
+                            <Run Text="{Binding CompletedSubTasksCount}"
                                  FontFamily="Arial"/>
                             <Run Text="Completed"/>
                                     </TextBlock>

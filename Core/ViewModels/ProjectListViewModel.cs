@@ -46,6 +46,7 @@ namespace Core.ViewModels
         public ICommand ExpandTaskCommand { get; set; }
         public ICommand ExpandSubTaskPanelCommand { get; set; }
         public ICommand AddSubTaskCommand { get; set; }
+        public ICommand DeleteTaskCommand { get; set; }
 
         #endregion // Icommand Properties
 
@@ -126,6 +127,24 @@ namespace Core.ViewModels
             }
         }
 
+        private void DeleteTask (IElement param)
+        {
+            if (param is ITask)
+            {
+                DBHelper.DeleteTask(param);
+                CurrentProject.Tasks.Remove(param);
+                
+            }
+            if (param is SubTask subtask)
+            {
+                DBHelper.DeleteSubTask(subtask);
+                var task = (Task)CurrentProject.Tasks[subtask.ParentIndex];
+                task.SubTasks.Remove(subtask);
+            }
+            ((Task)param).UpdateProgress();
+            UpdateCounters();
+        }
+
         #endregion // Icommand Methods
 
         #region Public Properties
@@ -169,16 +188,16 @@ namespace Core.ViewModels
 
         #region Info Box
 
-        public double TotalTasksProgress
+        public double? TotalSubTasksProgress
         {
-            get => CompletedTasksCount * 100 / (CompletedTasksCount + OverdueTasksCount);
-            set => TotalTasksProgress = value;
+            get => (double)IntHelper.GetRoundedPercentage((double)(CompletedSubTasksCount + OverdueSubTasksCount), (double)CompletedSubTasksCount);
+            set => TotalSubTasksProgress = value;
         }
         /// <summary>
         /// gets total 
         /// </summary>
-        public int CompletedTasksCount { get; set; } = 120;
-        public int OverdueTasksCount { get; set; } = 100;
+        public int? CompletedSubTasksCount { get; set; } = 0;
+        public int? OverdueSubTasksCount { get; set; } = 0;
 
         #endregion // Info Box
 
@@ -202,17 +221,23 @@ namespace Core.ViewModels
             ExpandTaskCommand = new ParameterizedRelayCommand<IElement>(ExpandTask);
             ExpandSubTaskPanelCommand = new ParameterizedRelayCommand<IElement>(ExpandSubTaskPanel);
             AddSubTaskCommand = new ParameterizedRelayCommand<IElement>(AddSubTask);
+            DeleteTaskCommand = new ParameterizedRelayCommand<IElement>(DeleteTask);
         }
 
         private void SelectProject (IProject project)
         {
             if (CurrentProject != project)
+            {
                 CurrentProject = project;
+                UpdateCounters();
+            }
         }
 
         private void UpdateCounters ()
         {
             ((Project)CurrentProject)?.UpdateProgress();
+            CompletedSubTasksCount = ((Project)CurrentProject)?.GetCompletedSubTaskCount();
+            OverdueSubTasksCount = ((Project)CurrentProject)?.GetOverdueSubTaskCount();
         }
 
         private void CollapseProjectList ()

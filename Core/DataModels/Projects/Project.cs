@@ -47,12 +47,16 @@ namespace Core.DataModels
         public void UpdateProgress ()
         {
 
+            CompletedTasksCount = 0;
             var taskWeight = Tasks.Count == 0 ? 100 : IntHelper.GetPercentage(Tasks.Count, 1);
             var progressCount = 0.0M;
 
             foreach (var item in Tasks)
             {
                 var task = ((Task)item);
+
+                if (task.IsCompleted) CompletedTasksCount++;
+
                 var subtaskCount = task.SubTasks.Count;
 
                 if (subtaskCount == 0)
@@ -73,19 +77,6 @@ namespace Core.DataModels
             }
             Progress = IntHelper.Round(progressCount);
 
-            //var count = 0;
-
-            //foreach (var item in Tasks)
-            //{
-            //    if (item is ITask task)
-            //    {
-            //        if (task.IsCompleted) count++;
-            //    }
-            //}
-
-            //CompletedTasksCount = count;
-
-            //Progress = IntHelper.GetPercentage(Tasks.Count, CompletedTasksCount);
 
         }
 
@@ -127,6 +118,34 @@ namespace Core.DataModels
         public bool UpdatePerson(IPerson person)
         {
             throw new NotImplementedException();
+        }
+
+        public int GetCompletedSubTaskCount ()
+        {
+            var count = 0;
+            foreach (var element in Tasks)
+            {
+                
+                foreach (var subtask in ((Task)element).SubTasks)
+                {
+                    if (subtask.IsCompleted) count++;
+                }
+            }
+            return count;
+        }
+
+        public int GetOverdueSubTaskCount()
+        {
+            var count = 0;
+            foreach (var element in Tasks)
+            {
+
+                foreach (var subtask in ((Task)element).SubTasks)
+                {
+                    if (DateTime.Compare(subtask.DueDate, DateTime.UtcNow) > 0) count++;
+                }
+            }
+            return count;
         }
 
         private void NotifyPropertyChanged([CallerMemberName] string name = null)
