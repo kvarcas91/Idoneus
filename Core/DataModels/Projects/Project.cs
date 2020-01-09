@@ -46,21 +46,47 @@ namespace Core.DataModels
 
         public void UpdateProgress ()
         {
-            var count = 0;
-           
+
+            var taskWeight = Tasks.Count == 0 ? 100 : IntHelper.GetPercentage(Tasks.Count, 1);
+            var progressCount = 0.0M;
+
             foreach (var item in Tasks)
             {
-                if (item is ITask task)
+                var task = ((Task)item);
+                var subtaskCount = task.SubTasks.Count;
+
+                if (subtaskCount == 0)
                 {
-                    if (task.IsCompleted) count++;
+                    if (task.IsCompleted) progressCount += taskWeight;
+                    continue;
                 }
+
+                var completedSubtaskCount = 0;
+                foreach (var subtask in task.SubTasks)
+                {
+                    if (subtask.IsCompleted) completedSubtaskCount++;
+                }
+
+                var taskProgress = IntHelper.GetPercentage(subtaskCount, completedSubtaskCount, (double)taskWeight);
+                progressCount += taskProgress;
+
             }
+            Progress = IntHelper.Round(progressCount);
 
-            CompletedTasksCount = count;
+            //var count = 0;
 
-            Progress = IntHelper.GetPercentage(Tasks.Count, CompletedTasksCount);
+            //foreach (var item in Tasks)
+            //{
+            //    if (item is ITask task)
+            //    {
+            //        if (task.IsCompleted) count++;
+            //    }
+            //}
 
-            //Progress = Tasks.Count == 0 ? 0 : (CompletedTasksCount * 100) / Tasks.Count;
+            //CompletedTasksCount = count;
+
+            //Progress = IntHelper.GetPercentage(Tasks.Count, CompletedTasksCount);
+
         }
 
         public bool AddElement(IElement element)

@@ -129,11 +129,14 @@ namespace Core.DataBase
 			return count;
 		}
 
-		public static void UpdateTask (Task task)
+		public static void UpdateTask (IElement param)
 		{
 			using IDbConnection connection = new SQLiteConnection(GetConnectionString());
-			connection.Update(task);
-			connection.Dispose();
+            if (param is SubTask subTask)
+                connection.Update(subTask);
+            if (param is Task task)
+                connection.Update(task);
+            connection.Dispose();
 		}
 
 		#endregion // Tasks
@@ -142,10 +145,52 @@ namespace Core.DataBase
 
 		private static IList<IElement> GetSubTasks(long taskID)
 		{
-		   
+			using IDbConnection connection = new SQLiteConnection(GetConnectionString());
+			List<SubTask> tasks = connection.Query<SubTask>(
+				"SELECT s.ID, s.Content, s.IsCompleted, s.Priority, s.DueDate, s.OrderNumber " +
+				"FROM subtasks s " +
+				"INNER JOIN task_subtasks p ON p.subtaskID = s.ID " +
+				$"INNER JOIN tasks ts on ts.ID = p.taskID WHERE ts.ID = {taskID} order by s.OrderNumber").ToList();
+			connection.Dispose();
 			var output = new List<IElement>();
-		   
+			foreach (var task in tasks)
+			{
+				output.Add(task);
+			}
 			return output;
+		}
+
+		public static void InsertSubTask(ISubTask subTask, long taskID)
+		{
+			using (IDbConnection connection = new SQLiteConnection(GetConnectionString()))
+			{
+				var order = (uint)GetCount("subtasks");
+				subTask.OrderNumber = order;
+
+				var sql = @"insert into subtasks (Content, Priority, IsCompleted, DueDate) 
+							values (@Content, @Priority, @IsCompleted, @DueDate)";
+				connection.Execute(sql,
+								new
+								{
+									subTask.Content,
+									subTask.Priority,
+									subTask.IsCompleted,
+									subTask.DueDate
+								});
+
+				subTask.ID = GetLastRowID("subtasks");
+				connection.Dispose();
+
+			}
+			AssignSubTaskToTheTask(taskID, GetLastRowID("subtasks"));
+		}
+
+		private static void AssignSubTaskToTheTask(long taskID, long subtaskID)
+		{
+			using IDbConnection connection = new SQLiteConnection(GetConnectionString());
+			connection.Execute("INSERT INTO task_subtasks (taskID, subtaskID) values (@taskID, @subtaskID)",
+				new { taskID, subtaskID });
+			connection.Dispose();
 		}
 
 		#endregion
@@ -273,7 +318,14 @@ namespace Core.DataBase
 								Priority INTEGER NOT NULL,
 								DueDate TEXT NOT NULL,
 								IsCompleted INTEGER NOT NULL,
-								OrderNumber INTEGER);";
+								OrderNumber INTEGER);
+
+							CREATE TABLE task_subtasks(
+								taskID INTEGER NOT NULL,
+								subtaskID INTEGER NOT NULL,
+								FOREIGN KEY(subtaskID) REFERENCES subtasks(ID),
+								FOREIGN KEY(taskID) REFERENCES tasks(ID));";
+
 
 
 				connection.Execute(query);

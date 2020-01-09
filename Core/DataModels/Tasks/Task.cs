@@ -48,26 +48,25 @@ namespace Core.DataModels
 
         public void UpdateProgress()
         {
-            if (IsCompleted)
-            {
-                Progress = 100;
-                //return;
-            }
-            var count = 0;
+            var completedSubtaskCount = 0;
 
             foreach (var item in SubTasks)
             {
                 if (item is ISubTask task)
                 {
-                    if (task.IsCompleted) count++;
+                    if (task.IsCompleted) completedSubtaskCount++;
                 }
             }
 
-            CompletedSubTasksCount = count;
-            
-            if (SubTasks.Count !=0 && Equals(count, SubTasks.Count)) IsCompleted = true;
+            CompletedSubTasksCount = completedSubtaskCount;
 
-            Progress = IntHelper.GetPercentage(SubTasks.Count, CompletedSubTasksCount);
+            if (SubTasks.Count != 0 && Equals(completedSubtaskCount, SubTasks.Count)) IsCompleted = true;
+
+            if (IsCompleted) Progress = 100;
+            else
+            {
+                Progress = IntHelper.GetPercentage(SubTasks.Count, CompletedSubTasksCount);
+            }
         }
 
 

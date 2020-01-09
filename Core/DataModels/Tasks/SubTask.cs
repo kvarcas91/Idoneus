@@ -16,15 +16,19 @@ namespace Core.DataModels
     {
         public bool IsCompleted { get; set; }
 
+        [Computed]
         public IList<IContributor> Contributors { get; }
 
+        [Key]
         public long ID { get; set; }
         [Computed]
         public int ParentIndex { get; set; }
         public string Content { get; set; }
+        [Computed]
         public DateTime SubmitionDate { get; set; }
         public DateTime DueDate { get; set; }
         public Priority Priority { get; set; }
+        [Computed]
         public decimal Progress { get; set; }
         public uint OrderNumber { get; set; }
 

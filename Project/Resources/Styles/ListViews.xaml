@@ -433,13 +433,14 @@
     
     <!-- Project task list view -->
     <Style x:Key="ProjectTaskViewStyle" TargetType="{x:Type TreeView}" BasedOn="{StaticResource TreeView}">
+        <Setter Property="Background" Value="Transparent"/>
         <Setter Property="ItemTemplate">
             <Setter.Value>
                 <HierarchicalDataTemplate ItemsSource="{Binding SubTasks}">
 
                     
                     <!-- Main tasks -->
-                    <Grid>
+                    <Grid HorizontalAlignment="Stretch">
                         <Grid.ColumnDefinitions>
                             <!-- Priority color indicator -->
                             <ColumnDefinition Width="20"/>
@@ -725,5 +726,7 @@
                 </HierarchicalDataTemplate>
             </Setter.Value>
         </Setter>
+
     </Style>
+
 </ResourceDictionary>

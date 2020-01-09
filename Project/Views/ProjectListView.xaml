@@ -24,6 +24,7 @@
                 <x:Type TypeName="StyleAlias:Priority"/>
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
+    
     </UserControl.Resources>
 
     <Grid Background="White">
@@ -38,26 +39,26 @@
         <Grid Grid.Row="1">
 
             <Grid.ColumnDefinitions>
-                
+
                 <!-- Project list -->
                 <ColumnDefinition Width="Auto"/>
-                
+
                 <!-- Project info -->
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            
-           <!-- ProjectList -->
+
+            <!-- ProjectList -->
             <Grid Grid.Column="0" 
                   Panel.ZIndex="0">
 
                 <Grid.RowDefinitions>
                     <!-- Controls -->
                     <RowDefinition Height="Auto"/>
-                    
+
                     <!-- project list -->
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                
+
                 <!-- Controls -->
                 <StackPanel Grid.Row="0"
                     Orientation="Horizontal"
@@ -80,8 +81,8 @@
                     </Button>
 
                 </StackPanel>
-                
-                
+
+
                 <!-- Project Content -->
                 <Border Width="300"
                         Grid.Row="1"
@@ -101,13 +102,13 @@
                   Visibility="{Binding CurrentProject, Converter={converters:NullObjectToVisibilityConverter}, ConverterParameter=1}">
 
                 <Grid.RowDefinitions>
-                    
+
                     <!-- Project Header -->
                     <RowDefinition Height="Auto"/>
 
                     <!-- Project Content -->
                     <RowDefinition Height="*"/>
-                    
+
                 </Grid.RowDefinitions>
 
                 <!-- Project Header -->
@@ -115,17 +116,17 @@
                       Background="{StaticResource BackgroundLightBrush}">
 
                     <Grid.ColumnDefinitions>
-                        
+
                         <!-- Progress -->
                         <ColumnDefinition Width="Auto"/>
-                        
+
                         <!-- Project header and submition date-->
                         <ColumnDefinition Width="*"/>
 
                         <!-- Priority an due date -->
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    
+
 
                     <!-- Progress -->
                     <Grid Grid.Column="0"
@@ -168,13 +169,13 @@
                           VerticalAlignment="Center">
 
                         <Grid.RowDefinitions>
-                            
+
                             <!-- Header -->
                             <RowDefinition Height="Auto"/>
-                            
+
                             <!-- Submition date -->
                             <RowDefinition Height="Auto"/>
-                            
+
                         </Grid.RowDefinitions>
 
                         <TextBlock Grid.Row="0"
@@ -197,13 +198,13 @@
                           HorizontalAlignment="Right">
 
                         <Grid.RowDefinitions>
-                            
+
                             <!-- Priority -->
                             <RowDefinition Height="Auto"/>
-                            
+
                             <!-- Due Date -->
                             <RowDefinition Height="Auto"/>
-                            
+
                         </Grid.RowDefinitions>
 
                         <!-- Priority -->
@@ -237,13 +238,13 @@
                       Margin="0 5">
 
                     <Grid.RowDefinitions>
-                        
+
                         <!-- Basic info -->
                         <RowDefinition Height="Auto"/>
-                        
+
                         <!-- Tasks, files, comments -->
                         <RowDefinition Height="*"/>
-                        
+
                     </Grid.RowDefinitions>
 
                     <!-- Basic info -->
@@ -255,7 +256,7 @@
                           Style="{StaticResource ProjectsInfoControlAnimation}">
 
                         <Grid.ColumnDefinitions>
-                            
+
                             <!-- Description -->
                             <ColumnDefinition Width="*"/>
 
@@ -264,7 +265,7 @@
 
                             <!-- Contributors -->
                             <ColumnDefinition Width="*"/>
-                            
+
                         </Grid.ColumnDefinitions>
 
                         <!-- Description -->
@@ -344,12 +345,12 @@
                                       HorizontalAlignment="Left"
                                       VerticalAlignment="Center"
                                       Margin="10 0">
-                                    
+
                                     <Grid.RowDefinitions>
-                                        
+
                                         <!-- Overdue -->
                                         <RowDefinition Height="*"/>
-                                        
+
                                         <!-- Completed -->
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
@@ -371,7 +372,7 @@
                             </Grid>
 
                         </Border>
-                        
+
                         <!-- Contributors -->
                         <Border Grid.Column="2" Margin="30 0 30 0"
                                 Padding="10"
@@ -380,10 +381,10 @@
 
                             <Grid>
                                 <Grid.RowDefinitions>
-                                    
+
                                     <!-- Header -->
                                     <RowDefinition Height="Auto"/>
-                                    
+
                                     <!--Content -->
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
@@ -457,8 +458,8 @@
                                                          Style="{StaticResource EmptyIconView}"/>
 
                             </Grid>
-                            
-                            
+
+
 
                         </Border>
                     </Grid>
@@ -473,13 +474,13 @@
                         </Grid.RowDefinitions>
 
                         <Grid.ColumnDefinitions>
-                            
+
                             <!-- Tasks -->
                             <ColumnDefinition Width="*"/>
-                            
+
                             <!-- Files and comments -->
                             <ColumnDefinition Width="Auto"/>
-                            
+
                         </Grid.ColumnDefinitions>
 
 
@@ -503,14 +504,14 @@
                                     <Grid>
 
                                         <Grid.ColumnDefinitions>
-                                            
+
                                             <!-- Header -->
                                             <ColumnDefinition Width="Auto"/>
-                                            
+
                                             <!-- Controls -->
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
-                                        
+
                                         <!-- Header -->
                                         <TextBlock Grid.Column="0"
                                             Text="TASKS"
@@ -534,7 +535,7 @@
                                             </Button>
 
                                         </StackPanel>
-                                        
+
                                     </Grid>
                                     <Separator Margin="5"/>
 
@@ -583,7 +584,7 @@
 
                                             <!-- Controls -->
                                             <ColumnDefinition Width="Auto"/>
-                                           
+
                                         </Grid.ColumnDefinitions>
 
                                         <TextBox x:Name="SendTaskTextBox"
@@ -636,8 +637,8 @@
                                             </Button>
 
                                         </StackPanel>
-                                        
-                                        
+
+
 
                                     </Grid>
 
@@ -702,10 +703,10 @@
                                           Background="White">
 
                                         <Grid.ColumnDefinitions>
-                                            
+
                                             <!-- Add Comment textbox -->
                                             <ColumnDefinition Width="*"/>
-                                            
+
                                             <!-- Send button -->
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
@@ -805,11 +806,11 @@
                         </Border>
 
                     </Grid>
-                    
+
                 </Grid>
-                
-                
-                
+
+
+
             </Grid>
 
             <TextBlock Grid.Column="1"
@@ -817,7 +818,7 @@
                        Visibility="{Binding CurrentProject, Converter={converters:NullObjectToVisibilityConverter}}"
                        Style="{StaticResource EmptyList}"/>
         </Grid>
-        
+
     </Grid>
-    
+
 </UserControl>

@@ -81,7 +81,8 @@ namespace Core.ViewModels
                 //subTask.IsCompleted ^= true;
                 var parent = CurrentProject.Tasks[subTask.ParentIndex];
                 ((Task)parent).UpdateProgress();
-                
+                DBHelper.UpdateTask(subTask);
+
             }
             UpdateCounters();
         }
@@ -121,6 +122,7 @@ namespace Core.ViewModels
                 task.AddElement(subTask);
                 task.UpdateProgress();
                 UpdateCounters();
+                DBHelper.InsertSubTask(subTask, task.ID);
             }
         }
 
@@ -148,7 +150,7 @@ namespace Core.ViewModels
 
         #region Project Properties
 
-        public decimal Progress { get; set; }
+      
 
         #endregion // Project Properties
 
@@ -157,7 +159,6 @@ namespace Core.ViewModels
 
 
         #endregion // Counters
-
 
         #region Visilibity
 
@@ -173,6 +174,9 @@ namespace Core.ViewModels
             get => CompletedTasksCount * 100 / (CompletedTasksCount + OverdueTasksCount);
             set => TotalTasksProgress = value;
         }
+        /// <summary>
+        /// gets total 
+        /// </summary>
         public int CompletedTasksCount { get; set; } = 120;
         public int OverdueTasksCount { get; set; } = 100;
 
@@ -182,7 +186,7 @@ namespace Core.ViewModels
 
         #region Private Properties
 
-
+       
 
         #endregion // Private Properties
 
