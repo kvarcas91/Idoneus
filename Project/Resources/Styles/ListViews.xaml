@@ -609,44 +609,48 @@
 
                      
                         <!-- Add subtask panel -->
-                        <Grid Grid.Row="2" 
+                        <Border Grid.Row="2" 
                           Grid.ColumnSpan="6"
                             MaxHeight="100"
-                            Opacity="0.5"
+                            Margin="-10 0 -10 -10"
                             Background="White"
+                                Padding="5"
+                                BorderThickness="1"
+                             BorderBrush="{Binding ElementName=projectTaskList, Path=DataContext.SubTaskPriority, Converter={converters:PriorityToColorConverter}}"
                               Visibility="{Binding IsAddSubTaskPanelVisible, Converter={StaticResource boolToVisibility}}">
+                            <Grid>
 
-                            <Grid.ColumnDefinitions>
+                                <Grid.ColumnDefinitions>
 
-                                <!-- Add Comment textbox -->
-                                <ColumnDefinition Width="*"/>
+                                    <!-- Add Comment textbox -->
+                                    <ColumnDefinition Width="*"/>
 
-                                <!-- Controls -->
-                                <ColumnDefinition Width="Auto"/>
+                                    <!-- Controls -->
+                                    <ColumnDefinition Width="Auto"/>
 
-                            </Grid.ColumnDefinitions>
+                                </Grid.ColumnDefinitions>
 
-                            <TextBox x:Name="SendTaskTextBox"
+                                <TextBox x:Name="SendTaskTextBox"
                                             Grid.Column="0"
-                                                 Padding="5"
+                                                 BorderThickness="0"
                                                  TextWrapping="Wrap"
                                                  Text="{Binding ElementName=projectTaskList, Path=DataContext.SubTaskContent, Mode=TwoWay}"
                                             
                                             />
-                            <TextBlock Grid.Column="0"
+                                <TextBlock Grid.Column="0"
                                                    Text="Add Task here..."
                                                    Style="{StaticResource TaskHint}"/>
 
-                            <StackPanel Grid.Column="1"
+                                <StackPanel Grid.Column="1"
                                             Orientation="Horizontal">
 
-                                <DatePicker Grid.Column="1"
+                                    <DatePicker Grid.Column="1"
                                                         BorderThickness="0"
                                                         VerticalAlignment="Bottom"
                                                         Margin="5 0 5 0"
                                                         SelectedDate="{Binding ElementName=projectTaskList, Path=DataContext.SubTaskDueTime, Mode=TwoWay}"/>
 
-                                <ComboBox Grid.Column="1"
+                                    <ComboBox Grid.Column="1"
                                                     SelectedIndex="1" 
                                                     x:Name="dueCombo"
                                                     MinWidth="100" 
@@ -658,10 +662,10 @@
                                                     SelectedItem="{Binding ElementName=projectTaskList, Path=DataContext.SubTaskPriority, Mode=TwoWay}"
                                                     HorizontalContentAlignment="Center">
 
-                                </ComboBox>
+                                    </ComboBox>
 
-                                <!-- Send comment -->
-                                <Button Grid.Column="2"
+                                    <!-- Send comment -->
+                                    <Button Grid.Column="2"
                                                 Background="Transparent"
                                                 BorderThickness="0"
                                                 Margin="10 0 3 3"
@@ -669,16 +673,17 @@
                                         CommandParameter="{Binding}"
                                                 Style="{StaticResource PackButtonBase}"
                                                 ToolTip="Add note">
-                                    <materialDesign:PackIcon Kind="Send"
+                                        <materialDesign:PackIcon Kind="Send"
                                                  Foreground="{StaticResource LightBlueColorBrush}"
                                                  Style="{StaticResource GrowPackIcon}"/>
-                                </Button>
+                                    </Button>
 
-                            </StackPanel>
+                                </StackPanel>
 
 
 
-                        </Grid>
+                            </Grid>
+                        </Border>
 
                     </Grid>
 
@@ -686,7 +691,7 @@
                     <!-- SubTasks -->
                     <HierarchicalDataTemplate.ItemTemplate>
                         <HierarchicalDataTemplate>
-                           
+
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <!-- Priority color indicator -->
@@ -695,25 +700,14 @@
                                     <!-- Task content -->
                                     <ColumnDefinition Width="*"/>
 
-                                    <!-- completed tasks / Total tasks -->
+                                    <!-- Control buttons -->
                                     <ColumnDefinition Width="Auto"/>
 
-                                    <!-- Progress bar -->
-                                    <ColumnDefinition Width="Auto"/>
-
-                                    <!-- Progress percentage -->
-                                    <ColumnDefinition Width="60"/>
-
-                                    <!-- Expand button -->
-                                    <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
 
                                 <Grid.RowDefinitions>
 
                                     <!-- task info -->
-                                    <RowDefinition Height="Auto"/>
-
-                                    <!-- controls -->
                                     <RowDefinition Height="Auto"/>
 
                                     <!-- controls -->
@@ -727,24 +721,74 @@
                                 Height="10"
                                 Margin="3"/>
 
-                                <!-- Task content -->
-                                <CheckBox Grid.Row="0" Grid.Column="1" 
-                                              x:Name="IsCompleted"
+                                <!-- Task content and deadline -->
+                                <StackPanel Grid.Row="0" Grid.Column="1"
+                            Orientation="Vertical">
+
+                                    <CheckBox x:Name="IsCompleted"
                                               IsChecked="{Binding IsCompleted, Mode=TwoWay}"
                                   Command="{Binding ElementName=projectTaskList, Path=DataContext.SelectTaskCommand}"
                                 CommandParameter="{Binding}"
                               Style="{StaticResource ProjectListTaskCheckBox}">
-                                    <TextBlock Text="{Binding Content}"
+                                        <TextBlock Text="{Binding Content}"
                                                    TextAlignment="Justify"
                                                    TextWrapping="Wrap"
                                    Margin="0 3 0 0"
                                    Style="{StaticResource RegularListItemSnippetText}"
+                                                   FontSize="{StaticResource XSmall}"
                                        Foreground="{Binding IsCompleted, Converter={converters:IsCompletedToColorConverter}}"
                                                    TextDecorations="{Binding IsCompleted,
                                                                      Converter={converters:BoolToTextDecorationConverter}}"/>
-                                </CheckBox>
+                                    </CheckBox>
 
+                                    <TextBlock Text="{Binding DueDate, Converter={converters:DateTimeToStringConverter}, ConverterParameter=1}"
+                                       Style="{StaticResource TaskDate}"
+                                                FontSize="{StaticResource XXSmall}"/>
+                                </StackPanel>
 
+                                <!-- Controls -->
+                                <Grid Grid.Column="2" Grid.RowSpan="2">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+
+                                    <!-- OnMouseOver visibility -->
+                                    <Grid.Style>
+                                        <Style TargetType="{x:Type Grid}">
+                                            <Setter Property="Visibility" Value="Hidden" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TreeViewItem}},Path=IsMouseOver}" Value="True">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Grid.Style>
+                                    <!-- Edit -->
+                                    <Button Grid.Row="0" 
+                                                Style="{StaticResource ControlButton}"
+                                                Command="{Binding ElementName=projectTaskList, 
+                                                                  Path=DataContext.EditTaskCommand}"
+                                                CommandParameter="{Binding}"
+                                                ToolTip="Edit task">
+                                        <materialDesign:PackIcon Kind="Edit" 
+                                                                     Foreground="Black"
+                                                                     Width="12" Height="12"/>
+                                    </Button>
+
+                                    <!-- Delete -->
+                                    <Button Grid.Row="1" 
+                                                Style="{StaticResource ControlButton}"
+                                                Command="{Binding ElementName=projectTaskList, 
+                                                          Path=DataContext.DeleteTaskCommand}"
+                                                CommandParameter="{Binding}"
+                                                ToolTip="Delete task">
+                                        <materialDesign:PackIcon Kind="Delete" 
+                                                                     Foreground="Black"
+                                                                     Width="12" Height="12"/>
+                                    </Button>
+
+                                </Grid>
                             </Grid>
                         </HierarchicalDataTemplate>
                     </HierarchicalDataTemplate.ItemTemplate>

@@ -27,6 +27,8 @@ namespace Core.ViewModels
             set => _instance = value;
         }
 
+
+
         #region Observable Collections
 
         public ObservableCollection<IProject> Projects { get; set; }
@@ -47,14 +49,20 @@ namespace Core.ViewModels
         public ICommand ExpandSubTaskPanelCommand { get; set; }
         public ICommand AddSubTaskCommand { get; set; }
         public ICommand DeleteTaskCommand { get; set; }
+        public ICommand EditTaskCommand { get; set; }
 
         #endregion // Icommand Properties
 
         #region Icommand Methods
 
-        private void AddNewTask ()
+        /// <summary>
+        /// Add / Edit task
+        /// </summary>
+        private void AddTask ()
         {
             if (!StringHelper.CanUse(NewTaskContent)) return;
+
+
 
             var task = new Task
             {
@@ -65,7 +73,9 @@ namespace Core.ViewModels
 
             DBHelper.InsertTask(task, CurrentProject.ID);
             CurrentProject.Tasks.Add(task);
+
             NewTaskContent = string.Empty;
+            NewTaskPriority = Priority.Low;
             UpdateCounters();
         }
 
@@ -90,6 +100,11 @@ namespace Core.ViewModels
 
         private void ExpandTask (IElement param)
         {
+            editableTask = null;
+
+            SubTaskContent = string.Empty;
+            SubTaskPriority = Priority.Low;
+
             if (param is Task task)
             {
                 task.IsExpanded ^= true;
@@ -99,6 +114,11 @@ namespace Core.ViewModels
 
         private void ExpandSubTaskPanel(IElement param)
         {
+            editableTask = null;
+
+            SubTaskContent = string.Empty;
+            SubTaskPriority = Priority.Low;
+
             if (param is Task task)
             {
                 task.IsAddSubTaskPanelVisible ^= true;
@@ -109,22 +129,78 @@ namespace Core.ViewModels
         {
 
             if (!StringHelper.CanUse(SubTaskContent)) return;
-            var subTask = new SubTask
+            if (editableTask == null)
             {
-                Content = SubTaskContent,
-                DueDate = SubTaskDueTime,
-                Priority = SubTaskPriority
-            };
+                var subTask = new SubTask
+                {
+                    Content = SubTaskContent,
+                    DueDate = SubTaskDueTime,
+                    Priority = SubTaskPriority
+                };
 
-            if (param is Task task)
+                if (param is Task task)
+                {
+                    task.IsAddSubTaskPanelVisible ^= true;
+                    task.IsExpanded ^= true;
+                    subTask.ParentIndex = CurrentProject.Tasks.IndexOf(task);
+                    task.AddElement(subTask);
+                    task.UpdateProgress();
+
+                    DBHelper.InsertSubTask(subTask, task.ID);
+                }
+            }
+            else
             {
-                task.IsAddSubTaskPanelVisible ^= true;
-                task.IsExpanded ^= true;
-                subTask.ParentIndex = CurrentProject.Tasks.IndexOf(task);
-                task.AddElement(subTask);
-                task.UpdateProgress();
-                UpdateCounters();
-                DBHelper.InsertSubTask(subTask, task.ID);
+                if (editableTask is Task task)
+                { 
+                    ((Task)editableTask).IsAddSubTaskPanelVisible = false;
+                   
+                    ((Task)editableTask).IsExpanded = false;
+
+                    task.Content = SubTaskContent;
+                    task.Priority = SubTaskPriority;
+                    task.DueDate = SubTaskDueTime;
+                }
+                if (editableTask is SubTask subtask)
+                {
+                    var parentTask = (Task)CurrentProject.Tasks[((SubTask)editableTask).ParentIndex];
+                    parentTask.IsAddSubTaskPanelVisible = false;
+                    parentTask.IsExpanded = false;
+
+                    subtask.Content = SubTaskContent;
+                    subtask.Priority = SubTaskPriority;
+                    subtask.DueDate = SubTaskDueTime;
+                }
+
+               
+                DBHelper.UpdateTask(editableTask);
+                editableTask = null;
+            }
+
+            UpdateCounters();
+        }
+
+        private void EditTask (IElement param)
+        {
+            editableTask = param;
+            if (param is ITask task)
+            {
+               
+                ((Task)task).IsAddSubTaskPanelVisible = true;
+
+                SubTaskContent = task.Content;
+                SubTaskPriority = task.Priority;
+                SubTaskDueTime = task.DueDate;
+                
+            }
+            if (param is SubTask subTask)
+            {
+                var parentTask = (Task)CurrentProject.Tasks[((SubTask)editableTask).ParentIndex];
+                parentTask.IsAddSubTaskPanelVisible = true;
+
+                SubTaskContent = subTask.Content;
+                SubTaskPriority = subTask.Priority;
+                SubTaskDueTime = subTask.DueDate;
             }
         }
 
@@ -134,7 +210,8 @@ namespace Core.ViewModels
             {
                 DBHelper.DeleteTask(param);
                 CurrentProject.Tasks.Remove(param);
-                
+                ((Task)param).UpdateProgress();
+
             }
             if (param is SubTask subtask)
             {
@@ -142,7 +219,7 @@ namespace Core.ViewModels
                 var task = (Task)CurrentProject.Tasks[subtask.ParentIndex];
                 task.SubTasks.Remove(subtask);
             }
-            ((Task)param).UpdateProgress();
+           
             UpdateCounters();
         }
 
@@ -189,16 +266,22 @@ namespace Core.ViewModels
 
         #region Info Box
 
-        public double? TotalSubTasksProgress
-        {
-            get => (double)IntHelper.GetRoundedPercentage((double)(CompletedSubTasksCount + OverdueSubTasksCount), (double)CompletedSubTasksCount);
-            set => TotalSubTasksProgress = value;
-        }
+       
         /// <summary>
         /// gets total 
         /// </summary>
         public int? CompletedSubTasksCount { get; set; } = 0;
         public int? OverdueSubTasksCount { get; set; } = 0;
+
+        public double? TotalSubTasksProgress
+        {
+            get
+            {
+                if ((CompletedSubTasksCount == null) || (OverdueSubTasksCount == null)) return 0;
+                return (double)IntHelper.GetRoundedPercentage(((Project)CurrentProject).TotalSubTaskCount, (double)(CompletedSubTasksCount - OverdueSubTasksCount));
+            }
+            set => TotalSubTasksProgress = value;
+        }
 
         #endregion // Info Box
 
@@ -206,23 +289,25 @@ namespace Core.ViewModels
 
         #region Private Properties
 
-       
+        private IElement editableTask = null;
+        
 
-        #endregion // Private Properties
+    #endregion // Private Properties
 
         #region Private Methods
 
-        private void SetUpCommands ()
+    private void SetUpCommands ()
         {
             CollapseProjectListCommand = new RelayCommand(CollapseProjectList);
             ExpandTaskPanelCommand = new RelayCommand(ExpandTaskPanel);
-            AddNewTaskCommand = new RelayCommand(AddNewTask);
+            AddNewTaskCommand = new RelayCommand(AddTask);
             SelectProjectCommand = new ParameterizedRelayCommand<IProject>(SelectProject);
             SelectTaskCommand = new ParameterizedRelayCommand<IElement>(SelectTask);
             ExpandTaskCommand = new ParameterizedRelayCommand<IElement>(ExpandTask);
             ExpandSubTaskPanelCommand = new ParameterizedRelayCommand<IElement>(ExpandSubTaskPanel);
             AddSubTaskCommand = new ParameterizedRelayCommand<IElement>(AddSubTask);
             DeleteTaskCommand = new ParameterizedRelayCommand<IElement>(DeleteTask);
+            EditTaskCommand = new ParameterizedRelayCommand<IElement>(EditTask);
         }
 
         private void SelectProject (IProject project)

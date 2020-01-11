@@ -1,20 +1,18 @@
-﻿using System.Configuration;
+﻿using Core.DataModels;
+using Core.Utils;
+using Dapper;
+using Dapper.Contrib.Extensions;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Collections.ObjectModel;
+using System.Configuration;
 using System.Data;
 using System.Data.SQLite;
-using Dapper;
-using Core.DataModels;
-using Core.Utils;
-using System.Diagnostics;
-using System.Collections.ObjectModel;
-using Dapper.Contrib.Extensions;
+using System.Linq;
 
 namespace Core.DataBase
 {
-	public class DBHelper
+    public class DBHelper
 	{
 
 		private static readonly object _lock = new object();
@@ -96,11 +94,12 @@ namespace Core.DataBase
 				$"INNER JOIN projects pr on pr.ID = p.projectID WHERE pr.ID = {projectID} order by t.OrderNumber");
 			foreach (var task in output)
 			{
-				task.UpdateProgress();
+				
 				task.AddElements(GetSubTasks(task.ID));
 				task.AddPersons(GetTaskContributors(task.ID));
-				//task.Progress = GetTaskProgress(task.ID);
-			}
+                task.UpdateProgress();
+                //task.Progress = GetTaskProgress(task.ID);
+            }
 			connection.Dispose();
 			return new ObservableCollection<IElement>(output);
 		}
@@ -146,7 +145,10 @@ namespace Core.DataBase
 
             foreach (var subtask in task.SubTasks)
             {
-                string subtaskQuery = $"DELETE FROM task_subtasks WHERE subtaskID = '{subtask.ID}'";
+                string subtaskAssignQuery = $"DELETE FROM task_subtasks WHERE subtaskID = '{subtask.ID}'";
+                connection.Execute(subtaskAssignQuery);
+
+                string subtaskQuery = $"DELETE FROM subtasks WHERE ID = '{subtask.ID}'";
                 connection.Execute(subtaskQuery);
             }
 

@@ -28,8 +28,14 @@ namespace Core.DataModels
         public DateTime DueDate { get; set; }
         public Priority Priority { get; set; }
 
+        private decimal _progress;
+
         [Computed]
-        public decimal Progress { get; set; }
+        public decimal Progress
+        {
+            get => (IntHelper.Round(_progress));
+            set => _progress = value;
+        }
         public uint OrderNumber { get; set; }
         public bool IsCompleted { get; set; }
         public string Content { get; set; }
@@ -78,6 +84,7 @@ namespace Core.DataModels
 
         public bool AddElements(IList<IElement> elements)
         {
+          
             foreach (var element in elements)
             {
                 AddElement(element);

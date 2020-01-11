@@ -41,7 +41,7 @@
         <Setter Property="FontFamily" Value="Arial"/>
         <Setter Property="FontSize" Value="{StaticResource XSmall}"/>
         <Setter Property="Foreground" Value="Gray"/>
-        <Setter Property="Margin" Value="10 5 0 0"/>
+        <Setter Property="Margin" Value="20 5 0 0"/>
     </Style>
 
     <!-- Shows Empty List -->

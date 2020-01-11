@@ -38,6 +38,9 @@ namespace Core.DataModels
         public string Path { get; set; }
 
         [Computed]
+        public int TotalSubTaskCount { get; set; } = 0;
+
+        [Computed]
         public int CompletedTasksCount { get; set; }
 
         private decimal _progress = 0;
@@ -128,16 +131,20 @@ namespace Core.DataModels
         public int GetCompletedSubTaskCount ()
         {
             var count = 0;
+            TotalSubTaskCount = 0;
             foreach (var element in Tasks)
             {
                 
                 foreach (var subtask in ((Task)element).SubTasks)
                 {
                     if (subtask.IsCompleted) count++;
+                    TotalSubTaskCount++;
                 }
             }
             return count;
         }
+
+        
 
         public int GetOverdueSubTaskCount()
         {
@@ -147,7 +154,7 @@ namespace Core.DataModels
 
                 foreach (var subtask in ((Task)element).SubTasks)
                 {
-                    if (DateTime.Compare(subtask.DueDate, DateTime.UtcNow) > 0) count++;
+                    if (DateTime.Compare(subtask.DueDate, DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd"))) < 0) count++;
                 }
             }
             return count;
