@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.ViewModels.Base
+namespace Idoneus.ViewModels.Base
 {
     public enum ApplicationPage
     {

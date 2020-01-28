@@ -1,13 +1,13 @@
-﻿using Core;
-using Core.ViewModels;
-using Core.ViewModels.Base;
-using Project.Converters.Base;
-using Project.Views;
+﻿using Idoneus;
+using Idoneus.ViewModels;
+using Idoneus.ViewModels.Base;
+using Idoneus.Converters.Base;
+using Idoneus.Views;
 using System;
 using System.Diagnostics;
 using System.Globalization;
 
-namespace Project.Converters
+namespace Idoneus.Converters
 {
     public class ApplicationPageValueConverter : BaseValueConverter<ApplicationPageValueConverter>
     {

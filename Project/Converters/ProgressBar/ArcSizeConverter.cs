@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 
-namespace Project.Converters
+namespace Idoneus.Converters
 {
     public class ArcSizeConverter : IValueConverter
     {

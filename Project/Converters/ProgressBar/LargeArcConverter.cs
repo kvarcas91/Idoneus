@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace Project.Converters
+namespace Idoneus.Converters
 {
     public class LargeArcConverter : IMultiValueConverter
     {

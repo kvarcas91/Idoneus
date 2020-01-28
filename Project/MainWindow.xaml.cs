@@ -1,8 +1,8 @@
 ﻿using Core.Utils;
-using Project.ViewModel;
+using Idoneus.ViewModel;
 using System.Windows;
 
-namespace Project
+namespace Idoneus
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

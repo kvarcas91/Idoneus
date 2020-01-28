@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Markup;
 
-namespace Project.Converters.Base
+namespace Idoneus.Converters.Base
 {
     /// <summary>
     /// A base value converter that allows direct XAML usage

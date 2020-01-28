@@ -1,4 +1,4 @@
-﻿using Project.Converters.Base;
+﻿using Idoneus.Converters.Base;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Project.Converters
+namespace Idoneus.Converters
 {
     public class NullObjectToVisibilityConverter : BaseValueConverter<NullObjectToVisibilityConverter>
     {

@@ -1,11 +1,11 @@
-﻿<UserControl x:Class="Project.Views.MainContentView"
+﻿<UserControl x:Class="Idoneus.Views.MainContentView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Project.Views"
-             xmlns:converters="clr-namespace:Project.Converters"
-             xmlns:vm="clr-namespace:Core.ViewModels;assembly=Core"
+             xmlns:local="clr-namespace:Idoneus.Views"
+             xmlns:converters="clr-namespace:Idoneus.Converters"
+             xmlns:vm="clr-namespace:Idoneus.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>

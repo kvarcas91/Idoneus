@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 
-namespace Project.Converters
+namespace Idoneus.Converters
 {
     public class NotZeroConverter : IValueConverter
     {

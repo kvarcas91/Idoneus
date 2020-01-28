@@ -5,16 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace Core.ViewModels.Base
+namespace Idoneus.ViewModels.Base
 {
-    public class RelayCommand : ICommand
+    public class ParameterizedRelayCommand<T> : ICommand
     {
         #region Private Members
 
         /// <summary>
         /// The action to run
         /// </summary>
-        private readonly Action mAction;
+        private readonly Action<T> mAction;
 
         #endregion
 
@@ -32,7 +32,7 @@ namespace Core.ViewModels.Base
         /// <summary>
         /// Default constructor
         /// </summary>
-        public RelayCommand(Action action)
+        public ParameterizedRelayCommand(Action<T> action)
         {
             mAction = action;
         }
@@ -57,8 +57,9 @@ namespace Core.ViewModels.Base
         /// <param name="parameter"></param>
         public void Execute(object parameter)
         {
-            mAction();
+            mAction((T)parameter);
         }
+
 
         #endregion
     }

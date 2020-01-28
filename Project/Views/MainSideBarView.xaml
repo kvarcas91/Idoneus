@@ -1,14 +1,14 @@
-﻿<UserControl x:Class="Project.Views.MainSideBarView"
+﻿<UserControl x:Class="Idoneus.Views.MainSideBarView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Project.Views"
+             xmlns:local="clr-namespace:Idoneus.Views"
              mc:Ignorable="d" 
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             Width="200"
-             xmlns:vm="clr-namespace:Core.ViewModels;assembly=Core"
-             d:DesignHeight="450" d:DesignWidth="250">
+ 
+             xmlns:vm="clr-namespace:Idoneus.ViewModels"
+             d:DesignHeight="450">
 
     <UserControl.DataContext>
         <vm:SideBarViewModel/>
@@ -37,74 +37,45 @@
         </StackPanel>
 
 
-        <Grid HorizontalAlignment="Stretch">
 
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
 
                      
-            <Button Style="{StaticResource SideBarMenuButton}"
+            <Button Background="Transparent"
                 Command="{Binding DashboardCommand}"
-                    HorizontalContentAlignment="Left">
-                <Grid Margin="10">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="30"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
+                    HorizontalContentAlignment="Left"
+                    BorderThickness="0"
+                    >
 
                     <materialDesign:PackIcon Kind="ViewDashboard"
-                                         Foreground="{StaticResource SecondaryColorBrush}"/>
+                                         Foreground="{StaticResource SecondaryColorBrush}"
+                                             Width="24" Height="24"/>
 
-                    <TextBlock Text="DashBoard" Grid.Column="1" Foreground="{StaticResource SecondaryColorBrush}"
-                               FontFamily="{StaticResource PlayFairRegular}"/>
-                </Grid>
             </Button>
 
             <Button Grid.Row="1"
-                Style="{StaticResource SideBarMenuButton}"
+                Background="Transparent"
                 Command="{Binding ProjectsCommand}"
-                     HorizontalContentAlignment="Left">
-                <Grid Margin="10" >
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="30"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
+                     HorizontalContentAlignment="Left"
+                    BorderThickness="0">
 
-                    <materialDesign:PackIcon Kind="Folder"
-                                         Foreground="{StaticResource SecondaryColorBrush}"/>
-
-                    <TextBlock Text="Projects" Grid.Column="1" Foreground="{StaticResource SecondaryColorBrush}"
-                               FontFamily="{StaticResource PlayFairRegular}"/>
-                </Grid>
+                <materialDesign:PackIcon Kind="Folder"
+                                         Foreground="{StaticResource SecondaryColorBrush}"
+                                         Width="24" Height="24"/>
             </Button>
 
             <Button Grid.Row="2"
-                Style="{StaticResource SideBarMenuButton}"
+                Background="Transparent"
                 Command="{Binding TasksCommand}"
-                     HorizontalContentAlignment="Left">
-                <Grid Margin="10" >
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="30"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
+                     HorizontalContentAlignment="Left"
+                    BorderThickness="0">
 
-                    <materialDesign:PackIcon Kind="CalendarTask"
-                                         Foreground="{StaticResource SecondaryColorBrush}"/>
+                <materialDesign:PackIcon Kind="CalendarTask"
+                                         Foreground="{StaticResource SecondaryColorBrush}"
+                                         Width="24" Height="24"/>
 
-                    <TextBlock Text="Tasks" Grid.Column="1" Foreground="{StaticResource SecondaryColorBrush}"
-                               FontFamily="{StaticResource PlayFairRegular}"/>
-                </Grid>
+
             </Button>
-        </Grid>
-
+      
 
     </StackPanel>
 </UserControl>

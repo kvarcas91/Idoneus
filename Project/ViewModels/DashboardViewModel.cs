@@ -2,14 +2,14 @@
 using Core.DataModels;
 using Core.Helpers;
 using Core.Utils;
-using Core.ViewModels.Base;
+using Idoneus.ViewModels.Base;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Windows.Input;
 
-namespace Core.ViewModels
+namespace Idoneus.ViewModels
 {
     public class DashboardViewModel : BaseViewModel
    

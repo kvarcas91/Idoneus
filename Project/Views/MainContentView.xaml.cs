@@ -1,6 +1,6 @@
 ﻿using Core;
-using Core.ViewModels;
-using Project.Converters;
+using Idoneus.Converters;
+using Idoneus.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,7 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Project.Views
+namespace Idoneus.Views
 {
     /// <summary>
     /// Interaction logic for MainContentView.xaml

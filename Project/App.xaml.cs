@@ -1,4 +1,4 @@
-﻿using Core;
+﻿using Idoneus;
 using System;
 using System.Collections.Generic;
 using System.Configuration;

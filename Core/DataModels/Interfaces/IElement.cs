@@ -1,6 +1,4 @@
-﻿using Core.ViewModels.Base;
-
-namespace Core.DataModels
+﻿namespace Core.DataModels
 {
     public interface IElement 
     {

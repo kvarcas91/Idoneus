@@ -1,7 +1,7 @@
 ﻿using PropertyChanged;
 using System.ComponentModel;
 
-namespace Core.ViewModels.Base
+namespace Idoneus.ViewModels.Base
 {
     /// <summary>
     /// A base view model that fires Property Changed events as needed

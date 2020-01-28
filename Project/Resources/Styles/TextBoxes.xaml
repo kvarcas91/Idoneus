@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:Project.Resources.Styles"
-                    xmlns:prop="clr-namespace:Project.Extentions"
+                    xmlns:local="clr-namespace:Idoneus.Resources.Styles"
+                    xmlns:prop="clr-namespace:Idoneus.Extentions"
                     xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
    

@@ -1,12 +1,7 @@
-﻿using Core.ViewModels;
+﻿using Idoneus.ViewModels;
 using Ninject;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Core
+namespace Idoneus
 {
     public static class IoC
     {
@@ -40,7 +35,7 @@ namespace Core
         {
             // Bind to a single instance of Application view model
             Kernel.Bind<ApplicationViewModel>().ToConstant(new ApplicationViewModel());
-            //Kernel.Bind<ProjectListViewModel>().ToConstant(ProjectListViewModel.Instance);
+            Kernel.Bind<ProjectListViewModel>().ToConstant(ProjectListViewModel.Instance);
         }
 
         #endregion

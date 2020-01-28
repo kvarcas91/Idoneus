@@ -1,5 +1,5 @@
 ﻿using Core.Utils;
-using Core.ViewModels.Base;
+using Idoneus.ViewModels.Base;
 using Project.Utils;
 using System;
 using System.Collections.Generic;
@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
-namespace Project.ViewModel
+namespace Idoneus.ViewModel
 {
     public class MainWindowViewModel : BaseViewModel
     {

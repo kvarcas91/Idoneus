@@ -1,4 +1,4 @@
-﻿namespace Project.Converters
+﻿namespace Idoneus.Converters
 {
     internal class ValueConverter
     {

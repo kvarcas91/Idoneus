@@ -1,4 +1,4 @@
-﻿using Core.ViewModels.Base;
+﻿using Idoneus.ViewModels.Base;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace Core.ViewModels
+namespace Idoneus.ViewModels
 {
     public class SideBarViewModel : BaseViewModel
     {

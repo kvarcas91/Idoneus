@@ -14,7 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Project.Views
+namespace Idoneus.Views
 {
     /// <summary>
     /// Interaction logic for ProjectListView.xaml

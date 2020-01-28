@@ -1,4 +1,4 @@
-﻿using Project.Converters.Base;
+﻿using Idoneus.Converters.Base;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 
-namespace Project.Converters
+namespace Idoneus.Converters
 {
     /// <summary>
     /// If value is true, returns strikethrough decoration for a textblock

@@ -2,16 +2,12 @@
 using Core.DataModels;
 using Core.Helpers;
 using Core.Utils;
-using Core.ViewModels.Base;
+using Idoneus.ViewModels.Base;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-
 using System.Windows.Input;
 
-namespace Core.ViewModels
+namespace Idoneus.ViewModels
 {
     public class ProjectListViewModel : BaseViewModel
     {
@@ -50,14 +46,12 @@ namespace Core.ViewModels
         public ICommand AddSubTaskCommand { get; set; }
         public ICommand DeleteTaskCommand { get; set; }
         public ICommand EditTaskCommand { get; set; }
+        public ICommand AddContributorsCommand { get; set; }
 
         #endregion // Icommand Properties
 
         #region Icommand Methods
 
-        /// <summary>
-        /// Add / Edit task
-        /// </summary>
         private void AddTask ()
         {
             if (!StringHelper.CanUse(NewTaskContent)) return;
@@ -223,6 +217,11 @@ namespace Core.ViewModels
             UpdateCounters();
         }
 
+        private void AddContributors()
+        {
+
+        }
+
         #endregion // Icommand Methods
 
         #region Public Properties
@@ -278,7 +277,7 @@ namespace Core.ViewModels
             get
             {
                 if ((CompletedSubTasksCount == null) || (OverdueSubTasksCount == null)) return 0;
-                return (double)IntHelper.GetRoundedPercentage(((Project)CurrentProject).TotalSubTaskCount, (double)(CompletedSubTasksCount - OverdueSubTasksCount));
+                return (double)IntHelper.GetRoundedPercentage(((Core.DataModels.Project)CurrentProject).TotalSubTaskCount, (double)(CompletedSubTasksCount - OverdueSubTasksCount));
             }
             set => TotalSubTasksProgress = value;
         }
@@ -308,6 +307,7 @@ namespace Core.ViewModels
             AddSubTaskCommand = new ParameterizedRelayCommand<IElement>(AddSubTask);
             DeleteTaskCommand = new ParameterizedRelayCommand<IElement>(DeleteTask);
             EditTaskCommand = new ParameterizedRelayCommand<IElement>(EditTask);
+            AddContributorsCommand = new RelayCommand(AddContributors);
         }
 
         private void SelectProject (IProject project)
@@ -321,9 +321,9 @@ namespace Core.ViewModels
 
         private void UpdateCounters ()
         {
-            ((Project)CurrentProject)?.UpdateProgress();
-            CompletedSubTasksCount = ((Project)CurrentProject)?.GetCompletedSubTaskCount();
-            OverdueSubTasksCount = ((Project)CurrentProject)?.GetOverdueSubTaskCount();
+            ((Core.DataModels.Project)CurrentProject)?.UpdateProgress();
+            CompletedSubTasksCount = ((Core.DataModels.Project)CurrentProject)?.GetCompletedSubTaskCount();
+            OverdueSubTasksCount = ((Core.DataModels.Project)CurrentProject)?.GetOverdueSubTaskCount();
         }
 
         private void CollapseProjectList ()
