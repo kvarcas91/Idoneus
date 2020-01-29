@@ -15,8 +15,8 @@ namespace Core.DataModels
     {
         public string Header { get; set; }
         public bool IsArchived { get; set; }
-        public IList<IElement> Comments { get; set; }
-        public IList<IContributor> Contributors { get; set; } = new ObservableCollection<IContributor>();
+        public ObservableCollection<IElement> Comments { get; set; } = new ObservableCollection<IElement>();
+        public ObservableCollection<IContributor> Contributors { get; set; } = new ObservableCollection<IContributor>();
         public ObservableCollection<IElement> Tasks { get; set; }
         public long ID { get; set; }
         public string Content { get; set; }

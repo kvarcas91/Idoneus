@@ -254,6 +254,9 @@
                         <!-- Tasks Performance -->
                         <ColumnDefinition Width="*"/>
 
+                        <!-- Tasks Performance -->
+                        <ColumnDefinition Width="*"/>
+
                     </Grid.ColumnDefinitions>
 
                     <!-- Description -->
@@ -361,7 +364,102 @@
 
                     </Border>
 
-                    
+                    <!-- Contributors -->
+                    <Border Grid.Column="2"
+                                Padding="10"
+                                Margin="0 0 0 10"
+                                Background="{StaticResource BackgroundLightBrush}"
+                                >
+
+                        <Grid>
+                            <Grid.RowDefinitions>
+
+                                <!-- Header -->
+                                <RowDefinition Height="Auto"/>
+
+                                <!--Content -->
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- Header -->
+                            <StackPanel Orientation="Vertical">
+
+
+
+                                <Grid>
+
+                                    <Grid.ColumnDefinitions>
+
+                                        <!-- Header -->
+                                        <ColumnDefinition Width="Auto"/>
+
+                                        <!-- Controls -->
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Header -->
+                                    <TextBlock Grid.Column="0"
+                                            Text="CONTRIBUTORS"
+                                               Style="{StaticResource ListBoxHeader}"/>
+
+                                    <!-- Controls -->
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal"
+                                                    HorizontalAlignment="Right">
+
+
+                                        <!-- Add contributor -->
+                                        <Button Grid.Column="2"
+                                                Margin="10 0 10 0"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                Style="{StaticResource PackButtonBase}"
+                                                    Command="{Binding AddContributorsCommand}"
+                                                ToolTip="Add new">
+                                            <materialDesign:PackIcon Kind="PeopleAdd"
+                                                 Foreground="{StaticResource LightBlueColorBrush}"
+                                                 Style="{StaticResource GrowPackIcon}"/>
+                                        </Button>
+
+                                        <!-- Expand / Collapse -->
+                                        <Button Grid.Column="2"
+                                                Margin="10 0 10 0"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                Style="{StaticResource PackButtonBase}"
+                                                ToolTip="Expand / Collapse"
+                                                   >
+                                            <materialDesign:PackIcon Kind="ArrowExpandAll"
+                                                 Foreground="{StaticResource LightBlueColorBrush}"
+                                                 Style="{StaticResource GrowPackIcon}"/>
+                                        </Button>
+
+                                    </StackPanel>
+
+                                </Grid>
+                                <Separator Margin="5"/>
+
+                            </StackPanel>
+
+
+                            <ListView x:Name="contributorsListView"
+                                         Grid.Row="1"
+                                          Style="{StaticResource ContributorListView}"
+                                          ItemsSource="{Binding CurrentProject.Contributors}"/>
+
+                            <!-- Empty view -->
+                            <materialDesign:PackIcon Kind="PeopleGroup"
+                                                         Grid.Row="1"
+                                                         Visibility="{Binding CurrentProject.Contributors.Count, Converter={converters:ListItemCountToVisibilityConverter}}"
+                                                         Style="{StaticResource EmptyIconView}"/>
+
+
+                        </Grid>
+
+
+
+                    </Border>
+
+
                 </Grid>
 
                 
@@ -611,109 +709,13 @@
                             
                             <!-- Contributors -->
                             <RowDefinition Height="*"/>
-                            
-                            <!-- Comments -->
-                            <RowDefinition Height="2*"/>
+                          
                         </Grid.RowDefinitions>
 
-                        <!-- Contributors -->
-                        <Border Grid.Row="0"
-                                Padding="10"
-                                Margin="0 0 0 10"
-                                Background="{StaticResource BackgroundLightBrush}"
-                                >
-
-                            <Grid>
-                                <Grid.RowDefinitions>
-
-                                    <!-- Header -->
-                                    <RowDefinition Height="Auto"/>
-
-                                    <!--Content -->
-                                    <RowDefinition Height="*"/>
-                                </Grid.RowDefinitions>
-
-                                <!-- Header -->
-                                <StackPanel Orientation="Vertical">
-
-
-
-                                    <Grid>
-
-                                        <Grid.ColumnDefinitions>
-
-                                            <!-- Header -->
-                                            <ColumnDefinition Width="Auto"/>
-
-                                            <!-- Controls -->
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-
-                                        <!-- Header -->
-                                        <TextBlock Grid.Column="0"
-                                            Text="CONTRIBUTORS"
-                                               Style="{StaticResource ListBoxHeader}"/>
-
-                                        <!-- Controls -->
-                                        <StackPanel Grid.Column="1" Orientation="Horizontal"
-                                                    HorizontalAlignment="Right">
-
-
-                                            <!-- Add contributor -->
-                                            <Button Grid.Column="2"
-                                                Margin="10 0 10 0"
-                                                Background="Transparent"
-                                                BorderThickness="0"
-                                                Style="{StaticResource PackButtonBase}"
-                                                    Command="{Binding AddContributorsCommand}"
-                                                ToolTip="Add new">
-                                                <materialDesign:PackIcon Kind="PeopleAdd"
-                                                 Foreground="{StaticResource LightBlueColorBrush}"
-                                                 Style="{StaticResource GrowPackIcon}"/>
-                                            </Button>
-
-                                            <!-- Expand / Collapse -->
-                                            <Button Grid.Column="2"
-                                                Margin="10 0 10 0"
-                                                Background="Transparent"
-                                                BorderThickness="0"
-                                                Style="{StaticResource PackButtonBase}"
-                                                ToolTip="Expand / Collapse"
-                                                   >
-                                                <materialDesign:PackIcon Kind="ArrowExpandAll"
-                                                 Foreground="{StaticResource LightBlueColorBrush}"
-                                                 Style="{StaticResource GrowPackIcon}"/>
-                                            </Button>
-
-                                        </StackPanel>
-
-                                    </Grid>
-                                    <Separator Margin="5"/>
-
-                                </StackPanel>
-
-
-                                <ListView x:Name="contributorsListView"
-                                         Grid.Row="1"
-                                          Style="{StaticResource ContributorListView}"
-                                          ItemsSource="{Binding CurrentProject.Contributors}"/>
-
-                                <!-- Empty view -->
-                                <materialDesign:PackIcon Kind="PeopleGroup"
-                                                         Grid.Row="1"
-                                                         Visibility="{Binding CurrentProject.Contributors.Count, Converter={converters:ListItemCountToVisibilityConverter}}"
-                                                         Style="{StaticResource EmptyIconView}"/>
-
-
-                            </Grid>
-
-
-
-                        </Border>
-
+                      
                         <!-- Comments -->
-                        <Border Grid.Row="1"
-                                Margin="0 10 0 10"
+                        <Border 
+                                
                             Padding="10"  
                             Background="{StaticResource BackgroundLightBrush}">
 

@@ -279,11 +279,25 @@ namespace Core.DataBase
 			connection.Dispose();
 		}
 
-        #endregion // Today's Tasks
+		#endregion // Today's Tasks
 
-        #region Contributors
+		#region Contributors
 
-        public static IList<IPerson> GetProjectContributors(long projectID)
+		public static ObservableCollection<IContributor> GetAllContributors()
+		{
+			using IDbConnection connection = new SQLiteConnection(GetConnectionString());
+			List<Contributor> contributors = connection.Query<Contributor>(
+				"SELECT * FROM contributors").ToList();
+			connection.Dispose();
+			var output = new ObservableCollection<IContributor>();
+			foreach (var contributor in contributors)
+			{
+				output.Add(contributor);
+			}
+			return output;
+		}
+
+		public static IList<IPerson> GetProjectContributors(long projectID)
         {
             using IDbConnection connection = new SQLiteConnection(GetConnectionString());
             List<Contributor> contributors = connection.Query<Contributor>(
@@ -317,35 +331,69 @@ namespace Core.DataBase
             return output;
         }
 
-        #endregion // Contributors
+		public static void UpdateContributor(IPerson param)
+		{
+			
+			using IDbConnection connection = new SQLiteConnection(GetConnectionString());
+				connection.Update(param);
+			
+			connection.Dispose();
+		}
+
+		public static void AssignContributors(long pID, long cID)
+		{
+			using IDbConnection connection = new SQLiteConnection(GetConnectionString());
+			connection.Execute("INSERT INTO project_contributors (projectID, contributorID) values (@projectID, @contributorID)",
+				new { projectID = pID, contributorID = cID });
+			connection.Dispose();
+		}
+
+		public static void ReAssignContributor(long pID, long cID)
+		{
+			using IDbConnection connection = new SQLiteConnection(GetConnectionString());
+			string query = $"DELETE FROM project_contributors WHERE projectID = '{pID}' AND contributorID = '{cID}'";
+			connection.Execute(query);
+			connection.Dispose();
+		}
+
+		public static void InsertContributor(Contributor contributor)
+		{
+			using IDbConnection connection = new SQLiteConnection(GetConnectionString());
+			var id = connection.Insert(contributor);
+			contributor.ID = id;
+
+			connection.Dispose();
+		}
+
+		#endregion // Contributors
 
 
-        #region Support DB Methods
+		#region Support DB Methods
 
-        //private static double GetProjectprogress(long projectID)
-        //{
-        //    var ProjectTasks = GetProjectTasks(projectID);
-        //    var totalTaskCount = ProjectTasks.Count;
-        //    if (totalTaskCount == 0) return 0;
-        //    var completedTaskCount = 0;
-        //    foreach (var task in ProjectTasks)
-        //    {
-        //        if (task.IsCompleted)
-        //        {
-        //            completedTaskCount++;
-        //        }
-        //    }
-        //    return (completedTaskCount * 100) / totalTaskCount;
-        //}
+		//private static double GetProjectprogress(long projectID)
+		//{
+		//    var ProjectTasks = GetProjectTasks(projectID);
+		//    var totalTaskCount = ProjectTasks.Count;
+		//    if (totalTaskCount == 0) return 0;
+		//    var completedTaskCount = 0;
+		//    foreach (var task in ProjectTasks)
+		//    {
+		//        if (task.IsCompleted)
+		//        {
+		//            completedTaskCount++;
+		//        }
+		//    }
+		//    return (completedTaskCount * 100) / totalTaskCount;
+		//}
 
-        #endregion // Support DB Methods
+		#endregion // Support DB Methods
 
-        #region Support Methodds
+		#region Support Methodds
 
-        /// <summary>
-        /// Creates tables if database is not found
-        /// </summary>
-        public static void CreateTablesIfNotExist()
+		/// <summary>
+		/// Creates tables if database is not found
+		/// </summary>
+		public static void CreateTablesIfNotExist()
 		{
 			lock(_lock)
 			{

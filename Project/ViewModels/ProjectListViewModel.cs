@@ -57,8 +57,6 @@ namespace Idoneus.ViewModels
         {
             if (!StringHelper.CanUse(NewTaskContent)) return;
 
-
-
             var task = new Task
             {
                 Content = NewTaskContent,
@@ -221,8 +219,9 @@ namespace Idoneus.ViewModels
         private void AddContributors()
         {
             //int test = Prompt.ShowDialog("this is text", "this is caption");
-            int test = PromptTest.ShowDialog(CurrentProject.Contributors);
-            Console.WriteLine(test);
+            CurrentProject.Contributors = AddContributorPrompt.ShowDialog(CurrentProject.ID, CurrentProject.Contributors);
+            //Console.WriteLine(test);
+           
         }
 
         #endregion // Icommand Methods

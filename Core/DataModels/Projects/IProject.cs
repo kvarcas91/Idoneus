@@ -16,9 +16,9 @@ namespace Core.DataModels
         /// </summary>
         bool IsArchived { get; set; }
 
-        IList<IElement> Comments { get; set; }
+        ObservableCollection<IElement> Comments { get; set; }
 
-        IList<IContributor> Contributors { get; set; } 
+        ObservableCollection<IContributor> Contributors { get; set; } 
         
         ObservableCollection<IElement> Tasks { get; set; }
     }
