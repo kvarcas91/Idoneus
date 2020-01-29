@@ -91,7 +91,9 @@
     <Compile Include="Converters\ProgressBar\RotateTransformCentreConverter.cs" />
     <Compile Include="Converters\ProgressBar\StartPointConverter.cs" />
     <Compile Include="Converters\ProgressBar\ValueConverter.cs" />
-    <Compile Include="Dialogs\Prompt.cs" />
+    <Compile Include="Dialogs\AddContributorPrompt.xaml.cs">
+      <DependentUpon>AddContributorPrompt.xaml</DependentUpon>
+    </Compile>
     <Compile Include="IoC\IoC.cs" />
     <Compile Include="Utils\WindowResizer.cs" />
     <Compile Include="ViewModels\ApplicationViewModel.cs" />
@@ -120,6 +122,13 @@
     <Compile Include="Views\TasksView.xaml.cs">
       <DependentUpon>TasksView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\temp.xaml.cs">
+      <DependentUpon>temp.xaml</DependentUpon>
+    </Compile>
+    <Page Include="Dialogs\AddContributorPrompt.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -193,6 +202,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\TasksView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\temp.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

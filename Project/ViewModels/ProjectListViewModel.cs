@@ -3,6 +3,7 @@ using Core.DataModels;
 using Core.Helpers;
 using Core.Utils;
 using Idoneus.ViewModels.Base;
+using Project.Dialogs;
 using System;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
@@ -219,7 +220,9 @@ namespace Idoneus.ViewModels
 
         private void AddContributors()
         {
-
+            //int test = Prompt.ShowDialog("this is text", "this is caption");
+            int test = PromptTest.ShowDialog(CurrentProject.Contributors);
+            Console.WriteLine(test);
         }
 
         #endregion // Icommand Methods
