@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Idoneus.Dialogs"
         mc:Ignorable="d"
-        Height="Auto" Width="400"
+        Height="300" Width="400"
         WindowStyle="None"
         AllowsTransparency="True"
          WindowStartupLocation="CenterScreen"
@@ -110,7 +110,7 @@
                         Click="Cancel"/>
 
                 <Button Grid.Column="1"
-                Content="Add"
+                Content="Confirm"
                         Click="Add"/>
             </Grid>
             

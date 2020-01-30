@@ -176,7 +176,7 @@ namespace Idoneus.ViewModels
             ActiveTasksCount = DBHelper.GetAllTasks(false);
             OverdueTasksCount = DBHelper.GetOverdueTasks();
             CompletedTasksCount = DBHelper.GetAllTasks(true);
-            TotalTasksProgress = IntHelper.GetPercentage( (ActiveTasksCount + CompletedTasksCount), CompletedTasksCount);
+            TotalTasksProgress = IntHelper.GetRoundedPercentage( (ActiveTasksCount + CompletedTasksCount), CompletedTasksCount);
             //TotalTasksProgress = GetTotalTasksProgress();
             TotalProjectCount = DBHelper.GetPublishedProjectsCount();
         }

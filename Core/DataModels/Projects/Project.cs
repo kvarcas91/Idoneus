@@ -17,8 +17,10 @@ namespace Core.DataModels
         public bool IsArchived { get; set; } = false;
         [Computed]
         public ObservableCollection<IElement> Comments { get; set; } = new ObservableCollection<IElement>();
+
         [Computed]
         public ObservableCollection<IContributor> Contributors { get; set; } = new ObservableCollection<IContributor>();
+
         [Computed]
         public ObservableCollection<IElement> Tasks { get; set; }
         [Key]

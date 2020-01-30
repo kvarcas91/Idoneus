@@ -636,6 +636,7 @@
                                             Grid.Column="0"
                                                  BorderThickness="0"
                                                  TextWrapping="Wrap"
+                                             TextAlignment="Left"
                                                  Text="{Binding ElementName=projectTaskList, Path=DataContext.SubTaskContent, Mode=TwoWay}"
                                             
                                             />
@@ -721,8 +722,7 @@
                                 <Border Grid.Column="0"
                             Background="{Binding Priority, Converter={converters:PriorityToColorConverter}}" 
                                 Width="3" 
-                                Height="10"
-                                Margin="3"/>
+                                Margin="3 5 3 5"/>
 
                                 <!-- Task content and deadline -->
                                 <StackPanel Grid.Row="0" Grid.Column="1"

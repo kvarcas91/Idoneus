@@ -23,6 +23,7 @@ namespace Idoneus.Dialogs
     public partial class AddProjectPrompt : Window
     {
 
+        private bool isEditable = false;
         private Core.DataModels.Project project = new Core.DataModels.Project();
 
         public AddProjectPrompt()
@@ -32,13 +33,26 @@ namespace Idoneus.Dialogs
             
         }
 
-        public static Core.DataModels.Project Show()
+        public static Core.DataModels.Project Show(Core.DataModels.Project project = null)
         {
             AddProjectPrompt prompt = new AddProjectPrompt();
-
+            if (project != null)
+            {
+                prompt.project = project;
+                prompt.UpdateControls();
+            }
             prompt.ShowDialog();
             return prompt.project;
         }
+
+        private void UpdateControls ()
+        {
+            Title.Text = project.Header;
+            Description.Text = project.Content;
+            dueTime.SelectedDate = project.DueDate;
+            dueCombo.SelectedItem = project.Priority;
+        }
+
 
         private void Cancel(object sender, RoutedEventArgs e)
         {
@@ -49,7 +63,7 @@ namespace Idoneus.Dialogs
         private void Add(object sender, RoutedEventArgs e)
         {
             if (!StringHelper.CanUse(Title.Text) || !StringHelper.CanUse(Description.Text)) return;
-
+            
             project.Header = Title.Text;
             project.Content = Description.Text;
             project.SubmitionDate = DateTime.Now;

@@ -116,7 +116,20 @@
 
                     <!-- Priority an due date -->
                     <ColumnDefinition Width="Auto"/>
+
+                    <!-- Priority an due date -->
+                    <ColumnDefinition Width="Auto"/>
+
                 </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    
+                    <!-- Content -->
+                    <RowDefinition Height="Auto"/>
+
+                    <!-- Controls -->
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
 
                 <!-- Progress -->
@@ -222,6 +235,42 @@
                                   FontFamily="{StaticResource RalewayBold}"/>
                     </TextBlock>
                 </Grid>
+
+                <Button Grid.Column="3" 
+                        Style="{StaticResource ControlButton}"
+                        Command="{Binding ExpandProjectControlCommand}"
+                        CommandParameter="{Binding}"
+                        ToolTip="Show control panel">
+                    <materialDesign:PackIcon Kind="{Binding IsExpanded,
+                                                     Converter={converters:BoolToExpandableIconConverter}}" 
+                                                                     Foreground="Black"
+                                                                             
+                                                                     Width="12" Height="12"/>
+                </Button>
+
+                <StackPanel Grid.Row="1" Grid.ColumnSpan="4"
+                    Orientation="Horizontal"
+                            HorizontalAlignment="Right"
+                            Visibility="{Binding IsExpanded, Converter={StaticResource BooleanToVisibilityConverter}}">
+
+                    <Button Command="{Binding DeleteProjectCommand}"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        ToolTip="Delete Project">
+                        <materialDesign:PackIcon Kind="PlaylistRemove"
+                                             Foreground="Black"/>
+                    </Button>
+                    
+                    <Button Command="{Binding EditProjectCommand}"
+                         CommandParameter="{Binding CurrentProject}"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        ToolTip="Edit Project">
+                        <materialDesign:PackIcon Kind="Edit"
+                                             Foreground="Black"/>
+                    </Button>
+
+                </StackPanel>
             </Grid>
 
             <!-- Project content -->
@@ -417,19 +466,6 @@
                                                     Command="{Binding AddContributorsCommand}"
                                                 ToolTip="Add new">
                                             <materialDesign:PackIcon Kind="PeopleAdd"
-                                                 Foreground="{StaticResource LightBlueColorBrush}"
-                                                 Style="{StaticResource GrowPackIcon}"/>
-                                        </Button>
-
-                                        <!-- Expand / Collapse -->
-                                        <Button Grid.Column="2"
-                                                Margin="10 0 10 0"
-                                                Background="Transparent"
-                                                BorderThickness="0"
-                                                Style="{StaticResource PackButtonBase}"
-                                                ToolTip="Expand / Collapse"
-                                                   >
-                                            <materialDesign:PackIcon Kind="ArrowExpandAll"
                                                  Foreground="{StaticResource LightBlueColorBrush}"
                                                  Style="{StaticResource GrowPackIcon}"/>
                                         </Button>

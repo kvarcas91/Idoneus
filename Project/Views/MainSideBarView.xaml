@@ -72,24 +72,11 @@
                     BorderThickness="0"
                     ToolTip="Projects">
 
-                <materialDesign:PackIcon Kind="Folder"
+            <materialDesign:PackIcon Kind="FilterList"
                                          Foreground="{StaticResource SecondaryColorBrush}"
                                          Width="24" Height="24"/>
             </Button>
 
-            <Button
-                Background="Transparent"
-                Command="{Binding TasksCommand}"
-                     HorizontalContentAlignment="Left"
-                    BorderThickness="0">
-
-                <materialDesign:PackIcon Kind="CalendarTask"
-                                         Foreground="{StaticResource SecondaryColorBrush}"
-                                         Width="24" Height="24"/>
-
-
-            </Button>
-      
 
     </StackPanel>
 </UserControl>

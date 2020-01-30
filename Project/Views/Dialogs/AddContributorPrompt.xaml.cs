@@ -6,7 +6,7 @@ using System.Collections;
 using System.Windows.Controls;
 using Core.DataBase;
 
-namespace Project.Dialogs
+namespace Idoneus.Dialogs
 {
     /// <summary>
     /// Interaction logic for PromptTest.xaml

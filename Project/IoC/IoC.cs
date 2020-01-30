@@ -35,7 +35,7 @@ namespace Idoneus
         {
             // Bind to a single instance of Application view model
             Kernel.Bind<ApplicationViewModel>().ToConstant(new ApplicationViewModel());
-            Kernel.Bind<ProjectListViewModel>().ToConstant(ProjectListViewModel.Instance);
+            //Kernel.Bind<ProjectListViewModel>().ToConstant(ProjectListViewModel.Instance);
         }
 
         #endregion

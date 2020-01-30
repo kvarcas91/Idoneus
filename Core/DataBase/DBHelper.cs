@@ -64,18 +64,42 @@ namespace Core.DataBase
 			using IDbConnection connection = new SQLiteConnection(GetConnectionString());
 			var id = connection.Insert(project);
 			project.ID = id;
-			//connection.Execute("insert into projects (Header, Content, SubmitionDate, DueDate, Path, Priority, IsArchived) " +
-			//				   $"values (@Header, @Content, @SubmitionDate, @DueDate, @Path, @Priority, @IsArchived)", project);
-			//project.ID = GetLastRowID("projects");
-			//Console.WriteLine($"ID: {project.ID }");
+			
 			connection.Dispose();
-
-			foreach (var contributor in project.Contributors)
-			{
-				AssignContributors(project.ID, contributor.ID);
-			}
 		}
 
+		public static void UpdateProject(Project project)
+		{
+			using IDbConnection connection = new SQLiteConnection(GetConnectionString());
+			connection.Update(project);
+			
+			connection.Dispose();
+		}
+
+		public static void DeleteProject(Project project)
+		{
+			using IDbConnection connection = new SQLiteConnection(GetConnectionString());
+			
+			// Removing all tasks
+			foreach (var task in project.Tasks)
+			{
+				DeleteTask(task);
+			}
+
+			// Removing all comments
+			foreach (var comment in project.Comments)
+			{
+				DeleteComment(comment);
+			}
+
+			// Reassign contributors
+			foreach (var contributor in project.Contributors)
+			{
+				ReAssignContributor(project.ID, contributor.ID);
+			}
+
+			connection.Delete(project);
+		}
 
 		#endregion // Projects
 
@@ -422,6 +446,14 @@ namespace Core.DataBase
 			connection.Dispose();
 		}
 
+		public static void DeleteComment (IElement comment)
+		{
+			using IDbConnection connection = new SQLiteConnection(GetConnectionString());
+			string query = $"DELETE FROM project_comments WHERE commentID = '{comment.ID}'";
+			connection.Execute(query);
+			connection.Delete((Comment)comment);
+		}
+
 		#endregion // Comments
 
 		#region Support DB Methods
@@ -495,7 +527,7 @@ namespace Core.DataBase
                               [ID] INTEGER NOT NULL,
                               [FirstName] TEXT NOT NULL,
                               [LastName] TEXT NOT NULL,
-                              CONSTRAINT[PK_Contributor] PRIMARY KEY([Id]));
+                              CONSTRAINT[PK_Contributor] PRIMARY KEY([ID]));
 
                             CREATE TABLE project_contributors (
                                 projectID INTEGER NOT NULL,

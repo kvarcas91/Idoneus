@@ -3,7 +3,7 @@ using Core.DataModels;
 using Core.Helpers;
 using Core.Utils;
 using Idoneus.ViewModels.Base;
-using Project.Dialogs;
+using Idoneus.Dialogs;
 using System;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
@@ -24,8 +24,6 @@ namespace Idoneus.ViewModels
             set => _instance = value;
         }
 
-
-
         #region Observable Collections
 
         public ObservableCollection<IProject> Projects { get; set; }
@@ -37,8 +35,14 @@ namespace Idoneus.ViewModels
         #region Icommand Properties
 
         public ICommand TestCommand { get; set; }
+        // Project Commands
         public ICommand SelectProjectCommand { get; set; }
         public ICommand CollapseProjectListCommand { get; set; }
+        public ICommand EditProjectCommand { get; set; }
+        public ICommand DeleteProjectCommand { get; set; }
+        public ICommand ExpandProjectControlCommand { get; set; }
+
+        // Task Commands
         public ICommand ExpandTaskPanelCommand { get; set; }
         public ICommand AddNewTaskCommand { get; set; }
         public ICommand SelectTaskCommand { get; set; }
@@ -47,16 +51,48 @@ namespace Idoneus.ViewModels
         public ICommand AddSubTaskCommand { get; set; }
         public ICommand DeleteTaskCommand { get; set; }
         public ICommand EditTaskCommand { get; set; }
+
+        // Contributors Commands
         public ICommand AddContributorsCommand { get; set; }
+
+        // Comments Commands
         public ICommand AddCommentCommand { get; set; }
         public ICommand ExpandCommentCommand { get; set; }
         public ICommand UpdateCommentCommand { get; set; }
+        public ICommand DeleteCommentCommand { get; set; }
+
 
         #endregion // Icommand Properties
 
         #region Icommand Methods
 
-        private void AddTask ()
+        #region Project
+
+        private void EditProject(IProject project)
+        {
+            ExpandProjectControl();
+            var updatedProject = AddProjectPrompt.Show((Core.DataModels.Project)project);
+            if (updatedProject == null) return;
+            CurrentProject = updatedProject;
+            DBHelper.UpdateProject((Core.DataModels.Project)CurrentProject);
+        }
+
+        private void ExpandProjectControl()
+        {
+            IsExpanded ^= true;
+        }
+
+        private void DeleteProject()
+        {
+            DBHelper.DeleteProject((Core.DataModels.Project)CurrentProject);
+            IoC.Get<ApplicationViewModel>().GoTo(ApplicationPage.Dashboard);
+        }
+
+        #endregion // Project
+
+        #region Task
+
+        private void AddTask()
         {
             if (!StringHelper.CanUse(NewTaskContent)) return;
 
@@ -75,7 +111,7 @@ namespace Idoneus.ViewModels
             UpdateCounters();
         }
 
-        private void SelectTask (IElement param)
+        private void SelectTask(IElement param)
         {
             //task.IsCompleted ^= true;
             if (param is Task task)
@@ -94,7 +130,7 @@ namespace Idoneus.ViewModels
             UpdateCounters();
         }
 
-        private void ExpandTask (IElement param)
+        private void ExpandTask(IElement param)
         {
             editableTask = null;
 
@@ -148,9 +184,9 @@ namespace Idoneus.ViewModels
             else
             {
                 if (editableTask is Task task)
-                { 
+                {
                     ((Task)editableTask).IsAddSubTaskPanelVisible = false;
-                   
+
                     ((Task)editableTask).IsExpanded = false;
 
                     task.Content = SubTaskContent;
@@ -168,7 +204,7 @@ namespace Idoneus.ViewModels
                     subtask.DueDate = SubTaskDueTime;
                 }
 
-               
+
                 DBHelper.UpdateTask(editableTask);
                 editableTask = null;
             }
@@ -176,18 +212,18 @@ namespace Idoneus.ViewModels
             UpdateCounters();
         }
 
-        private void EditTask (IElement param)
+        private void EditTask(IElement param)
         {
             editableTask = param;
             if (param is ITask task)
             {
-               
+
                 ((Task)task).IsAddSubTaskPanelVisible = true;
 
                 SubTaskContent = task.Content;
                 SubTaskPriority = task.Priority;
                 SubTaskDueTime = task.DueDate;
-                
+
             }
             if (param is SubTask subTask)
             {
@@ -200,7 +236,7 @@ namespace Idoneus.ViewModels
             }
         }
 
-        private void DeleteTask (IElement param)
+        private void DeleteTask(IElement param)
         {
             if (param is ITask)
             {
@@ -215,16 +251,24 @@ namespace Idoneus.ViewModels
                 var task = (Task)CurrentProject.Tasks[subtask.ParentIndex];
                 task.SubTasks.Remove(subtask);
             }
-           
+
             UpdateCounters();
         }
+
+        #endregion // Task
+
+        #region Contributors
 
         private void AddContributors()
         {
             CurrentProject.Contributors = AddContributorPrompt.ShowDialog(CurrentProject.ID, CurrentProject.Contributors);
         }
 
-        private void AddComment ()
+        #endregion // Contributors
+
+        #region Comment
+
+        private void AddComment()
         {
             if (CommentContent.Trim(' ').Length == 0) return;
 
@@ -237,10 +281,10 @@ namespace Idoneus.ViewModels
 
             CommentContent = string.Empty;
 
-            
+
         }
 
-        private void ExpandComment (IComment comment)
+        private void ExpandComment(IComment comment)
         {
             if (comment != null && PreviewComment != comment)
             {
@@ -252,20 +296,29 @@ namespace Idoneus.ViewModels
                 IsExpandedCommentViewVisible = false;
                 PreviewComment = null;
             }
-           
+
         }
 
-        private void UpdateComment ()
+        private void UpdateComment()
         {
             DBHelper.UpdateComment(PreviewComment);
             ExpandComment(null);
         }
+
+        private void DeleteComment(IComment comment)
+        {
+            CurrentProject.Comments.Remove(comment);
+            DBHelper.DeleteComment(comment);
+        }
+
+        #endregion // Comment
 
         #endregion // Icommand Methods
 
         #region Public Properties
 
         public IProject CurrentProject { get; set; }
+        public bool IsExpanded { get; set; } = false;
 
         #region New Task Properties
 
@@ -342,22 +395,34 @@ namespace Idoneus.ViewModels
 
         #region Private Methods
 
-    private void SetUpCommands ()
+        private void SetUpCommands ()
         {
+
+            // Project
             CollapseProjectListCommand = new RelayCommand(CollapseProjectList);
+            SelectProjectCommand = new ParameterizedRelayCommand<IProject>(SelectProject);
+            EditProjectCommand = new ParameterizedRelayCommand<IProject>(EditProject);
+            ExpandProjectControlCommand = new RelayCommand(ExpandProjectControl);
+            DeleteProjectCommand = new RelayCommand(DeleteProject);
+
+            // Task
             ExpandTaskPanelCommand = new RelayCommand(ExpandTaskPanel);
             AddNewTaskCommand = new RelayCommand(AddTask);
-            SelectProjectCommand = new ParameterizedRelayCommand<IProject>(SelectProject);
             SelectTaskCommand = new ParameterizedRelayCommand<IElement>(SelectTask);
             ExpandTaskCommand = new ParameterizedRelayCommand<IElement>(ExpandTask);
             ExpandSubTaskPanelCommand = new ParameterizedRelayCommand<IElement>(ExpandSubTaskPanel);
             AddSubTaskCommand = new ParameterizedRelayCommand<IElement>(AddSubTask);
             DeleteTaskCommand = new ParameterizedRelayCommand<IElement>(DeleteTask);
             EditTaskCommand = new ParameterizedRelayCommand<IElement>(EditTask);
+
+            // Contributors
             AddContributorsCommand = new RelayCommand(AddContributors);
+
+            // Comments
             AddCommentCommand = new RelayCommand(AddComment);
             ExpandCommentCommand = new ParameterizedRelayCommand<IComment>(ExpandComment);
             UpdateCommentCommand = new RelayCommand(UpdateComment);
+            DeleteCommentCommand = new ParameterizedRelayCommand<IComment>(DeleteComment);
         }
 
         private void SelectProject (IProject project)
@@ -366,6 +431,7 @@ namespace Idoneus.ViewModels
             {
                 CurrentProject = project;
                 UpdateCounters();
+                InitializeDueDates();
             }
         }
 
@@ -384,6 +450,14 @@ namespace Idoneus.ViewModels
         private void ExpandTaskPanel()
         {
             IsControlExpanded ^= true;
+        }
+
+        private void InitializeDueDates()
+        {
+            if (CurrentProject == null) return;
+
+            NewTaskSelectedDate = CurrentProject.DueDate;
+            SubTaskDueTime = CurrentProject.DueDate;
         }
 
         #endregion // Private Methods
@@ -412,6 +486,8 @@ namespace Idoneus.ViewModels
             SetUpCommands();
 
             UpdateCounters();
+
+            InitializeDueDates();
 
             InitTest();
         }
