@@ -24,7 +24,8 @@
                 <x:Type TypeName="StyleAlias:Priority"/>
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
-    
+        <BooleanToVisibilityConverter x:Key="boolToVisibilityConverter"/>
+
     </UserControl.Resources>
 
     <Grid Background="white">
@@ -599,13 +600,7 @@
                                 </Grid.RowDefinitions>
 
 
-
-                                <!-- Content -->
-                                <!--<ListView Grid.Row="0" ItemsSource="{Binding CurrentProject.Tasks}"
-                                              Style="{StaticResource ProjectTaskViewStyle}"
-                                               Visibility="{Binding  CurrentProject.Tasks.Count, 
-                                    Converter={converters:ListItemCountToVisibilityConverter}, 
-                                    ConverterParameter=1}"/>-->
+                               
 
                                 <TreeView x:Name="projectTaskList"
                           Grid.Row="0"
@@ -613,18 +608,54 @@
                           HorizontalContentAlignment="Stretch"
                           ScrollViewer.CanContentScroll="False"
                                               Style="{StaticResource ProjectTaskViewStyle}"
-                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                          Visibility="{Binding IsExpandedCommentViewVisible, Mode=TwoWay,
+                                    Converter={StaticResource InverseBoolToVisConverter}}"/>
 
+                                <Grid Grid.Row="0"
+                                      Panel.ZIndex="1"
+                                      Visibility="{Binding IsExpandedCommentViewVisible, Mode=TwoWay,
+                                    Converter={StaticResource boolToVisibilityConverter}}">
+
+                                    <Grid.RowDefinitions>
+
+                                        <!-- submition date -->
+                                        <RowDefinition Height="Auto"/>
+
+                                        <!-- content -->
+                                        <RowDefinition Height="*"/>
+
+                                        <!-- Save update -->
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Grid.Row="0"
+                                   Text="{Binding PreviewComment.SubmitionDate, Mode=TwoWay, Converter={converters:DateTimeToStringConverter}}"
+                                   Style="{StaticResource NoteDateText}"
+                                      />
+
+                                    <TextBox Grid.Row="1"
+                                             AcceptsReturn="True"
+                                   Text="{Binding PreviewComment.Content, Mode=TwoWay}"
+                                  
+                                        />
+                                    <Button Grid.Row="2"
+                                        Content="Save"
+                                            Command="{Binding UpdateCommentCommand}"/>
+
+                                </Grid>
 
                                 <Grid Grid.Row="1" 
                             Margin="-10 0 -10 -10"
                             MaxHeight="100"
                             Opacity="0.5"
-                            Background="White">
+                            Background="White"
+                                      Visibility="{Binding IsExpandedCommentViewVisible, Mode=TwoWay,
+                                    Converter={StaticResource InverseBoolToVisConverter}}">
 
                                     <Grid.ColumnDefinitions>
 
-                                        <!-- Add Comment textbox -->
+                                        <!-- Add Task textbox -->
                                         <ColumnDefinition Width="*"/>
 
                                         <!-- Controls -->
@@ -700,7 +731,7 @@
 
                     </Border>
 
-                    <!-- Contributors, Comments -->
+                    <!-- Comments -->
                     <Grid Grid.Column="2"
                           Width="250"
                            Style="{StaticResource ProjectsCommentFileAnimation}">
@@ -748,8 +779,9 @@
                                     </Grid.RowDefinitions>
 
                                     <!-- Content -->
-                                    <ListView Grid.Row="0" ItemsSource="{Binding CurrentProject.Comments}"
-                                              Style="{StaticResource ProjectListViewSnippet}"/>
+                                    <ListView x:Name="CommentListView" 
+                                        Grid.Row="0" ItemsSource="{Binding CurrentProject.Comments}"
+                                              Style="{StaticResource CommentListView}"/>
 
                                     <!-- Add Comment -->
                                     <Grid Grid.Row="1" 
@@ -770,7 +802,7 @@
                                         <TextBox x:Name="SendCommentTextBox"
                                             Grid.Column="0"
                                                  Padding="5"
-                                                
+                                                Text="{Binding CommentContent, Mode=TwoWay}"
                                         Style="{StaticResource BaseTextBox}"
                                             />
                                         <TextBlock Grid.Column="0"
@@ -783,7 +815,6 @@
                                                 BorderThickness="0"
                                                 Margin="10 0"
                                                 Command="{Binding AddCommentCommand}"
-                                                CommandParameter="{Binding Text, ElementName=SendCommentTextBox}"
                                                 Style="{StaticResource PackButtonBase}"
                                                 ToolTip="Add Comment"
                                                   >

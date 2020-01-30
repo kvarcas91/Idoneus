@@ -43,6 +43,7 @@ namespace Core.DataBase
 			foreach (var project in output)
 			{
 				project.Tasks = GetProjectTasks(project.ID);
+				project.Comments = GetProjectComments(project.ID);
 				project.UpdateProgress();
 				//project.Progress = GetProjectProgress(project.ID);
 				project.AddPersons(GetProjectContributors(project.ID));
@@ -56,6 +57,23 @@ namespace Core.DataBase
 		public static int GetPublishedProjectsCount ()
 		{
 			return GetCount("projects");
+		}
+
+		public static void InsertProject(Project project)
+		{
+			using IDbConnection connection = new SQLiteConnection(GetConnectionString());
+			var id = connection.Insert(project);
+			project.ID = id;
+			//connection.Execute("insert into projects (Header, Content, SubmitionDate, DueDate, Path, Priority, IsArchived) " +
+			//				   $"values (@Header, @Content, @SubmitionDate, @DueDate, @Path, @Priority, @IsArchived)", project);
+			//project.ID = GetLastRowID("projects");
+			//Console.WriteLine($"ID: {project.ID }");
+			connection.Dispose();
+
+			foreach (var contributor in project.Contributors)
+			{
+				AssignContributors(project.ID, contributor.ID);
+			}
 		}
 
 
@@ -246,10 +264,6 @@ namespace Core.DataBase
 		{
 
 			using IDbConnection connection = new SQLiteConnection(GetConnectionString());
-			//var sql = @"insert into td_tasks (Content, SubmitionDate, IsCompleted) values (@Content, @SubmitionDate, @IsCompleted)";
-			//connection.Execute(sql, task);
-			//task.ID = GetLastRowID("td_tasks");
-
 			var id = connection.Insert(task);
 			task.ID = id;
 			connection.Dispose();
@@ -365,8 +379,50 @@ namespace Core.DataBase
 			connection.Dispose();
 		}
 
-		#endregion // Contributors
+        #endregion // Contributors
 
+        #region Comments
+
+		public static void InsertComment (Comment comment, long projectID)
+		{
+			using IDbConnection connection = new SQLiteConnection(GetConnectionString());
+			var id = connection.Insert(comment);
+			comment.ID = id;
+			connection.Dispose();
+
+			AssignComment(projectID, id);
+		}
+
+		private static void AssignComment (long prID, long cID)
+		{
+			using IDbConnection connection = new SQLiteConnection(GetConnectionString());
+			connection.Execute("INSERT INTO project_comments (projectID, commentID) values (@prID, @cID)",
+				new { prID, cID });
+			connection.Dispose();
+		}
+
+		public static ObservableCollection<IElement> GetProjectComments(long projectID)
+		{
+			using IDbConnection connection = new SQLiteConnection(GetConnectionString());
+			var output = connection.Query<Comment>(
+				"SELECT c.ID, c.Content, c.SubmitionDate " +
+				"FROM comments c " +
+				"INNER JOIN project_comments p ON p.commentID = c.ID " +
+				$"INNER JOIN projects pr on pr.ID = p.projectID WHERE pr.ID = {projectID} order by c.SubmitionDate DESC");
+
+			connection.Dispose();
+			return new ObservableCollection<IElement>(output);
+		}
+
+		public static void UpdateComment (IComment comment)
+		{
+			comment.SubmitionDate = DateTime.Now;
+			using IDbConnection connection = new SQLiteConnection(GetConnectionString());
+			connection.Update((Comment)comment);
+			connection.Dispose();
+		}
+
+		#endregion // Comments
 
 		#region Support DB Methods
 
@@ -409,6 +465,17 @@ namespace Core.DataBase
 								Priority INTEGER NOT NULL,
 								IsArchived INTEGER,
 								OrderNumber INTEGER);
+
+							CREATE TABLE comments (
+								ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+								Content TEXT NOT NULL,
+								SubmitionDate TEXT NOT NULL);
+
+							CREATE TABLE project_comments (
+								projectID INTEGER NOT NULL,
+								commentID INTEGER NOT NULL,
+								FOREIGN KEY(projectID) REFERENCES projects(ID),
+								FOREIGN KEY(commentID) REFERENCES comments(ID));
 
 							CREATE TABLE tasks (
 								ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,

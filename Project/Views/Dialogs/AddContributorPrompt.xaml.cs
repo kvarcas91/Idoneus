@@ -15,13 +15,11 @@ namespace Project.Dialogs
     {
         public ObservableCollection<IContributor> Contributors { get; set; } = new ObservableCollection<IContributor>();
         private ObservableCollection<IContributor> selectedContributors = new ObservableCollection<IContributor>();
-        private static AddContributorPrompt instance;
         private long projectID;
 
         public AddContributorPrompt()
         {
             InitializeComponent();
-            instance = this;
             
         }
 
@@ -51,29 +49,15 @@ namespace Project.Dialogs
         public static ObservableCollection<IContributor> ShowDialog(long projectID, ObservableCollection<IContributor> contributors)
         {
             //Window prompt = new Window();
-            
-           
-            Window prompt = new AddContributorPrompt(contributors);
-            instance.projectID = projectID;
-            
-            //prompt.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-            //prompt.Width = 500;
-            //prompt.Height = 100;
-            
-            //StackPanel panel = new StackPanel() { Orientation = Orientation.Vertical };
 
-            //Button confirmation = new Button() { Content = "Ok" };
-            //confirmation.Click += (sender, e) => { prompt.Close(); };
 
-            //panel.Children.Add(confirmation);
-            //prompt.Content = panel;
-            //prompt.ShowDialog();
-            foreach (var contributor in contributors)
-            {
-                Console.WriteLine(contributor.ToString());
-            }
+            AddContributorPrompt prompt = new AddContributorPrompt(contributors);
+            prompt.projectID = projectID;
+          
+
             prompt.ShowDialog();
-            return instance.selectedContributors;
+
+            return prompt.selectedContributors;
         }
 
         private void CheckBoxChanged(object sender, RoutedEventArgs e)

@@ -38,12 +38,25 @@
 
 
 
+        <Button x:Name="NewProject"
+                    Command="{Binding AddProjectCommand}"
+                    VerticalAlignment="Top"
+                    Background="Transparent"
+                    BorderThickness="0"
+                   
+                    ToolTip="Create new project">
+            <materialDesign:PackIcon Kind="AddCircleOutline"
+                                          Foreground="{StaticResource SecondaryColorBrush}"
+                                         Width="24"
+                                         Height="24"/>
+        </Button>
 
-                     
-            <Button Background="Transparent"
+
+        <Button Background="Transparent"
                 Command="{Binding DashboardCommand}"
                     HorizontalContentAlignment="Left"
                     BorderThickness="0"
+                    ToolTip="Dashboard"
                     >
 
                     <materialDesign:PackIcon Kind="ViewDashboard"
@@ -52,18 +65,19 @@
 
             </Button>
 
-            <Button Grid.Row="1"
+            <Button 
                 Background="Transparent"
                 Command="{Binding ProjectsCommand}"
                      HorizontalContentAlignment="Left"
-                    BorderThickness="0">
+                    BorderThickness="0"
+                    ToolTip="Projects">
 
                 <materialDesign:PackIcon Kind="Folder"
                                          Foreground="{StaticResource SecondaryColorBrush}"
                                          Width="24" Height="24"/>
             </Button>
 
-            <Button Grid.Row="2"
+            <Button
                 Background="Transparent"
                 Command="{Binding TasksCommand}"
                      HorizontalContentAlignment="Left"

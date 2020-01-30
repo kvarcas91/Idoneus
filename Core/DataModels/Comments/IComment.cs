@@ -1,9 +1,11 @@
-﻿namespace Core.DataModels
+﻿using System;
+
+namespace Core.DataModels
 {
-    public interface IComment : IElement, IDateable
+    public interface IComment : IElement
     {
 
-        string Header { get; set; }
+        DateTime SubmitionDate { get; set; }
 
     }
 }

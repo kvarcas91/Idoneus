@@ -76,6 +76,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataBase\DBHelper.cs" />
+    <Compile Include="DataModels\Comments\Comment.cs" />
     <Compile Include="DataModels\Comments\IComment.cs" />
     <Compile Include="DataModels\Components\IComponent.cs" />
     <Compile Include="DataModels\Components\IData.cs" />

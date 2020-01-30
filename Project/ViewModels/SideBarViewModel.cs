@@ -1,4 +1,6 @@
-﻿using Idoneus.ViewModels.Base;
+﻿using Core.DataBase;
+using Idoneus.Dialogs;
+using Idoneus.ViewModels.Base;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -20,6 +22,8 @@ namespace Idoneus.ViewModels
         public ICommand ProjectsCommand { get; set; }
 
         public ICommand TasksCommand { get; set; }
+
+        public ICommand AddProjectCommand { get; set; }
 
         private void OpenDashboard ()
         {
@@ -44,8 +48,19 @@ namespace Idoneus.ViewModels
             DashboardCommand = new RelayCommand(OpenDashboard);
             ProjectsCommand = new RelayCommand(OpenProjects);
             TasksCommand = new RelayCommand(OpenTasks);
+            AddProjectCommand = new RelayCommand(AddProject);
 
             GetProfilePicture();
+        }
+
+        public void AddProject()
+        {
+            var project = AddProjectPrompt.Show();
+            if (project != null)
+            {
+                DBHelper.InsertProject(project);
+                IoC.Get<ApplicationViewModel>().GoTo(ApplicationPage.Projects, -1);
+            }
         }
 
         private void GetProfilePicture ()

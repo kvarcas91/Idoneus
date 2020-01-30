@@ -15,7 +15,7 @@
     <SolidColorBrush x:Key="PrimaryTransparentColorBrush" Color="{StaticResource PrimaryTransparentColor}"/>
 
     <!-- Very Light Grey -->
-    <Color x:Key="BackgroundLight">#f5f5ff</Color>
+    <Color x:Key="BackgroundLight">#f5f5f5</Color>
     <SolidColorBrush x:Key="BackgroundLightBrush" Color="{StaticResource BackgroundLight}"/>
 
     <!-- Light Grey -->

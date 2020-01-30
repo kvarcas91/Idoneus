@@ -48,6 +48,9 @@ namespace Idoneus.ViewModels
         public ICommand DeleteTaskCommand { get; set; }
         public ICommand EditTaskCommand { get; set; }
         public ICommand AddContributorsCommand { get; set; }
+        public ICommand AddCommentCommand { get; set; }
+        public ICommand ExpandCommentCommand { get; set; }
+        public ICommand UpdateCommentCommand { get; set; }
 
         #endregion // Icommand Properties
 
@@ -218,10 +221,44 @@ namespace Idoneus.ViewModels
 
         private void AddContributors()
         {
-            //int test = Prompt.ShowDialog("this is text", "this is caption");
             CurrentProject.Contributors = AddContributorPrompt.ShowDialog(CurrentProject.ID, CurrentProject.Contributors);
-            //Console.WriteLine(test);
+        }
+
+        private void AddComment ()
+        {
+            if (CommentContent.Trim(' ').Length == 0) return;
+
+            Comment comment = new Comment
+            {
+                Content = CommentContent
+            };
+            DBHelper.InsertComment(comment, CurrentProject.ID);
+            CurrentProject.Comments.Insert(0, comment);
+
+            CommentContent = string.Empty;
+
+            
+        }
+
+        private void ExpandComment (IComment comment)
+        {
+            if (comment != null && PreviewComment != comment)
+            {
+                IsExpandedCommentViewVisible = true;
+                PreviewComment = comment;
+            }
+            else
+            {
+                IsExpandedCommentViewVisible = false;
+                PreviewComment = null;
+            }
            
+        }
+
+        private void UpdateComment ()
+        {
+            DBHelper.UpdateComment(PreviewComment);
+            ExpandComment(null);
         }
 
         #endregion // Icommand Methods
@@ -248,9 +285,17 @@ namespace Idoneus.ViewModels
 
         #region Project Properties
 
-      
+
 
         #endregion // Project Properties
+
+        #region Comment Properties
+
+        public string CommentContent { get; set; }
+        public bool IsExpandedCommentViewVisible { get; set; } = false;
+        public IComment PreviewComment { get; set; }
+
+        #endregion // Comment Properties
 
         #region Counters
 
@@ -310,6 +355,9 @@ namespace Idoneus.ViewModels
             DeleteTaskCommand = new ParameterizedRelayCommand<IElement>(DeleteTask);
             EditTaskCommand = new ParameterizedRelayCommand<IElement>(EditTask);
             AddContributorsCommand = new RelayCommand(AddContributors);
+            AddCommentCommand = new RelayCommand(AddComment);
+            ExpandCommentCommand = new ParameterizedRelayCommand<IComment>(ExpandComment);
+            UpdateCommentCommand = new RelayCommand(UpdateComment);
         }
 
         private void SelectProject (IProject project)
@@ -352,8 +400,11 @@ namespace Idoneus.ViewModels
             var index = IoC.Get<ApplicationViewModel>().Parameters;
             if (index != null)
             {
-                
-                CurrentProject = Projects[(int)index];
+                if ((int)index == -1)
+                {
+                    CurrentProject = Projects[Projects.Count - 1];
+                }
+                else CurrentProject = Projects[(int)index];
             }
 
             IsProjectListSideBarExpanded = (CurrentProject == null);

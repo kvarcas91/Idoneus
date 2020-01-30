@@ -91,7 +91,7 @@
     <Compile Include="Converters\ProgressBar\RotateTransformCentreConverter.cs" />
     <Compile Include="Converters\ProgressBar\StartPointConverter.cs" />
     <Compile Include="Converters\ProgressBar\ValueConverter.cs" />
-    <Compile Include="Dialogs\AddContributorPrompt.xaml.cs">
+    <Compile Include="Views\Dialogs\AddContributorPrompt.xaml.cs">
       <DependentUpon>AddContributorPrompt.xaml</DependentUpon>
     </Compile>
     <Compile Include="IoC\IoC.cs" />
@@ -110,6 +110,9 @@
     <Compile Include="Views\DashboardView.xaml.cs">
       <DependentUpon>DashboardView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Dialogs\AddProjectPrompt.xaml.cs">
+      <DependentUpon>AddProjectPrompt.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\MainContentView.xaml.cs">
       <DependentUpon>MainContentView.xaml</DependentUpon>
     </Compile>
@@ -125,7 +128,7 @@
     <Compile Include="Views\temp.xaml.cs">
       <DependentUpon>temp.xaml</DependentUpon>
     </Compile>
-    <Page Include="Dialogs\AddContributorPrompt.xaml">
+    <Page Include="Views\Dialogs\AddContributorPrompt.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -186,6 +189,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\DashboardView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Dialogs\AddProjectPrompt.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

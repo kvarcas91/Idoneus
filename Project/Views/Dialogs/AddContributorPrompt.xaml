@@ -6,8 +6,8 @@
         xmlns:local="clr-namespace:Project.Dialogs"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
-        Title="Add..." Height="450" Width="400"
-         WindowStyle="None"
+        Height="450" Width="400"
+        WindowStyle="None"
         AllowsTransparency="True"
         xmlns:converters="clr-namespace:Idoneus.Converters"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">

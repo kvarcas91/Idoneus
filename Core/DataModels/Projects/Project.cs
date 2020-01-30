@@ -14,15 +14,20 @@ namespace Core.DataModels
     public class Project : IProject, INotifyPropertyChanged
     {
         public string Header { get; set; }
-        public bool IsArchived { get; set; }
+        public bool IsArchived { get; set; } = false;
+        [Computed]
         public ObservableCollection<IElement> Comments { get; set; } = new ObservableCollection<IElement>();
+        [Computed]
         public ObservableCollection<IContributor> Contributors { get; set; } = new ObservableCollection<IContributor>();
+        [Computed]
         public ObservableCollection<IElement> Tasks { get; set; }
+        [Key]
         public long ID { get; set; }
         public string Content { get; set; }
         public DateTime SubmitionDate { get; set; }
         public DateTime DueDate { get; set; }
         public Priority Priority { get; set; }
+        [Computed]
         public decimal Progress
         {
             get => _progress;
@@ -35,6 +40,7 @@ namespace Core.DataModels
                 }
             }
         }
+
         public string Path { get; set; }
 
         [Computed]
