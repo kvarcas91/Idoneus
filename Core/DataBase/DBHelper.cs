@@ -1,4 +1,5 @@
 ﻿using Core.DataModels;
+using Core.Helpers;
 using Core.Utils;
 using Dapper;
 using Dapper.Contrib.Extensions;
@@ -99,6 +100,7 @@ namespace Core.DataBase
 			}
 
 			connection.Delete(project);
+			FileHelper.DeleteFolder(project.Path);
 		}
 
 		#endregion // Projects
@@ -133,7 +135,7 @@ namespace Core.DataBase
 				"SELECT t.ID, t.Content, t.IsCompleted, t.Priority, t.DueDate, t.OrderNumber " +
 				"FROM tasks t " +
 				"INNER JOIN project_tasks p ON p.taskID = t.ID " +
-				$"INNER JOIN projects pr on pr.ID = p.projectID WHERE pr.ID = {projectID} order by t.OrderNumber");
+				$"INNER JOIN projects pr on pr.ID = p.projectID WHERE pr.ID = {projectID} order by t.OrderNumber ASC, t.DueDate ASC");
 			foreach (var task in output)
 			{
 				
@@ -217,7 +219,7 @@ namespace Core.DataBase
 				"SELECT s.ID, s.Content, s.IsCompleted, s.Priority, s.DueDate, s.OrderNumber " +
 				"FROM subtasks s " +
 				"INNER JOIN task_subtasks p ON p.subtaskID = s.ID " +
-				$"INNER JOIN tasks ts on ts.ID = p.taskID WHERE ts.ID = {taskID} order by s.OrderNumber").ToList();
+				$"INNER JOIN tasks ts on ts.ID = p.taskID WHERE ts.ID = {taskID} order by s.IsCompleted, s.DueDate, s.Priority DESC").ToList();
 			connection.Dispose();
 			var output = new List<IElement>();
 			foreach (var task in tasks)

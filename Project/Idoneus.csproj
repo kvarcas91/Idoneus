@@ -57,6 +57,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -80,6 +81,7 @@
     <Compile Include="Converters\BoolToExpandableIconConverter.cs" />
     <Compile Include="Converters\BoolToTextDecorationConverter.cs" />
     <Compile Include="Converters\DateTimeToStringConverter.cs" />
+    <Compile Include="Converters\ImageConverter.cs" />
     <Compile Include="Converters\IsCompletedToColorConverter.cs" />
     <Compile Include="Converters\ListItemCountToVisibilityConverter.cs" />
     <Compile Include="Converters\NullObjectToVisibilityConverter.cs" />
@@ -91,6 +93,7 @@
     <Compile Include="Converters\ProgressBar\RotateTransformCentreConverter.cs" />
     <Compile Include="Converters\ProgressBar\StartPointConverter.cs" />
     <Compile Include="Converters\ProgressBar\ValueConverter.cs" />
+    <Compile Include="Utils\FindAncestor.cs" />
     <Compile Include="Views\Dialogs\AddContributorPrompt.xaml.cs">
       <DependentUpon>AddContributorPrompt.xaml</DependentUpon>
     </Compile>

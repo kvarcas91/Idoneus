@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Windows.Input;
 
 namespace Idoneus.ViewModels
@@ -132,10 +133,6 @@ namespace Idoneus.ViewModels
                 Content = noteContent.Trim(),
                 SubmitionDate = DateTime.Now
             });
-
-            //AddTaskPopupVisible ^= true;
-
-
         }
 
         private void SelectTask(TodaysTask task)
@@ -158,9 +155,17 @@ namespace Idoneus.ViewModels
             FileHelper.CreateFolderIfNotExist("./Database");
 
             if (!FileHelper.FileExists("./Database/db.db")) NotifyDBMissing();
+
+            FileHelper.CreateFolderIfNotExist("./Projects");
                 
 
             Projects = new ObservableCollection<IProject>(DBHelper.GetProjects(ViewType.All));
+
+            foreach (var project in Projects)
+            {
+                FileHelper.CreateFolderIfNotExist(project.Path);
+                FileHelper.CreateFolderIfNotExist($"{project.Path}{Path.DirectorySeparatorChar}_Comments");
+            }
 
             // Counters
             UpdateCounters();

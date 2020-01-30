@@ -7,6 +7,11 @@ using Idoneus.Dialogs;
 using System;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using System.Diagnostics;
+using System.IO;
+using System.Reflection;
+using Microsoft.Win32;
+using System.Windows;
 
 namespace Idoneus.ViewModels
 {
@@ -29,6 +34,8 @@ namespace Idoneus.ViewModels
         public ObservableCollection<IProject> Projects { get; set; }
         //public IList<IElement> Tasks { get; set; }
         public ObservableCollection<IComment> Comments { get; set; }
+
+        public ObservableCollection<IData> RelatedFiles { get; set; } = new ObservableCollection<IData>();
 
         #endregion // Observable Collections
 
@@ -61,6 +68,10 @@ namespace Idoneus.ViewModels
         public ICommand UpdateCommentCommand { get; set; }
         public ICommand DeleteCommentCommand { get; set; }
 
+        // File Commands
+        public ICommand FileListItemClickCommand { get; set; }
+        public ICommand ShowProjectDirectoryCommand { get; set; }
+        public ICommand NavigateFolderBackCommand { get; set; }
 
         #endregion // Icommand Properties
 
@@ -313,12 +324,49 @@ namespace Idoneus.ViewModels
 
         #endregion // Comment
 
+        #region Files
+
+        private void FileListItemClick (IData component)
+        {
+            if (component is IFolder folder)
+            {
+                CanNavigateBack = true;
+                currentPath = Path.Combine(currentPath, folder.Name);
+                SetUpRelatedFiles();
+                return;
+            }
+            Process.Start($"{Directory.GetParent(Assembly.GetExecutingAssembly().Location)}{$"{Path.DirectorySeparatorChar}{component.Path}"}");
+        }
+
+        private void ShowProjectDirectory ()
+        {
+            CanNavigateBack = false;
+            currentPath = CurrentProject.Path;
+            SetUpRelatedFiles();
+        }
+
+        private void NavigateFolderBack ()
+        {
+            if (!FileHelper.CanNavigateBack(currentPath, CurrentProject.Path)) return;
+
+            string[] directories = currentPath.Split(Path.DirectorySeparatorChar);
+            if (directories.Length > 1) directories.SetValue(string.Empty, directories.Length - 1);
+
+            currentPath = Path.Combine(directories);
+            SetUpRelatedFiles();
+        }
+
+        #endregion // Files
+
         #endregion // Icommand Methods
 
         #region Public Properties
 
         public IProject CurrentProject { get; set; }
         public bool IsExpanded { get; set; } = false;
+
+        // Files
+        public bool CanNavigateBack { get; set; } = false;
 
         #region New Task Properties
 
@@ -389,6 +437,7 @@ namespace Idoneus.ViewModels
         #region Private Properties
 
         private IElement editableTask = null;
+        private string currentPath = string.Empty;
         
 
     #endregion // Private Properties
@@ -423,6 +472,11 @@ namespace Idoneus.ViewModels
             ExpandCommentCommand = new ParameterizedRelayCommand<IComment>(ExpandComment);
             UpdateCommentCommand = new RelayCommand(UpdateComment);
             DeleteCommentCommand = new ParameterizedRelayCommand<IComment>(DeleteComment);
+
+            // Files
+            FileListItemClickCommand = new ParameterizedRelayCommand<IData>(FileListItemClick);
+            ShowProjectDirectoryCommand = new RelayCommand(ShowProjectDirectory);
+            NavigateFolderBackCommand = new RelayCommand(NavigateFolderBack);
         }
 
         private void SelectProject (IProject project)
@@ -432,6 +486,8 @@ namespace Idoneus.ViewModels
                 CurrentProject = project;
                 UpdateCounters();
                 InitializeDueDates();
+                currentPath = CurrentProject.Path;
+                SetUpRelatedFiles();
             }
         }
 
@@ -460,6 +516,17 @@ namespace Idoneus.ViewModels
             SubTaskDueTime = CurrentProject.DueDate;
         }
 
+        private void SetUpRelatedFiles ()
+        {
+            RelatedFiles.Clear();
+
+            foreach (var item in FileHelper.GetFolderContent(currentPath))
+            {
+                RelatedFiles.Add(item);
+                Console.WriteLine(item.Path);
+            }
+        }
+
         #endregion // Private Methods
 
         #region Constructor
@@ -479,6 +546,8 @@ namespace Idoneus.ViewModels
                     CurrentProject = Projects[Projects.Count - 1];
                 }
                 else CurrentProject = Projects[(int)index];
+
+                currentPath = CurrentProject.Path;
             }
 
             IsProjectListSideBarExpanded = (CurrentProject == null);
@@ -489,13 +558,56 @@ namespace Idoneus.ViewModels
 
             InitializeDueDates();
 
+            SetUpRelatedFiles();
+
             InitTest();
         }
 
-        
+
 
         #endregion // Constructor
 
+        #region Drag/drop
+
+        public void OnDropOuterFile(string[] files)
+        {
+            if (files == null) return;
+            foreach (var file in files)
+            {
+                FileAttributes attr = 0;
+                try
+                {
+                    attr = File.GetAttributes(file);
+                }
+                catch (FileNotFoundException)
+                {
+                    MessageBox.Show("Sorry, coulnd't drop file. It might not exist");
+                    return;
+                }
+                IData component;
+                if (attr.HasFlag(FileAttributes.Directory)) component = new RelatedFolder(file);
+                else component = new RelatedFile(file);
+                if (!component.Move(currentPath))
+                {
+                    MessageBox.Show("Cannot move file..");
+                    return;
+                }
+                //ShowFolderContent(CurrentPath);
+                RelatedFiles.Add(component);
+            }
+        }
+
+        public void OnDrop(IData sourceItem, IData destinationItem)
+        {
+            if (Equals(sourceItem, destinationItem)) return;
+            if (destinationItem is IFile) return;
+
+            sourceItem.Move(destinationItem.Path);
+            RelatedFiles.Remove(sourceItem);
+            //ShowFolderContent(CurrentPath);
+        }
+
+        #endregion // Drag/drop
 
         #region Test
 
@@ -506,7 +618,10 @@ namespace Idoneus.ViewModels
 
         private void Test (IProject project)
         {
-            CurrentProject = project;
+            //CurrentProject = project;
+            //var key = Registry.ClassesRoot.GetValue("Directory\\shellex\\ContextMenuHandlers\\");
+            
+
         }
 
         #endregion // Test

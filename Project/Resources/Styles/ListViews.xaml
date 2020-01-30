@@ -877,4 +877,81 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <Style x:Key="FileListView" TargetType="{x:Type ListView}" BasedOn="{StaticResource ListView}">
+        <Setter Property="ItemTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <materialDesign:Card
+                            VerticalAlignment="Top" 
+                                             Background="Transparent"
+                                             Tag="{Binding RelativeSource={RelativeSource 
+                                                        Mode=FindAncestor, 
+                                                        AncestorType={x:Type UserControl}}}">
+
+                        <materialDesign:Card.InputBindings>
+                            <MouseBinding Gesture="LeftDoubleClick" 
+                                              Command="{Binding ElementName=FileListView,Path=DataContext.FileListItemClickCommand}"
+                                              CommandParameter="{Binding}"/>
+                        </materialDesign:Card.InputBindings>
+                        <materialDesign:Card.ContextMenu>
+                            <ContextMenu>
+                                <!-- Options -->
+
+                                <MenuItem Header="Edit" Command="{
+                                                    Binding Path=PlacementTarget.Tag.DataContext.EditFileCommand,
+                                                    RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContextMenu}}"
+                                                    CommandParameter="{Binding}"/>
+                                <MenuItem Header="Delete" Command="{
+                                                    Binding Path=PlacementTarget.Tag.DataContext.DeleteFileCommand,
+                                                    RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContextMenu}}"
+                                                    CommandParameter="{Binding}"/>
+                                <Separator/>
+                                <MenuItem Header="Show in explorer" Command="{
+                                                    Binding Path=PlacementTarget.Tag.DataContext.ShowInExplorerCommand,
+                                                    RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContextMenu}}"
+                                                    CommandParameter="{Binding}"/>
+                            </ContextMenu>
+                        </materialDesign:Card.ContextMenu>
+
+                        <StackPanel Orientation="Vertical" VerticalAlignment="Top">
+
+
+                            <Image Width="24" Height="24"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Top"
+                                       Source="{Binding Icon, Converter={converters:ImageConverter}}"/>
+
+
+                            <TextBox x:Name="fileName"
+                                    FontSize="12" 
+                                           Width="80"
+                                           BorderThickness="0"
+                                           TextAlignment="Center"
+                                           TextWrapping="Wrap"
+                                         Cursor="Arrow"
+                                         Focusable="False"
+                                         Background="Transparent"
+                                           Text="{Binding Name, Mode=TwoWay}">
+                                <TextBox.Style>
+                                    <Style TargetType="TextBox">
+                                        <Setter Property="Foreground" Value="Black"/>
+                                    </Style>
+                                </TextBox.Style>
+
+                            </TextBox>
+
+                        </StackPanel>
+                    </materialDesign:Card>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ItemsPanel">
+            <Setter.Value>
+                <ItemsPanelTemplate>
+                    <WrapPanel Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

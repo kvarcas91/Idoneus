@@ -38,6 +38,7 @@ namespace Idoneus.Dialogs
             AddProjectPrompt prompt = new AddProjectPrompt();
             if (project != null)
             {
+                prompt.isEditable = true;
                 prompt.project = project;
                 prompt.UpdateControls();
             }
@@ -57,7 +58,7 @@ namespace Idoneus.Dialogs
         private void Cancel(object sender, RoutedEventArgs e)
         {
             project = null;
-            Close();
+            Discard();
         }
 
         private void Add(object sender, RoutedEventArgs e)
@@ -69,7 +70,20 @@ namespace Idoneus.Dialogs
             project.SubmitionDate = DateTime.Now;
             project.DueDate = (DateTime)dueTime.SelectedDate;
             project.Priority = (Priority)dueCombo.SelectedItem;
-            project.Path = "test/path";
+            if (!isEditable)
+            {
+                var uuid = Guid.NewGuid().ToString();
+                var path = (FileHelper.GetProjectPathFromUUID(uuid));
+                FileHelper.CreateProjectFolder(path);
+                project.Path = path;
+            }
+            Discard();
+        }
+
+        private void Discard ()
+        {
+            
+            isEditable = false;
             Close();
         }
     }

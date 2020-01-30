@@ -82,6 +82,8 @@
     <Compile Include="DataModels\Components\IData.cs" />
     <Compile Include="DataModels\Components\IFile.cs" />
     <Compile Include="DataModels\Components\IFolder.cs" />
+    <Compile Include="DataModels\Components\RelatedFile.cs" />
+    <Compile Include="DataModels\Components\RelatedFolder.cs" />
     <Compile Include="DataModels\FakeData.cs" />
     <Compile Include="DataModels\Interfaces\IDateable.cs" />
     <Compile Include="DataModels\Interfaces\IElement.cs" />
@@ -108,6 +110,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\ColorPool.cs" />
     <Compile Include="Helpers\FileHelper.cs" />
+    <Compile Include="Utils\DefaultIcons.cs" />
     <Compile Include="Utils\Priority.cs" />
     <Compile Include="Utils\ViewType.cs" />
   </ItemGroup>

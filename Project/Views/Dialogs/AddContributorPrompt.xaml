@@ -94,7 +94,7 @@
                         Margin="10 0"
                         Click="AddNewContributor"
                         Style="{StaticResource PackButtonBase}"
-                        ToolTip="Add Comment"
+                        ToolTip="Add Contributor"
                                                   >
                     <materialDesign:PackIcon Kind="Send"
                                                  Foreground="{StaticResource LightBlueColorBrush}"

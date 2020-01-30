@@ -528,7 +528,10 @@
                                 
                                 <!-- Header -->
                                 <RowDefinition Height="Auto"/>
-                                
+
+                                <!-- Controls -->
+                                <RowDefinition Height="Auto"/>
+
                                 <!-- Content -->
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
@@ -562,6 +565,52 @@
                                 <Separator Margin="5"/>
 
                             </StackPanel>
+
+                            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                <Button Background="Transparent" 
+                                        Command="{Binding NavigateFolderBackCommand}"
+                        BorderThickness="0" ToolTip="Navigate back">
+                                    <materialDesign:PackIcon Kind="ArrowBackCircle"
+                                                             Style="{StaticResource GrowPackIcon}"
+                                             Foreground="#2196F3"/>
+                                </Button>
+
+
+                                <Button Background="Transparent" 
+                                        BorderThickness="0" 
+                                        ToolTip="Project home directory"
+                                        Command="{Binding ShowProjectDirectoryCommand}">
+                                    <materialDesign:PackIcon Kind="HomeOutline"
+                                                             Style="{StaticResource GrowPackIcon}"
+                                             Foreground="#2196F3"/>
+                                </Button>
+
+                                <Button Background="Transparent" 
+                        Command="{Binding TestCommand}"
+                        BorderThickness="0"  
+                                        ToolTip="Create new folder">
+                                    <materialDesign:PackIcon Kind="FolderAddOutline"
+                                                             Style="{StaticResource GrowPackIcon}"
+                                             Foreground="#2196F3"/>
+                                </Button>
+                            </StackPanel>
+
+                            <ListView Grid.Row="2"
+                                      x:Name="FileListView"
+                                      AllowDrop="True"
+                                      DragEnter="FileListView_DragEnter"
+                                      MouseMove="FileListView_MouseMove"
+                                       Drop="FileListView_Drop"
+                                      ItemsSource="{Binding RelatedFiles}"
+                                      Style="{StaticResource FileListView}">
+                                
+                            </ListView>
+
+                            <!-- Empty view -->
+                            <materialDesign:PackIcon Kind="Folder"
+                                                         Grid.Row="2"
+                                                         Visibility="{Binding RelatedFiles.Count, Converter={converters:ListItemCountToVisibilityConverter}}"
+                                                         Style="{StaticResource EmptyIconView}"/>
 
                         </Grid>
 
