@@ -43,7 +43,6 @@ namespace Core.Helpers
             return true;
         }
 
-
         public static IList<IData> GetFolderContent(string path)
         {
             var output = new List<IData>();

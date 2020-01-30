@@ -16,12 +16,12 @@
 
 
 
-    <StackPanel Background="White"
+    <StackPanel Background="{StaticResource LightBlueColorBrush}"
                 Orientation="Vertical">
 
 
 
-        <StackPanel Background="White"
+        <StackPanel Background="Transparent"
                     Height="100">
             <!--Icon-->
             <Button Style="{StaticResource SystemIconButton}" 
@@ -46,7 +46,7 @@
                    
                     ToolTip="Create new project">
             <materialDesign:PackIcon Kind="AddCircleOutline"
-                                          Foreground="{StaticResource SecondaryColorBrush}"
+                                          Foreground="White"
                                          Width="24"
                                          Height="24"/>
         </Button>
@@ -60,7 +60,7 @@
                     >
 
                     <materialDesign:PackIcon Kind="ViewDashboard"
-                                         Foreground="{StaticResource SecondaryColorBrush}"
+                                         Foreground="White"
                                              Width="24" Height="24"/>
 
             </Button>
@@ -73,7 +73,7 @@
                     ToolTip="Projects">
 
             <materialDesign:PackIcon Kind="FilterList"
-                                         Foreground="{StaticResource SecondaryColorBrush}"
+                                         Foreground="White"
                                          Width="24" Height="24"/>
             </Button>
 

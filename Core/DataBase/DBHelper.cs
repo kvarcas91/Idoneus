@@ -148,6 +148,17 @@ namespace Core.DataBase
 			return new ObservableCollection<IElement>(output);
 		}
 
+		public static ObservableCollection<SubTask> GetUpcomingTasks (DateTime targetDate)
+		{
+			using IDbConnection connection = new SQLiteConnection(GetConnectionString());
+			var query = $"SELECT * FROM subtasks WHERE IsCompleted = '0' AND DueDate <= '{targetDate.ToString(dateFormat)}%' ORDER BY DueDate ASC";
+			var output = connection.Query<SubTask>(query).ToList();
+
+			connection.Dispose();
+
+			return new ObservableCollection<SubTask>(output);
+		}
+
 		/// <summary>
 		/// Returns tasks count based on a given parameter
 		/// </summary>

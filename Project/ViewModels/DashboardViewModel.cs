@@ -20,7 +20,8 @@ namespace Idoneus.ViewModels
 
         public ObservableCollection<IProject> Projects { get; set; }
         public ObservableCollection<TodaysTask> Tasks { get; set; }
-        public ObservableCollection<Note> Notes { get; set; }
+        public ObservableCollection<SubTask> UpcomingTasks { get; set; } = new ObservableCollection<SubTask>();
+     
 
         #endregion // Observable Items
 
@@ -30,7 +31,6 @@ namespace Idoneus.ViewModels
         public ICommand CleanCompletedTasksCommand { get; set; }
         public ICommand SelectTaskCommand { get; set; }
         public ICommand AddNewDailyTaskCommand { get; set; }
-        public ICommand AddNewNoteCommand { get; set; }
         public ICommand OpenProjectCommand { get; set; }
 
         #endregion // ICommand Properties
@@ -55,13 +55,33 @@ namespace Idoneus.ViewModels
         #endregion // Info Box
 
         public DateTime CurrentDate { get; } = DateTime.Now;
+        public DateTime TargetDate
+        {
+            get => _targetDate;
+            set
+            {
+                if (_targetDate != value)
+                {
+                    _targetDate = value;
+                    SetUpcomingTasks();
+                }
+            }
+        }
 
         #endregion // Public Properties
+
+        #region Private properties
+
+        private DateTime _targetDate;
+
+        #endregion // Private properties
 
         #region Constructor
 
         public DashboardViewModel()
         {
+            _targetDate = DateTime.Now;
+            _targetDate = _targetDate.AddDays(7);
 
             GetData();
             SetUpCommands();
@@ -77,7 +97,6 @@ namespace Idoneus.ViewModels
             SelectTaskCommand = new ParameterizedRelayCommand<TodaysTask>(SelectTask);
             CleanCompletedTasksCommand = new RelayCommand(CleanCompletedTasks);
             AddNewDailyTaskCommand = new ParameterizedRelayCommand<string>(AddNewDailyTask);
-            AddNewNoteCommand = new ParameterizedRelayCommand<string>(AddNewNote);
             OpenProjectCommand = new ParameterizedRelayCommand<IProject>(OpenProject);
         }
 
@@ -124,17 +143,6 @@ namespace Idoneus.ViewModels
 
         }
 
-        private void AddNewNote(string noteContent)
-        {
-            if (!StringHelper.CanUse(noteContent)) return;
-
-            Notes.Insert(0, new Note
-            {
-                Content = noteContent.Trim(),
-                SubmitionDate = DateTime.Now
-            });
-        }
-
         private void SelectTask(TodaysTask task)
         {
             var index = Tasks.IndexOf(task);
@@ -171,9 +179,13 @@ namespace Idoneus.ViewModels
             UpdateCounters();
 
             Tasks = DBHelper.GetTodaysTasks (DateTime.Now);
-            Notes = FakeData.GetNotes();
+            SetUpcomingTasks();
+        }
 
-
+        private void SetUpcomingTasks ()
+        {
+            UpcomingTasks.Clear();
+            UpcomingTasks = DBHelper.GetUpcomingTasks(TargetDate);
         }
 
         private void UpdateCounters ()

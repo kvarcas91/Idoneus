@@ -188,8 +188,8 @@
         </Setter>
     </Style>
     
-    <!-- Notes list view from dashboard -->
-    <Style x:Key="NotesListViewStyle" TargetType="{x:Type ListView}" BasedOn="{StaticResource ListView}">
+    <!-- Upcoming tasks view from dashboard -->
+    <Style x:Key="UpcomingTasksListView" TargetType="{x:Type ListView}" BasedOn="{StaticResource ListView}">
         <Setter Property="ItemTemplate">
             <Setter.Value>
                 <DataTemplate>
@@ -198,7 +198,7 @@
                         Margin="10 0">
                         <Grid.RowDefinitions>
                             
-                            <!-- submition date -->
+                            <!-- Due on date -->
                             <RowDefinition Height="Auto"/>
                             
                             <!-- content -->
@@ -206,12 +206,15 @@
                         </Grid.RowDefinitions>
 
                         <TextBlock Grid.Row="0"
-                                   Text="{Binding SubmitionDate, Converter={converters:DateTimeToStringConverter}}"
-                                   Style="{StaticResource NoteDateText}"/>
+                                   Text="{Binding DueDate, Converter={converters:DateTimeToStringConverter}, ConverterParameter=0}"
+                                   Style="{StaticResource NoteDateText}"
+                                   FontSize="{StaticResource Small}"/>
 
                         <TextBlock Grid.Row="1"
                                    Text="{Binding Content}"
-                                   Style="{StaticResource NoteContentText}"/>
+                                    TextTrimming="CharacterEllipsis"
+                                   Style="{StaticResource NoteContentText}"
+                                   FontSize="{StaticResource XSmall}"/>
 
                     </Grid>
 
@@ -878,6 +881,7 @@
         </Setter>
     </Style>
 
+    <!-- Files ListView -->
     <Style x:Key="FileListView" TargetType="{x:Type ListView}" BasedOn="{StaticResource ListView}">
         <Setter Property="ItemTemplate">
             <Setter.Value>

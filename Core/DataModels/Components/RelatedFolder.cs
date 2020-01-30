@@ -27,26 +27,23 @@ namespace Core.DataModels
         }
 
 
-        public void Copy(string destination)
+        public bool Copy(string destination)
         {
             throw new NotImplementedException();
         }
 
-        public void Replace(string destination)
+        public bool Replace(string destination)
         {
             throw new NotImplementedException();
         }
 
         public bool Delete()
         {
-            Directory.Delete(Path);
-            return true;
+            return FileHelper.DeleteFolder(Path);
         }
 
         public bool Move(string destination)
         {
-            Console.WriteLine($"Move from: {Path}");
-            Console.WriteLine($"Move to: {destination}");
             var destinationDirectorry = $"{destination}{System.IO.Path.DirectorySeparatorChar}{Name}";
             if (!FileHelper.MoveFolder(Path, destinationDirectorry)) return false;
             
@@ -59,19 +56,12 @@ namespace Core.DataModels
             var parent = Directory.GetParent(Path);
             var destination = ($"{parent}{System.IO.Path.DirectorySeparatorChar}{newName}");
             if (!FileHelper.MoveFolder(Path, destination)) return false;
+
             Path = destination;
             Name = newName;
             return true;
         }
 
-        bool IInteractiveComponent.Copy(string name)
-        {
-            throw new NotImplementedException();
-        }
 
-        bool IInteractiveComponent.Replace(string name)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

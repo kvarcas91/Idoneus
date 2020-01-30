@@ -134,8 +134,10 @@ namespace Idoneus.ViewModels
             {
                 //subTask.IsCompleted ^= true;
                 var parent = CurrentProject.Tasks[subTask.ParentIndex];
+                var taskState = ((Task)parent).IsCompleted;
                 ((Task)parent).UpdateProgress();
                 DBHelper.UpdateTask(subTask);
+                if (((Task)parent).IsCompleted != taskState) DBHelper.UpdateTask((Task)parent);
 
             }
             UpdateCounters();
