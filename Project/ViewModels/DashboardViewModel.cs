@@ -89,6 +89,7 @@ namespace Idoneus.ViewModels
             SetUpCommands();
             InitTest();
 
+
             CheckForUpdates();
         }
 
@@ -242,8 +243,12 @@ namespace Idoneus.ViewModels
         private async System.Threading.Tasks.Task CheckForUpdates ()
         {
             using var mgr = UpdateManager.GitHubUpdateManager("https://github.com/kvarcas91/Idoneus");
+            var currentVersion = $"Status: {mgr.Status}";
+            Console.WriteLine(currentVersion);
             await mgr.Result.UpdateApp();
             
+
+
         }
 
         #endregion // updater
