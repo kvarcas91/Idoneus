@@ -14,52 +14,57 @@
         <vm:SideBarViewModel/>
     </UserControl.DataContext>
 
+    <Grid  Background="{StaticResource LightBlueColorBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
 
 
-    <StackPanel Background="{StaticResource LightBlueColorBrush}"
+        <StackPanel
                 Orientation="Vertical">
 
 
 
-        <StackPanel Background="Transparent"
+            <StackPanel Background="Transparent"
                     Height="100">
-            <!--Icon-->
-            <Button Style="{StaticResource SystemIconButton}" 
+                <!--Icon-->
+                <Button Style="{StaticResource SystemIconButton}" 
                 Width="40" Height="40"
                 Margin="10">
-                <Image Source="/../Resources/Images/main.ico" />
-            </Button>
+                    <Image Source="/../Resources/Images/main.ico" />
+                </Button>
 
-            <!-- For future reference -->
-            <!--<Border>
+                <!-- For future reference -->
+                <!--<Border>
                 <Image Source="{Binding ProfilePicture}"/>
             </Border>-->
-        </StackPanel>
+            </StackPanel>
 
 
 
-        <Button x:Name="NewProject"
+            <Button x:Name="NewProject"
                     Command="{Binding AddProjectCommand}"
                     VerticalAlignment="Top"
                     Background="Transparent"
                     BorderThickness="0"
                    
                     ToolTip="Create new project">
-            <materialDesign:PackIcon Kind="AddCircleOutline"
+                <materialDesign:PackIcon Kind="AddCircleOutline"
                                           Foreground="White"
                                          Width="24"
                                          Height="24"/>
-        </Button>
+            </Button>
 
 
-        <Button Background="Transparent"
+            <Button Background="Transparent"
                 Command="{Binding DashboardCommand}"
                     HorizontalContentAlignment="Left"
                     BorderThickness="0"
                     ToolTip="Dashboard"
                     >
 
-                    <materialDesign:PackIcon Kind="ViewDashboard"
+                <materialDesign:PackIcon Kind="ViewDashboard"
                                          Foreground="White"
                                              Width="24" Height="24"/>
 
@@ -72,11 +77,20 @@
                     BorderThickness="0"
                     ToolTip="Projects">
 
-            <materialDesign:PackIcon Kind="FilterList"
+                <materialDesign:PackIcon Kind="FilterList"
                                          Foreground="White"
                                          Width="24" Height="24"/>
             </Button>
 
 
-    </StackPanel>
+
+
+        </StackPanel>
+
+        <TextBlock x:Name="Version"
+                   Grid.Row="1"
+                   HorizontalAlignment="Center"/>
+    </Grid>
+
+   
 </UserControl>

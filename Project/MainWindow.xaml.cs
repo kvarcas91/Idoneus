@@ -17,7 +17,6 @@ namespace Idoneus
         {
 
             CheckForUpdates();
-            AddVersionNumber();
             InitializeComponent();
             DataContext = new MainWindowViewModel(this);
         }
@@ -45,11 +44,5 @@ namespace Idoneus
 
         }
 
-        private void AddVersionNumber()
-        {
-            System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
-            FileVersionInfo versionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
-            Console.WriteLine(versionInfo);
-        }
     }
 }
