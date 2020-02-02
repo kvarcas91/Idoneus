@@ -3,11 +3,13 @@ using Core.DataModels;
 using Core.Helpers;
 using Core.Utils;
 using Idoneus.ViewModels.Base;
+using Squirrel;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.Windows;
 using System.Windows.Input;
 
 namespace Idoneus.ViewModels
@@ -86,6 +88,8 @@ namespace Idoneus.ViewModels
             GetData();
             SetUpCommands();
             InitTest();
+
+            CheckForUpdates();
         }
 
         #endregion // Constructor
@@ -201,7 +205,14 @@ namespace Idoneus.ViewModels
         private void NotifyDBMissing ()
         {
             // Give message
-            DBHelper.CreateTablesIfNotExist();
+            try
+            {
+                DBHelper.CreateTablesIfNotExist();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
         }
 
         #endregion // Private Methods
@@ -225,6 +236,17 @@ namespace Idoneus.ViewModels
 
 
         #endregion
+
+        #region Updater
+
+        private async System.Threading.Tasks.Task CheckForUpdates ()
+        {
+            using var mgr = UpdateManager.GitHubUpdateManager("https://github.com/kvarcas91/Idoneus");
+            await mgr.Result.UpdateApp();
+            
+        }
+
+        #endregion // updater
 
     }
 }
