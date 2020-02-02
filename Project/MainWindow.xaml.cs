@@ -34,6 +34,7 @@ namespace Idoneus
                     using (var mgr = UpdateManager.GitHubUpdateManager("https://github.com/kvarcas91/Idoneus"))
                     {
                         await mgr.Result.UpdateApp();
+                       
                         var status = mgr.Status;
                         var result = mgr.Result;
                     }
