@@ -49,7 +49,7 @@ namespace Core.DataModels
             throw new NotImplementedException();
         }
 
-        public bool AddPersons(IList<IPerson> person)
+        public bool AddPersons(IList<IContributor> person)
         {
             throw new NotImplementedException();
         }

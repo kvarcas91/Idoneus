@@ -11,7 +11,7 @@ namespace Core.DataModels
 
         bool AddPerson(IPerson person);
 
-        bool AddPersons(IList<IPerson> person);
+        bool AddPersons(IList<IContributor> person);
 
         bool RemovePerson(IPerson person);
 

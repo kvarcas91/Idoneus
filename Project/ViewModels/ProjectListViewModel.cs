@@ -58,6 +58,7 @@ namespace Idoneus.ViewModels
         public ICommand AddSubTaskCommand { get; set; }
         public ICommand DeleteTaskCommand { get; set; }
         public ICommand EditTaskCommand { get; set; }
+        public ICommand AssignContributorToTaskCommand { get; set; }
 
         // Contributors Commands
         public ICommand AddContributorsCommand { get; set; }
@@ -270,13 +271,18 @@ namespace Idoneus.ViewModels
             UpdateCounters();
         }
 
+        private void AssignContributorToTask (ITask task)
+        {
+             task.Contributors = AddContributorPrompt.ShowDialog(task, task.Contributors);
+        }
+
         #endregion // Task
 
         #region Contributors
 
         private void AddContributors()
         {
-            CurrentProject.Contributors = AddContributorPrompt.ShowDialog(CurrentProject.ID, CurrentProject.Contributors);
+            CurrentProject.Contributors = AddContributorPrompt.ShowDialog(CurrentProject, CurrentProject.Contributors);
         }
 
         #endregion // Contributors
@@ -501,6 +507,7 @@ namespace Idoneus.ViewModels
             AddSubTaskCommand = new ParameterizedRelayCommand<IElement>(AddSubTask);
             DeleteTaskCommand = new ParameterizedRelayCommand<IElement>(DeleteTask);
             EditTaskCommand = new ParameterizedRelayCommand<IElement>(EditTask);
+            AssignContributorToTaskCommand = new ParameterizedRelayCommand<ITask>(AssignContributorToTask);
 
             // Contributors
             AddContributorsCommand = new RelayCommand(AddContributors);
@@ -584,17 +591,6 @@ namespace Idoneus.ViewModels
                 CurrentProject = (IProject)project;
                 currentPath = CurrentProject.Path;
             }
-
-            //if (index != null)
-            //{
-            //    if ((int)index == -1)
-            //    {
-            //        CurrentProject = Projects[Projects.Count - 1];
-            //    }
-            //    else CurrentProject = Projects[(int)index];
-
-            //    currentPath = CurrentProject.Path;
-            //}
 
             IsProjectListSideBarExpanded = (CurrentProject == null);
 

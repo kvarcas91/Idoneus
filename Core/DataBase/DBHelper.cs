@@ -121,6 +121,16 @@ namespace Core.DataBase
 			return output.Count > 0 ? output[0] : null;
 		}
 
+		public static long GetProjectIDFromTask (long ID)
+		{
+			var query = $"SELECT * from projects p INNER JOIN project_tasks pt ON p.ID = pt.projectID  WHERE pt.taskID = '{ID}'";
+			using IDbConnection connection = new SQLiteConnection(GetConnectionString());
+			var output = connection.Query<Project>(query).ToList();
+			
+			connection.Dispose();
+			return output.Count > 0 ? output[0].ID : -1;
+		}
+
 		#endregion // Projects
 
 		#region Tasks
@@ -366,7 +376,7 @@ namespace Core.DataBase
 			return output;
 		}
 
-		public static IList<IPerson> GetProjectContributors(long projectID)
+		public static ObservableCollection<IContributor> GetProjectContributors(long projectID)
         {
             using IDbConnection connection = new SQLiteConnection(GetConnectionString());
             List<Contributor> contributors = connection.Query<Contributor>(
@@ -375,7 +385,7 @@ namespace Core.DataBase
                 "INNER JOIN project_contributors p ON p.contributorID = c.ID " +
                 $"INNER JOIN projects pr on pr.ID = p.projectID WHERE pr.ID = {projectID}").ToList();
             connection.Dispose();
-            var output = new List<IPerson>();
+            var output = new ObservableCollection<IContributor>();
             foreach (var contributor in contributors)
             {
                 output.Add(contributor);
@@ -383,7 +393,7 @@ namespace Core.DataBase
             return output;
         }
 
-        public static IList<IPerson> GetTaskContributors(long taskID)
+        public static IList<IContributor> GetTaskContributors(long taskID)
         {
             using IDbConnection connection = new SQLiteConnection(GetConnectionString());
             List<Contributor> contributors = connection.Query<Contributor>(
@@ -392,7 +402,7 @@ namespace Core.DataBase
                 "INNER JOIN task_contributors p ON p.contributorID = c.ID " +
                 $"INNER JOIN tasks pr on pr.ID = p.taskID WHERE pr.ID = {taskID}").ToList();
             connection.Dispose();
-            var output = new List<IPerson>();
+            var output = new List<IContributor>();
             foreach (var contributor in contributors)
             {
                 output.Add(contributor);
@@ -421,6 +431,22 @@ namespace Core.DataBase
 		{
 			using IDbConnection connection = new SQLiteConnection(GetConnectionString());
 			string query = $"DELETE FROM project_contributors WHERE projectID = '{pID}' AND contributorID = '{cID}'";
+			connection.Execute(query);
+			connection.Dispose();
+		}
+
+		public static void AssignTaskContributors(long tID, long cID)
+		{
+			using IDbConnection connection = new SQLiteConnection(GetConnectionString());
+			connection.Execute("INSERT INTO task_contributors (taskID, contributorID) values (@taskID, @contributorID)",
+				new { taskID = tID, contributorID = cID });
+			connection.Dispose();
+		}
+
+		public static void ReAssignTaskContributor(long tID, long cID)
+		{
+			using IDbConnection connection = new SQLiteConnection(GetConnectionString());
+			string query = $"DELETE FROM task_contributors WHERE taskID = '{tID}' AND contributorID = '{cID}'";
 			connection.Execute(query);
 			connection.Dispose();
 		}

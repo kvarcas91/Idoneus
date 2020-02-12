@@ -578,6 +578,18 @@
                                     >
 
 
+                                    <!-- Add -->
+                                    <Button 
+                                                Style="{StaticResource ControlButton}"
+                                                Command="{Binding ElementName=projectTaskList, 
+                                                                  Path=DataContext.AssignContributorToTaskCommand}"
+                                                CommandParameter="{Binding}"
+                                                ToolTip="Add sub-task">
+                                        <materialDesign:PackIcon Kind="PersonAdd" 
+                                                                     Foreground="Black"
+                                                                     Width="16" Height="16"/>
+                                    </Button>
+
 
                                     <!-- Add -->
                                     <Button 

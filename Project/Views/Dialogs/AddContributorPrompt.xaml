@@ -59,10 +59,11 @@
             </ListView>
 
             <Grid Grid.Row="1" 
-                                        
+                        x:Name="AddContributorPanel"                
                    MaxHeight="100"
                    Opacity="0.5"
-                   Background="White">
+                   Background="White"
+                  Visibility="{Binding }">
 
                 <Grid.ColumnDefinitions>
 

@@ -18,7 +18,7 @@ namespace Core.DataModels
         public long ID { get; set; }
 
         [Computed]
-        public IList<IPerson> Contributors { get; set; } = new ObservableCollection<IPerson>();
+        public ObservableCollection<IContributor> Contributors { get; set; } = new ObservableCollection<IContributor>();
 
         [Computed]
         public ObservableCollection<ISubTask> SubTasks { get; } = new ObservableCollection<ISubTask>();
@@ -98,7 +98,7 @@ namespace Core.DataModels
             return true;
         }
 
-        public bool AddPersons(IList<IPerson> persons)
+        public bool AddPersons(IList<IContributor> persons)
         {
             foreach (var person in persons)
             {

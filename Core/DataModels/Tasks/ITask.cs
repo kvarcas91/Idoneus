@@ -8,7 +8,7 @@ namespace Core.DataModels
 
         bool IsCompleted { get; set; }
 
-        IList<IPerson> Contributors { get; }
+        ObservableCollection<IContributor> Contributors { get; set; }
 
         ObservableCollection<ISubTask> SubTasks { get; }
 

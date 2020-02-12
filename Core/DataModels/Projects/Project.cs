@@ -127,7 +127,7 @@ namespace Core.DataModels
             return true;
         }
 
-        public bool AddPersons(IList<IPerson> persons)
+        public bool AddPersons(IList<IContributor> persons)
         {
             foreach (var person in persons)
             {
