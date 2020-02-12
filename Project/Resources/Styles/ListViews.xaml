@@ -578,20 +578,20 @@
                                     >
 
 
-                                    <!-- Add -->
+                                    <!-- Add Contributor -->
                                     <Button 
                                                 Style="{StaticResource ControlButton}"
                                                 Command="{Binding ElementName=projectTaskList, 
                                                                   Path=DataContext.AssignContributorToTaskCommand}"
                                                 CommandParameter="{Binding}"
-                                                ToolTip="Add sub-task">
+                                                ToolTip="Add Contributor">
                                         <materialDesign:PackIcon Kind="PersonAdd" 
                                                                      Foreground="Black"
                                                                      Width="16" Height="16"/>
                                     </Button>
 
 
-                                    <!-- Add -->
+                                    <!-- Add Subtask-->
                                     <Button 
                                                 Style="{StaticResource ControlButton}"
                                                 Command="{Binding ElementName=projectTaskList, 
@@ -977,4 +977,5 @@
             </Setter.Value>
         </Setter>
     </Style>
+
 </ResourceDictionary>

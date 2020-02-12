@@ -41,7 +41,14 @@ namespace Core.DataModels
             LastName = name[1];
         }
 
-        public override bool Equals(Object obj)
+        public void Edit (Contributor contributor)
+        {
+            FirstName = contributor.FirstName;
+            LastName = contributor.LastName;
+
+        }
+
+        public override bool Equals(object obj)
         {
             if (obj == null || !(obj is Contributor))
                 return false;

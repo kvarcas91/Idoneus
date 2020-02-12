@@ -89,7 +89,9 @@
 
         <TextBlock x:Name="Version"
                    Grid.Row="1"
-                   HorizontalAlignment="Center"/>
+                   HorizontalAlignment="Center"
+                   FontSize="{StaticResource XSmall}"
+                   Foreground="White"/>
     </Grid>
 
    

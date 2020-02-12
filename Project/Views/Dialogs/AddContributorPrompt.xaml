@@ -28,21 +28,24 @@
 
             <ListView Grid.Row="0"
                 x:Name="AddContributorList"
-                  ItemsSource="{Binding Contributors}">
+                  ItemsSource="{Binding Contributors}"
+                      Style="{StaticResource ListView}">
                 <ListView.ItemTemplate>
-
 
                     <DataTemplate>
 
-                        <Border Padding="0 5 0 5">
-                            <CheckBox Grid.Row="0" Grid.Column="1" 
-                                              Grid.RowSpan="2"
-                                              x:Name="IsCompleted"
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Padding="0 5 0 5">
+                                <CheckBox x:Name="IsCompleted"
                                Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"
                               IsChecked="{Binding IsSelected}"
                               Tag="{Binding}"
                               Style="{StaticResource TaskCheckBox}">
-                                <TextBlock Text="{Binding FullName}"
+                                    <TextBlock Text="{Binding FullName}"
                                                    TextAlignment="Justify"
                                                    TextWrapping="Wrap"
                                    Margin="0 3 0 0"
@@ -50,20 +53,65 @@
                                        Foreground="{Binding IsCompleted, Converter={converters:IsCompletedToColorConverter}}"
                                                    TextDecorations="{Binding IsCompleted,
                                                                      Converter={converters:BoolToTextDecorationConverter}}"/>
-                            </CheckBox>
+                                </CheckBox>
 
-                        </Border>
+                            </Border>
 
+
+                            <StackPanel Grid.Column="1" Orientation="Horizontal"
+                                        HorizontalAlignment="Right">
+                     
+
+                                <!-- OnMouseOver visibility -->
+                                <StackPanel.Style>
+                                    <Style TargetType="{x:Type StackPanel}">
+                                        <Setter Property="Visibility" Value="Hidden" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListViewItem}},Path=IsMouseOver}" Value="True">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </StackPanel.Style>
+                                <!-- Edit -->
+                                <Button Grid.Row="0" 
+                                                Style="{StaticResource ControlButton}"
+                                                Tag="{Binding}"
+                                        Click="EditContributor"
+                                                ToolTip="Edit task">
+                                    <materialDesign:PackIcon Kind="Edit" 
+                                                                     Foreground="Black"
+                                                                     Width="12" Height="12"/>
+                                </Button>
+
+                                <!-- Delete -->
+                                <Button Grid.Row="1" 
+                                                Style="{StaticResource ControlButton}"
+                                        Tag="{Binding}"
+                                                Click="DeleteContributor"
+                                                ToolTip="Delete task">
+                                    <materialDesign:PackIcon Kind="Delete" 
+                                                                     Foreground="Black"
+                                                                     Width="12" Height="12"/>
+                                </Button>
+
+                            </StackPanel>
+                        </Grid>
+                       
                     </DataTemplate>
                 </ListView.ItemTemplate>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    </Style>
+                </ListView.ItemContainerStyle>
             </ListView>
 
             <Grid Grid.Row="1" 
                         x:Name="AddContributorPanel"                
                    MaxHeight="100"
                    Opacity="0.5"
-                   Background="White"
-                  Visibility="{Binding }">
+                   Background="White">
 
                 <Grid.ColumnDefinitions>
 

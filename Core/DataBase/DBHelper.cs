@@ -410,7 +410,7 @@ namespace Core.DataBase
             return output;
         }
 
-		public static void UpdateContributor(IPerson param)
+		public static void UpdateContributor(Contributor param)
 		{
 			
 			using IDbConnection connection = new SQLiteConnection(GetConnectionString());
@@ -457,6 +457,23 @@ namespace Core.DataBase
 			var id = connection.Insert(contributor);
 			contributor.ID = id;
 
+			connection.Dispose();
+		}
+
+		public static void DeleteContributor (IContributor contributor, object param)
+		{
+			using IDbConnection connection = new SQLiteConnection(GetConnectionString());
+			var query = string.Empty;
+			if (param is IProject)
+			{
+				connection.Execute($"DELETE FROM task_contributors WHERE contributorID = '{contributor.ID}'");
+				connection.Execute($"DELETE FROM project_contributors WHERE contributorID = '{contributor.ID}'");
+				connection.Execute($"DELETE FROM contributors WHERE ID = '{contributor.ID}'");
+			}
+			if (param is ITask)
+			{
+				connection.Execute($"DELETE FROM task_contributors WHERE contributorID = '{contributor.ID}'");
+			}
 			connection.Dispose();
 		}
 
