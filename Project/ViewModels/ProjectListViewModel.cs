@@ -72,6 +72,8 @@ namespace Idoneus.ViewModels
         public ICommand FileListItemClickCommand { get; set; }
         public ICommand ShowProjectDirectoryCommand { get; set; }
         public ICommand NavigateFolderBackCommand { get; set; }
+        public ICommand ShowInExplorerCommand { get; set; }
+        public ICommand DeleteFileCommand { get; set; }
 
         #endregion // Icommand Properties
 
@@ -358,6 +360,40 @@ namespace Idoneus.ViewModels
             SetUpRelatedFiles();
         }
 
+        private void ShowInExplorer(IData data)
+        {
+           
+            if (data is IFile)
+            {
+                Process.Start(Directory.GetParent(data.Path).FullName);
+                return;
+            }
+            Process.Start(data.Path);
+            Console.WriteLine(data.Path);
+            
+        }
+
+        private void DeleteFile(IData param)
+        {
+            var message = string.Empty;
+            if (param is IFolder)
+            {
+                message = "Do you want to delete this folder?";
+            }
+            else
+            {
+                message = "Do you want to delete this file?";
+            }
+
+            MessageBoxResult result = MessageBox.Show(message, "Warning", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (result == MessageBoxResult.Yes)
+            {
+                param.Delete();
+                RelatedFiles.Remove(param);
+            }
+
+        }
+
         #endregion // Files
 
         #endregion // Icommand Methods
@@ -479,6 +515,8 @@ namespace Idoneus.ViewModels
             FileListItemClickCommand = new ParameterizedRelayCommand<IData>(FileListItemClick);
             ShowProjectDirectoryCommand = new RelayCommand(ShowProjectDirectory);
             NavigateFolderBackCommand = new RelayCommand(NavigateFolderBack);
+            ShowInExplorerCommand = new ParameterizedRelayCommand<IData>(ShowInExplorer);
+            DeleteFileCommand = new ParameterizedRelayCommand<IData>(DeleteFile);
         }
 
         private void SelectProject (IProject project)
@@ -540,17 +578,23 @@ namespace Idoneus.ViewModels
 
             Projects = new ObservableCollection<IProject>(DBHelper.GetProjects(ViewType.All));
 
-            var index = IoC.Get<ApplicationViewModel>().Parameters;
-            if (index != null)
+            var project = IoC.Get<ApplicationViewModel>().Parameters;
+            if (project != null)
             {
-                if ((int)index == -1)
-                {
-                    CurrentProject = Projects[Projects.Count - 1];
-                }
-                else CurrentProject = Projects[(int)index];
-
+                CurrentProject = (IProject)project;
                 currentPath = CurrentProject.Path;
             }
+
+            //if (index != null)
+            //{
+            //    if ((int)index == -1)
+            //    {
+            //        CurrentProject = Projects[Projects.Count - 1];
+            //    }
+            //    else CurrentProject = Projects[(int)index];
+
+            //    currentPath = CurrentProject.Path;
+            //}
 
             IsProjectListSideBarExpanded = (CurrentProject == null);
 

@@ -3,7 +3,6 @@ using Core.DataModels;
 using Core.Helpers;
 using Core.Utils;
 using Idoneus.ViewModels.Base;
-using Squirrel;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -34,6 +33,7 @@ namespace Idoneus.ViewModels
         public ICommand SelectTaskCommand { get; set; }
         public ICommand AddNewDailyTaskCommand { get; set; }
         public ICommand OpenProjectCommand { get; set; }
+        public ICommand OpenProjectFromSubtaskCommand { get; set; }
 
         #endregion // ICommand Properties
 
@@ -101,12 +101,19 @@ namespace Idoneus.ViewModels
             CleanCompletedTasksCommand = new RelayCommand(CleanCompletedTasks);
             AddNewDailyTaskCommand = new ParameterizedRelayCommand<string>(AddNewDailyTask);
             OpenProjectCommand = new ParameterizedRelayCommand<IProject>(OpenProject);
+            OpenProjectFromSubtaskCommand = new ParameterizedRelayCommand<ISubTask>(OpenProjectFromSubtask);
+        }
+
+        private void OpenProjectFromSubtask(ISubTask subTask)
+        {
+            OpenProject(DBHelper.GetProjectFromSubtask(subTask.ID));
         }
 
         private void OpenProject(IProject project)
         {
             var index = Projects.IndexOf(project);
-            IoC.Get<ApplicationViewModel>().GoTo(ApplicationPage.Projects, index);
+            //IoC.Get<ApplicationViewModel>().GoTo(ApplicationPage.Projects, index);
+            IoC.Get<ApplicationViewModel>().GoTo(ApplicationPage.Projects, project);
         }
 
 

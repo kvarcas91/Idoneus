@@ -13,6 +13,26 @@ namespace Core.DataModels
     [ImplementPropertyChanged]
     public class Project : IProject, INotifyPropertyChanged
     {
+
+        public Project()
+        {
+
+        }
+
+        public Project(IProject project)
+        {
+            ID = project.ID;
+            Header = project.Header;
+            Content = project.Content;
+            DueDate = project.DueDate;
+            SubmitionDate = project.SubmitionDate;
+            Priority = project.Priority;
+            IsArchived = project.IsArchived;
+
+        }
+
+
+
         public string Header { get; set; }
         public bool IsArchived { get; set; } = false;
         [Computed]
@@ -162,10 +182,16 @@ namespace Core.DataModels
 
                 foreach (var subtask in ((Task)element).SubTasks)
                 {
+                    if (subtask.IsCompleted) continue;
                     if (DateTime.Compare(subtask.DueDate, DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd"))) < 0) count++;
                 }
             }
             return count;
+        }
+
+        public override string ToString()
+        {
+            return $"ID: {ID}; Header: {Header}; Content: {Content};";
         }
 
         private void NotifyPropertyChanged([CallerMemberName] string name = null)

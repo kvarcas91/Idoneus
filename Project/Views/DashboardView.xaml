@@ -205,7 +205,8 @@
                         </Grid.RowDefinitions>
 
                         <!-- Content -->
-                        <ListView ItemsSource="{Binding UpcomingTasks}"
+                        <ListView x:Name="UpcomingTasksListView"
+                            ItemsSource="{Binding UpcomingTasks}"
                                   Grid.Row="0"
                                   Margin="0 10"
                                   Style="{StaticResource UpcomingTasksListView}"

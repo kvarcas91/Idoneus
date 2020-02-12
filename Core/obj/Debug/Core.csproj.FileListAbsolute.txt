@@ -13,11 +13,5 @@ C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Core\bin\Debug\Dapper.Contrib.dll
 C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Core\bin\Debug\Dapper.dll
 C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Core\bin\Debug\Dapper.xml
 C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Core\bin\Debug\Dapper.Contrib.xml
-C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Core\bin\Debug\Microsoft.IdentityModel.Logging.dll
-C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Core\bin\Debug\Microsoft.IdentityModel.Protocols.dll
-C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Core\bin\Debug\Microsoft.IdentityModel.Tokens.dll
 C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Core\bin\Debug\Newtonsoft.Json.dll
-C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Core\bin\Debug\Microsoft.IdentityModel.Logging.xml
-C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Core\bin\Debug\Microsoft.IdentityModel.Protocols.xml
-C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Core\bin\Debug\Microsoft.IdentityModel.Tokens.xml
 C:\Users\eslut\Desktop\myProjects\C#\Idoneus\Core\bin\Debug\Newtonsoft.Json.xml

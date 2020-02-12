@@ -103,6 +103,24 @@ namespace Core.DataBase
 			FileHelper.DeleteFolder(project.Path);
 		}
 
+		public static IProject GetProjectFromSubtask(long ID)
+		{
+			var query = $"SELECT * from projects p INNER JOIN project_tasks pt ON p.ID = pt.projectID INNER JOIN task_subtasks ts ON pt.taskID = ts.taskID WHERE ts.subtaskID = '{ID}'";
+			using IDbConnection connection = new SQLiteConnection(GetConnectionString());
+			var output = connection.Query<Project>(query).ToList();
+			foreach (var project in output)
+			{
+				project.Tasks = GetProjectTasks(project.ID);
+				project.Comments = GetProjectComments(project.ID);
+				project.UpdateProgress();
+				//project.Progress = GetProjectProgress(project.ID);
+				project.AddPersons(GetProjectContributors(project.ID));
+
+			}
+			connection.Dispose();
+			return output.Count > 0 ? output[0] : null;
+		}
+
 		#endregion // Projects
 
 		#region Tasks

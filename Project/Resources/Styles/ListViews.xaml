@@ -195,6 +195,7 @@
                 <DataTemplate>
 
                     <Grid
+                        Background="Transparent"
                         Margin="10 0">
                         <Grid.RowDefinitions>
                             
@@ -204,6 +205,12 @@
                             <!-- content -->
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
+
+                        <Grid.InputBindings>
+                            <MouseBinding Gesture="LeftDoubleClick" 
+                                          Command="{Binding ElementName=UpcomingTasksListView, Path=DataContext.OpenProjectFromSubtaskCommand}"
+                                          CommandParameter="{Binding}"/>
+                        </Grid.InputBindings>
 
                         <TextBlock Grid.Row="0"
                                    Text="{Binding DueDate, Converter={converters:DateTimeToStringConverter}, ConverterParameter=0}"
