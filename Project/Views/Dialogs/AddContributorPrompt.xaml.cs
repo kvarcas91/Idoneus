@@ -13,21 +13,21 @@ namespace Idoneus.Dialogs
     public partial class AddContributorPrompt : Window
     {
         public ObservableCollection<IContributor> Contributors { get; set; } = new ObservableCollection<IContributor>();
-        private ObservableCollection<IContributor> selectedContributors = new ObservableCollection<IContributor>();
+        private readonly ObservableCollection<IContributor> selectedContributors = new ObservableCollection<IContributor>();
         private object param;
-        public static AddContributorPrompt Instance;
+        private static AddContributorPrompt instance;
         private bool addContributorPanelVisible = true;
         private Contributor editableContributor = null;
 
         public AddContributorPrompt()
         {
             InitializeComponent();
-            Instance = this;
+            instance = this;
         }
 
         public AddContributorPrompt(ObservableCollection<IContributor> contributors, object param) : this ()
         {
-            Instance.param = param;
+            instance.param = param;
             SortContributors(contributors);
             AddContributorList.ItemsSource = Contributors;
         }
@@ -35,8 +35,8 @@ namespace Idoneus.Dialogs
         private void SortContributors(ObservableCollection<IContributor> contributors)
         {
             ObservableCollection<IContributor> allContributor;
-            if (Instance.param is IProject) allContributor = DBHelper.GetAllContributors();
-            else allContributor = DBHelper.GetProjectContributors(DBHelper.GetProjectIDFromTask(((ITask)Instance.param).ID));
+            if (instance.param is IProject) allContributor = DBHelper.GetAllContributors();
+            else allContributor = DBHelper.GetProjectContributors(DBHelper.GetProjectIDFromTask(((ITask)instance.param).ID));
             
             foreach (var contributor in allContributor)
             {
@@ -125,7 +125,7 @@ namespace Idoneus.Dialogs
             
             Contributors.Remove(contributor);
             selectedContributors.Remove(contributor);
-            DBHelper.DeleteContributor(contributor, Instance.param);
+            DBHelper.DeleteContributor(contributor, instance.param);
 
         }
 
@@ -134,7 +134,7 @@ namespace Idoneus.Dialogs
             var param = ((Button)sender).Tag;
             var contributor = (Contributor)param;
 
-            if (Instance.param is ITask)
+            if (instance.param is ITask)
             {
                 ToggleAddContributorPanelVisibility();
               

@@ -148,11 +148,18 @@ namespace Core.DataBase
 
 		}
 
-		private static void AssignTaskToTheProject(long projectID, long taskID)
+		public static void AssignTaskToTheProject(long projectID, long taskID)
 		{
 			using IDbConnection connection = new SQLiteConnection(GetConnectionString());
 			connection.Execute("INSERT INTO project_tasks (projectID, taskID) values (@projectID, @taskID)",
 				new { projectID, taskID });
+			connection.Dispose();
+		}
+
+		public static void ReAssignTaskFromTheProject(long projectID, long taskID)
+		{
+			using IDbConnection connection = new SQLiteConnection(GetConnectionString());
+			connection.Execute($"UPDATE project_tasks SET projectID = '{projectID}' WHERE taskID = '{taskID}'");
 			connection.Dispose();
 		}
 
@@ -245,6 +252,19 @@ namespace Core.DataBase
             connection.Dispose();
         }
 
+		public static ObservableCollection<IElement> GetAllActiveTasks ()
+		{
+			using IDbConnection connection = new SQLiteConnection(GetConnectionString());
+			List<Task> tasks = connection.Query<Task>(
+				"SELECT * FROM tasks").ToList();
+			connection.Dispose();
+			var output = new ObservableCollection<IElement>();
+			foreach (var task in tasks)
+			{
+				output.Add(task);
+			}
+			return output;
+		}
        
 
         #endregion // Tasks
@@ -673,7 +693,7 @@ namespace Core.DataBase
 		public static int GetCount(string table, string columnName, string op, string param)
 		{
 			using IDbConnection connection = new SQLiteConnection(GetConnectionString());
-			var sql = $"SELECT COUNT(*) FROM {table} WHERE {columnName} {op} '{param}'";
+			var sql = $"SELECT COUNT(*) FROM {table} WHERE IsCompleted = '0' AND {columnName} {op} '{param}'";
 			var count = connection.ExecuteScalar<int>(sql);
 			//var count = connection.Query("SELECT COUNT(*) FROM projects;");
 			connection.Dispose();

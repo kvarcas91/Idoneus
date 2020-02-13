@@ -25,7 +25,7 @@ namespace Idoneus.Converters
                 return date.ToLocalTime().ToString("HH:mm");
 
             // if it is not today..
-            return date.ToLocalTime().ToString("HH:mm, MMM, yyyy");
+            return date.ToLocalTime().ToString("HH:mm, dd MMM, yyyy");
 
         }
 

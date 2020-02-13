@@ -331,7 +331,7 @@
                     <!-- Total Tasks Performance Indicator -->
                     <Border Grid.Column="1" 
                                 Background="{StaticResource BackgroundLightBrush}"
-                                Margin="30 0 30 0"
+                                Margin="0 0 30 0"
                                 Padding="10 0">
 
                         <!-- Content -->
@@ -348,8 +348,8 @@
                             <!-- Progress -->
                             <Grid Grid.Column="0"
                                       HorizontalAlignment="Left"
-                                      Width="45"
-                                      Height="45" >
+                                      Width="55"
+                                      Height="55" >
 
                                 <Border Background="Transparent"  
                                             BorderBrush="{StaticResource LightBlueColorBrush}"
@@ -376,8 +376,8 @@
                                 <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
                                          Foreground="{StaticResource LightBlueColorBrush}"
                                          Value="{Binding TotalSubTasksProgress}"
-                                         Width="45"
-                                         Height="45"/>
+                                         Width="55"
+                                         Height="55"/>
 
                             </Grid>
 
@@ -390,6 +390,9 @@
                                 <Grid.RowDefinitions>
 
                                     <!-- Overdue -->
+                                    <RowDefinition Height="Auto"/>
+                                    
+                                    <!-- Overdue -->
                                     <RowDefinition Height="*"/>
 
                                     <!-- Completed -->
@@ -397,13 +400,19 @@
                                 </Grid.RowDefinitions>
 
                                 <TextBlock Grid.Row="0"
+                                   Text="Subtasks overview"
+                                   HorizontalAlignment="Center"
+                                   Foreground="{StaticResource DarkBlueColorBrush}"
+                                FontSize="{StaticResource Small}"/>
+
+                                <TextBlock Grid.Row="1"
                                    Style="{StaticResource InfoBoxContent}">
                             <Run Text="{Binding OverdueSubTasksCount}"
                                  FontFamily="Arial"/>
                             <Run Text="Overdue"/>
                                 </TextBlock>
 
-                                <TextBlock Grid.Row="1"
+                                <TextBlock Grid.Row="2"
                                    Style="{StaticResource InfoBoxContent}">
                             <Run Text="{Binding CompletedSubTasksCount}"
                                  FontFamily="Arial"/>
@@ -417,7 +426,7 @@
                     <!-- Contributors -->
                     <Border Grid.Column="2"
                                 Padding="10"
-                                Margin="0 0 0 10"
+                                Margin="0 0 30 00"
                                 Background="{StaticResource BackgroundLightBrush}"
                                 >
 
@@ -502,17 +511,18 @@
                 
                 <!-- Files, tasks, comments -->
                 <Grid Grid.Row="1"
-                      Margin="0 10 0 10">
+                      Margin="0 10 0 10"
+                    >
 
                     <Grid.ColumnDefinitions>
 
                         <!-- Files -->
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
 
                         <!-- Tasks -->
                         <ColumnDefinition Width="2*"/>
 
-                        <!-- Files and comments -->
+                        <!-- comments -->
                         <ColumnDefinition Width="Auto"/>
 
                     </Grid.ColumnDefinitions>
@@ -520,6 +530,8 @@
                     <!-- Files -->
                     <Border Grid.Column="0"
                             Padding="10"
+                            Width="200"
+                              Style="{StaticResource ProjectsCommentFileAnimation}"
                             Background="{StaticResource BackgroundLightBrush}">
 
                         <Grid>
@@ -646,7 +658,15 @@
                                     <!-- Header -->
                                     <TextBlock Grid.Column="0"
                                             Text="TASKS"
-                                               Style="{StaticResource ListBoxHeader}"/>
+                                               Style="{StaticResource ListBoxHeader}"
+                                               Visibility="{Binding IsExpandedCommentViewVisible, Mode=TwoWay,
+                                    Converter={StaticResource InverseBoolToVisConverter}}"/>
+
+                                    <TextBlock Grid.Column="0"
+                                            Text="COMMENT"
+                                               Style="{StaticResource ListBoxHeader}"
+                                               Visibility="{Binding IsExpandedCommentViewVisible, Mode=TwoWay,
+                                    Converter={StaticResource BooleanToVisibilityConverter}}"/>
 
                                     <!-- Controls -->
                                     <StackPanel Grid.Column="1" Orientation="Horizontal"
@@ -714,12 +734,17 @@
                                         <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
 
-                                    <TextBlock Grid.Row="0"
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Grid.Row="0" Grid.ColumnSpan="2"
                                    Text="{Binding PreviewComment.SubmitionDate, Mode=TwoWay, Converter={converters:DateTimeToStringConverter}}"
                                    Style="{StaticResource NoteDateText}"
                                       />
 
-                                    <TextBox Grid.Row="1"
+                                    <TextBox Grid.Row="1" Grid.ColumnSpan="2"
                                              AcceptsReturn="True"
                                    Text="{Binding PreviewComment.Content, Mode=TwoWay}"
                                   
@@ -728,6 +753,13 @@
                                         Content="Save"
                                             Command="{Binding UpdateCommentCommand}"/>
 
+                                    <Button Grid.Row="2" Grid.Column="1"
+                                            Background="Red"
+                                            Margin="5 0 5 0"
+                                            Command="{Binding ExpandCommentCommand}">
+                                        <materialDesign:PackIcon Kind="Cancel"/>
+                                    </Button>
+                                    
                                 </Grid>
 
                                 <Grid Grid.Row="1" 
@@ -790,7 +822,7 @@
                                                Command="{Binding AddNewTaskCommand}"
                                                 CommandParameter="{Binding Text, ElementName=AddNewTaskTextBox}"
                                                 Style="{StaticResource PackButtonBase}"
-                                                ToolTip="Add note"
+                                                ToolTip="Add task"
                                                   >
                                             <materialDesign:PackIcon Kind="Send"
                                                  Foreground="{StaticResource LightBlueColorBrush}"

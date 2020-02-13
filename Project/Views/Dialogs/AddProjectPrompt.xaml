@@ -63,23 +63,34 @@
                     ScrollViewer.VerticalScrollBarVisibility="Auto"/>
 
             <Grid Grid.Row="2"
-                        Margin="10">
+                        Margin="10"
+                  HorizontalAlignment="Center">
                 
                 <Grid.ColumnDefinitions>
 
                     <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
 
                 </Grid.ColumnDefinitions>
 
+                <TextBlock Text="Due on "
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Right"/>
 
                 <DatePicker x:Name="dueTime"
-                    Grid.Column="0"
+                    Grid.Column="1"
                             BorderThickness="0"
                             HorizontalAlignment="Right"
                             Margin="5 0 5 0"/>
 
-                <ComboBox Grid.Column="1"
+                <TextBlock Grid.Column="2"
+                    Text="Priority "
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Left"/>
+
+                <ComboBox Grid.Column="3"
                         SelectedIndex="1" 
                         x:Name="dueCombo"
                         MinWidth="100" 

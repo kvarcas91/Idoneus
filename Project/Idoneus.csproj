@@ -119,6 +119,9 @@
     <Compile Include="Views\Dialogs\AddProjectPrompt.xaml.cs">
       <DependentUpon>AddProjectPrompt.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Dialogs\MoveTaskPrompt.xaml.cs">
+      <DependentUpon>MoveTaskPrompt.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\MainContentView.xaml.cs">
       <DependentUpon>MainContentView.xaml</DependentUpon>
     </Compile>
@@ -199,6 +202,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Dialogs\AddProjectPrompt.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Dialogs\MoveTaskPrompt.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

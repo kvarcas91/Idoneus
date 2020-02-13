@@ -59,7 +59,7 @@ namespace Idoneus.ViewModels
             if (project != null)
             {
                 DBHelper.InsertProject(project);
-                IoC.Get<ApplicationViewModel>().GoTo(ApplicationPage.Projects, -1);
+                IoC.Get<ApplicationViewModel>().GoTo(ApplicationPage.Projects, project);
             }
         }
 

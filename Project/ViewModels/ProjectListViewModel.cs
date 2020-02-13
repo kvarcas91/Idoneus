@@ -59,6 +59,7 @@ namespace Idoneus.ViewModels
         public ICommand DeleteTaskCommand { get; set; }
         public ICommand EditTaskCommand { get; set; }
         public ICommand AssignContributorToTaskCommand { get; set; }
+        public ICommand MoveTaskCommand { get; set; }
 
         // Contributors Commands
         public ICommand AddContributorsCommand { get; set; }
@@ -274,6 +275,27 @@ namespace Idoneus.ViewModels
         private void AssignContributorToTask (ITask task)
         {
              task.Contributors = AddContributorPrompt.ShowDialog(task, task.Contributors);
+        }
+
+        private void MoveTask (IElement param)
+        {
+            var changed = MoveTaskPrompt.ShowDialog(param);
+            Console.WriteLine(changed);
+            if (changed)
+            {
+                if (param is ITask)
+                {
+                    CurrentProject.Tasks.Remove(param);
+                }
+                RefreshProjects();
+                
+            }
+        }
+
+        private void RefreshProjects()
+        {
+            Projects = new ObservableCollection<IProject>(DBHelper.GetProjects(ViewType.All));
+            UpdateCounters();
         }
 
         #endregion // Task
@@ -508,6 +530,7 @@ namespace Idoneus.ViewModels
             DeleteTaskCommand = new ParameterizedRelayCommand<IElement>(DeleteTask);
             EditTaskCommand = new ParameterizedRelayCommand<IElement>(EditTask);
             AssignContributorToTaskCommand = new ParameterizedRelayCommand<ITask>(AssignContributorToTask);
+            MoveTaskCommand = new ParameterizedRelayCommand<IElement>(MoveTask);
 
             // Contributors
             AddContributorsCommand = new RelayCommand(AddContributors);

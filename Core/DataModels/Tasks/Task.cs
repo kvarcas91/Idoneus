@@ -131,5 +131,18 @@ namespace Core.DataModels
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null || !(obj is Task))
+                return false;
+
+            return GetHashCode() == ((Task)obj).GetHashCode();
+        }
+
+        public override int GetHashCode()
+        {
+            return (int)ID;
+        }
     }
 }

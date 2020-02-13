@@ -42,7 +42,7 @@ namespace Core.DataModels
         public ObservableCollection<IContributor> Contributors { get; set; } = new ObservableCollection<IContributor>();
 
         [Computed]
-        public ObservableCollection<IElement> Tasks { get; set; }
+        public ObservableCollection<IElement> Tasks { get; set; } = new ObservableCollection<IElement>();
         [Key]
         public long ID { get; set; }
         public string Content { get; set; }
