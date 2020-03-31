@@ -138,7 +138,15 @@ namespace Core.DataModels
 
         public bool RemoveElement(IElement element)
         {
-            throw new NotImplementedException();
+            if (element is ISubTask subTask)
+            {
+                foreach (var task in Tasks)
+                {
+                    if (((ITask)task).RemoveElement(subTask)) return true;
+                }
+                return false;
+            }
+            return false;
         }
 
         public bool RemovePerson(IPerson person)

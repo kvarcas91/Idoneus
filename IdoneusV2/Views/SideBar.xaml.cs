@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Project.Views
+namespace IdoneusV2.Views
 {
     /// <summary>
-    /// Interaction logic for temp.xaml
+    /// Interaction logic for SideBar.xaml
     /// </summary>
-    public partial class temp : UserControl
+    public partial class SideBar : UserControl
     {
-        public temp()
+        public SideBar()
         {
             InitializeComponent();
         }

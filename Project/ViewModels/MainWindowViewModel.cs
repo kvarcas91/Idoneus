@@ -1,6 +1,6 @@
 ﻿using Core.Utils;
 using Idoneus.ViewModels.Base;
-using Project.Utils;
+using Idoneus.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;

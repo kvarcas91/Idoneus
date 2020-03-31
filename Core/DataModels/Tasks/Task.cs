@@ -21,7 +21,7 @@ namespace Core.DataModels
         public ObservableCollection<IContributor> Contributors { get; set; } = new ObservableCollection<IContributor>();
 
         [Computed]
-        public ObservableCollection<ISubTask> SubTasks { get; } = new ObservableCollection<ISubTask>();
+        public ObservableCollection<ISubTask> SubTasks { get; set; } = new ObservableCollection<ISubTask>();
 
         [Computed]
         public DateTime SubmitionDate { get; set; }
@@ -109,7 +109,7 @@ namespace Core.DataModels
 
         public bool RemoveElement(IElement element)
         {
-            throw new NotImplementedException();
+            return SubTasks.Remove((ISubTask)element);
         }
 
         public bool RemovePerson(IPerson person)

@@ -8,7 +8,7 @@ using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
 
-namespace Project.Utils
+namespace Idoneus.Utils
 {
     public enum WindowDockPosition
     {

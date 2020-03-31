@@ -56,13 +56,14 @@ namespace Idoneus.Dialogs
             }
             if (element is ISubTask subTask)
             {
-                MoveSubtask(subTask, destinationProject);
+                MoveSubtaskToProject(subTask, destinationProject);
+                isChanged = true;
             }
 
             Discard();
         }
 
-        private void MoveSubtask (ISubTask subTask, IElement destination)
+        private void MoveSubtaskToProject (ISubTask subTask, IElement destination)
         {
             var task = new Core.DataModels.Task
             {
@@ -72,6 +73,11 @@ namespace Idoneus.Dialogs
                 Priority = subTask.Priority,
                 IsCompleted = subTask.IsCompleted
             };
+
+            //var oldSubtaskProject = DBHelper.GetProjectFromSubtask(subTask.ID);
+
+            DBHelper.InsertTask(task, destination.ID);
+            DBHelper.ReAssignSubTaskFromTask(subTask.ID);
 
             
             //DBHelper.DeleteSubTask(subTask);

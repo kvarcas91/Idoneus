@@ -265,13 +265,23 @@ namespace Core.DataBase
 			}
 			return output;
 		}
-       
 
-        #endregion // Tasks
+		public static ITask GetTaskFromSubtask(long subtaskID)
+		{
+			var query = $"SELECT * FROM tasks t INNER JOIN task_subtasks ts ON t.ID = ts.taskID WHERE ts.subtaskID = '{subtaskID}'";
+			using IDbConnection connection = new SQLiteConnection(GetConnectionString());
+			var output = connection.Query<Task>(query).ToList();
 
-        #region SubTasks
+			connection.Dispose();
+			return output.Count > 0 ? output[0] : null;
+		}
 
-        private static IList<IElement> GetSubTasks(long taskID)
+
+		#endregion // Tasks
+
+		#region SubTasks
+
+		private static IList<IElement> GetSubTasks(long taskID)
 		{
 			using IDbConnection connection = new SQLiteConnection(GetConnectionString());
 			List<SubTask> tasks = connection.Query<SubTask>(
@@ -327,6 +337,14 @@ namespace Core.DataBase
             connection.Delete((SubTask)task);
             connection.Dispose();
         }
+
+		public static void ReAssignSubTaskFromTask (long subtaskID)
+		{
+			using IDbConnection connection = new SQLiteConnection(GetConnectionString());
+			string subtaskAssignQuery = $"DELETE FROM task_subtasks WHERE subtaskID = '{subtaskID}'";
+			connection.Execute(subtaskAssignQuery);
+			connection.Dispose();
+		}
 
         #endregion
 

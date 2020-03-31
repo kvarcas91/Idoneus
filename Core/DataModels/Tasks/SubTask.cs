@@ -74,6 +74,19 @@ namespace Core.DataModels
             throw new NotImplementedException();
         }
 
+        public override bool Equals(object obj)
+        {
+            if (obj == null || !(obj is SubTask))
+                return false;
+
+            return GetHashCode() == ((SubTask)obj).GetHashCode();
+        }
+
+        public override int GetHashCode()
+        {
+            return (int)ID;
+        }
+
         private void NotifyPropertyChanged([CallerMemberName] string name = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));

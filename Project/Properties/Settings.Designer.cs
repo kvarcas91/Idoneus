@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Project.Properties
+namespace Idoneus.Properties
 {
 
 

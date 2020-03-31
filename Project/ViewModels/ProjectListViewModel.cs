@@ -287,6 +287,13 @@ namespace Idoneus.ViewModels
                 {
                     CurrentProject.Tasks.Remove(param);
                 }
+                if (param is ISubTask)
+                {
+                   
+                    var test =  CurrentProject.RemoveElement(param);
+
+                   
+                }
                 RefreshProjects();
                 
             }
