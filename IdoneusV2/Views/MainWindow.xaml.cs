@@ -9,23 +9,41 @@ namespace IdoneusV2.Views
     /// </summary>
     public partial class MainWindow : Window
     {
+        readonly IContainerExtension _container;
+        readonly IRegionManager _regionManager;
+        private IRegion _region;
 
-        IContainerExtension _container;
-        IRegionManager _regionManager;
+        SideBar _sidebarView;
 
         public MainWindow(IContainerExtension container, IRegionManager regionManager)
         {
             InitializeComponent();
             _container = container;
             _regionManager = regionManager;
-            
+
+            Loaded += MainWindow_Loaded;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            var view = _container.Resolve<SideBar>();
-            IRegion region = _regionManager.Regions["SideBarRegion"];
-            region.Add(view);
+            _sidebarView = _container.Resolve<SideBar>();
+            _region = _regionManager.Regions["SideBarRegion"];
+            _region.Add(_sidebarView);
+        }
+
+        private void Minimize(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Maximize(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Close(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
     }
 }

@@ -7,8 +7,8 @@
              mc:Ignorable="d" 
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              d:DesignHeight="450">
-    
-    <Grid  Background="Blue">
+
+    <Grid   Background="{StaticResource LightBlueColorBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
@@ -35,7 +35,7 @@
                     VerticalAlignment="Top"
                     Background="Transparent"
                     BorderThickness="0"
-                   
+                    Click="NewProject_Click"
                     ToolTip="Create new project">
                 <materialDesign:PackIcon Kind="AddCircleOutline"
                                           Foreground="White"
@@ -48,6 +48,7 @@
                     HorizontalContentAlignment="Left"
                     BorderThickness="0"
                     ToolTip="Dashboard"
+                    Click="Button_Click"
                     >
 
                 <materialDesign:PackIcon Kind="ViewDashboard"

@@ -6,13 +6,48 @@
         xmlns:local="clr-namespace:IdoneusV2"
         mc:Ignorable="d"
         xmlns:prism="http://prismlibrary.com/"
-        Title="MainWindow" Height="450" Width="800">
+        WindowStyle="None"
+        AllowsTransparency="True"
+        WindowStartupLocation="CenterScreen"
+        Icon="/Resources/Images/main.ico"
+        Height="750" Width="1400">
+    
     <DockPanel>
-        <Button DockPanel.Dock="Top" Content="Add" Click="Button_Click"/>
+        
         <ContentControl DockPanel.Dock="Left" prism:RegionManager.RegionName="SideBarRegion" />
         <Grid>
-            <TextBlock Text="CENTRAS" HorizontalAlignment="Center"
-                       VerticalAlignment="Center"/>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            
+            <!-- Menu bar -->
+            <Grid Grid.Row="0"
+                  Height="42">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <!-- Title -->
+                <Viewbox Grid.Column="0"  Margin="5"
+                          HorizontalAlignment="Left">
+                    <TextBlock Text="Page Header" Style="{StaticResource PageHeader}"/>
+                </Viewbox>
+                
+                <!-- Controls -->
+                <!--Window Buttons-->
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Button Click="Minimize" Style="{StaticResource WindowControlButton}" Content="_" />
+                    <Button Click="Maximize" Style="{StaticResource WindowControlButton}" Content="[ ]" />
+                    <Button Click="Close" Style="{StaticResource WindowCloseButton}" Content="X" />
+                </StackPanel>
+
+            </Grid>
+            
+            <!-- Main content -->
+            <ContentControl Grid.Row="1"
+                prism:RegionManager.RegionName="ContentRegion"/>
         </Grid>
     </DockPanel>
 </Window>
