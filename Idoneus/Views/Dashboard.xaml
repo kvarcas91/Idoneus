@@ -1,0 +1,115 @@
+﻿<UserControl x:Class="Idoneus.Views.Dashboard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Idoneus.Views"
+             mc:Ignorable="d" 
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:prism="http://prismlibrary.com/"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             d:DesignHeight="450" d:DesignWidth="800">
+
+
+    <Grid Margin="10">
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Initial loader -->
+        <StackPanel Orientation="Vertical"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Visibility="{Binding IsDataLoaded, Converter={StaticResource InverseBoolToVisConverter}}"
+                        Grid.Row="1"
+                    Grid.ColumnSpan="2">
+            <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" IsIndeterminate="True" Width="80" Height="80"/>
+            <TextBlock Style="{StaticResource MaterialDesignSubtitle2TextBlock}" 
+                                   Text="Loading..." 
+                                   Padding="0 20 0 0"
+                                   TextAlignment="Center"/>
+
+        </StackPanel>
+
+        <Grid Grid.Column="0"
+             Visibility="{Binding IsDataLoaded, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Grid  Margin="4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Orientation="Horizontal"
+                            Grid.Column="0">
+                    <RadioButton Style="{StaticResource MaterialDesignTabRadioButton}"
+                                 IsChecked="{Binding ActiveDashboardTab}">
+                        <TextBlock Text="Project Summary"
+                               Style="{StaticResource MaterialDesignOverlineTextBlock}"/>
+                    </RadioButton>
+
+                    <RadioButton Style="{StaticResource MaterialDesignTabRadioButton}"
+                         IsChecked="{Binding ActiveDashboardTab, Converter={StaticResource InverseBoolToVisConverter}}">
+                        <TextBlock Text="Upcomming Tasks"
+                               Style="{StaticResource MaterialDesignOverlineTextBlock}"/>
+                    </RadioButton>
+                </StackPanel>
+
+                <Border Grid.Column="1"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Margin="0 0 10 0">
+
+                    <Grid>
+
+                        <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                 Height="40"
+                                 Width="40"
+                                 Value="99.9"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Center"/>
+
+                        <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                 Height="40"
+                                 Width="40"
+                                 Foreground="{StaticResource SecondaryAccentBrush}"
+                                 Value="{Binding TotalProjectProgress}"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Center"/>
+
+                        <TextBlock
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center">
+                            <Run Text="{Binding TotalProjectProgress}"/>
+                            <Run Text="%"/>
+                        </TextBlock>
+                    </Grid>
+
+                </Border>
+                
+            </Grid>
+
+            <materialDesign:Card Margin="10" 
+                                 Grid.Row="1"
+                                 materialDesign:ShadowAssist.ShadowDepth="Depth1">
+                <ContentControl 
+                    prism:RegionManager.RegionName="DashboardProjectRegion"/>
+            </materialDesign:Card>
+        </Grid>
+
+        <materialDesign:Card Margin="10" 
+                                 Grid.Column="1"
+                            Visibility="{Binding IsDataLoaded, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                 materialDesign:ShadowAssist.ShadowDepth="Depth1">
+            <ContentControl Grid.Column="1"
+                    prism:RegionManager.RegionName="DashboardTaskRegion"/>
+        </materialDesign:Card>
+    </Grid>
+
+</UserControl>
