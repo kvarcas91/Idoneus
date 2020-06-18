@@ -14,14 +14,13 @@ namespace Idoneust.Test.DummyData
         {
             var project = new Project
             {
-                ID = 1,
+                ID = "1",
                 SubmitionDate = DateTime.Now,
                 DueDate = DateTime.MaxValue,
                 Header = "test project no 1",
                 Content = "this is test project no 1",
-                Path = "somewhere in C drive",
                 Priority = Common.Priority.High,
-                IsArchived = false,
+                Status = Common.Status.Default,
                 OrderNumber = 0
             };
             var completedTasks = 0;
@@ -31,7 +30,7 @@ namespace Idoneust.Test.DummyData
                 var task = new ProjectTask();
                 if (completedTasks < taskCount.Item2)
                 {
-                    task.IsCompleted = true;
+                    task.Status = Common.Status.Completed;
                     completedTasks++;
                 }
 
@@ -42,7 +41,7 @@ namespace Idoneust.Test.DummyData
                     var subTask = new SubTask();
                     if (completedSubTasks < subtaskCount.Item2)
                     {
-                        subTask.IsCompleted = true;
+                        subTask.Status = Common.Status.Completed;
                         completedSubTasks++;
                     }
                     subtasks.Add(subTask);

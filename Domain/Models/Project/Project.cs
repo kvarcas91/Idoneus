@@ -1,9 +1,9 @@
 ﻿using Common;
 using Dapper.Contrib.Extensions;
+using Domain.Attributes;
 using Domain.Models.Base;
 using Domain.Models.Tasks;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace Domain.Models.Project
@@ -12,15 +12,15 @@ namespace Domain.Models.Project
     public class Project : IEntity, IUpdatableProgress
     {
         [Key]
-        public int ID { get; set; }
-        public DateTime SubmitionDate { get; set; }
-        public DateTime DueDate { get; set; }
+        public string ID { get; set; }
         public string Header { get; set; }
         public string Content { get; set; }
-        public string Path { get; set; }
-        public Priority Priority { get; set; }
-        public bool IsArchived { get; set; }
+        public DateTime SubmitionDate { get; set; }
+        public DateTime DueDate { get; set; }
+        public Priority Priority { get; set; } = Priority.Default;
+        public Status Status { get; set; } = Status.Default;
         public int OrderNumber { get; set; }
+        public double Progress { get; set; } = 0D;
 
         [Computed]
         public ObservableCollection<ProjectTask> Tasks { get; set; } = new ObservableCollection<ProjectTask>();
@@ -28,11 +28,14 @@ namespace Domain.Models.Project
         [Computed]
         public int CompletedTaskCount { get; set; } = 0;
 
-        public double Progress { get; set; } = 0D;
-
         public double GetProgress()
         {
             Progress = 0D;
+            if (Status == Status.Completed)
+            {
+                Progress = 100D;
+            }
+
             if (Tasks.Count == 0) return Progress;
 
             double itemWeight = 100 / Tasks.Count;
@@ -41,7 +44,7 @@ namespace Domain.Models.Project
             foreach (var item in Tasks)
             {
 
-                if (item.IsCompleted)
+                if (item.Status == Status.Completed)
                 {
                     Progress += itemWeight;
                     CompletedTaskCount++;
@@ -56,6 +59,7 @@ namespace Domain.Models.Project
             }
 
             if (CompletedTaskCount == Tasks.Count) Progress = 100D;
+           
 
 
 

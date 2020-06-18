@@ -2,6 +2,7 @@
 using Common.EventAggregators;
 using DataProcessor.cs;
 using Domain.Models.Project;
+using Microsoft.Win32;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
@@ -62,11 +63,22 @@ namespace Idoneus.ViewModels
 
         private void Export()
         {
+            SaveFileDialog dialog = new SaveFileDialog
+            {
+                Filter = "CSV Files|*.csv",
+                Title = "Save a dashboard file"
+            };
+
+            if (dialog.ShowDialog() != true) return;
+
+            var fileName = dialog.FileName;
+
             IsExporting = true;
             Task.Run(() =>
             {
-                WriteData.Write("somewhere", SetExportMessage);
+                var response =  WriteData.Write(fileName, SetExportMessage, Projects);
                 IsExporting = false;
+                Process.Start(fileName);
             });
         }
     }

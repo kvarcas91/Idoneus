@@ -1,4 +1,5 @@
 ﻿using Domain.Helpers;
+using Domain.Models.Base;
 using Domain.Models.Project;
 using Domain.Models.Tasks;
 using Domain.Repository.Base;
@@ -23,7 +24,7 @@ namespace Domain.Repository
 
                 foreach (var task in item.Tasks)
                 {
-                    task.SubTasks = new ObservableCollection<SubTask>(GetSubTasks(task.ID));
+                    task.SubTasks = new ObservableCollection<SubTask>(GetSubTasks(task.ParentID));
                 }
             }
             return output;
@@ -31,8 +32,8 @@ namespace Domain.Repository
 
         public IEnumerable<ITask> GetUpcommingTasks(DateTime targetDate)
         {
-            var taskQuery = $"SELECT * FROM tasks WHERE IsCompleted= '0' AND DueDate <= '{targetDate.ToString(dateFormat)}%' ORDER BY DueDate ASC";
-            var subtaskQuery = $"SELECT * FROM subtasks WHERE IsCompleted= '0' AND DueDate <= '{targetDate.ToString(dateFormat)}%' ORDER BY DueDate ASC";
+            var taskQuery = $"SELECT * FROM tasks WHERE Status != '2' AND DueDate <= '{targetDate.ToString(dateFormat)}%' ORDER BY DueDate ASC";
+            var subtaskQuery = $"SELECT * FROM subtasks WHERE Status != '2' AND DueDate <= '{targetDate.ToString(dateFormat)}%' ORDER BY DueDate ASC";
             var output = new List<ITask>();
             var tasks = base.GetAll<ProjectTask>(taskQuery);
             var subTasks = base.GetAll<SubTask>(subtaskQuery);
@@ -41,16 +42,22 @@ namespace Domain.Repository
             return output;
         }
 
-        public IEnumerable<ProjectTask> GetProjectTasks (int ID)
+        public dynamic GetParentID<T>(int ID, T obj, string table, string joinTable, string middleTable, (string, string) p1, (string, string) p2) where T : class, IEntity
         {
-            var query = QueryHelper.GetComplexQuery(new ProjectTask(), base.GetTableName<ProjectTask>(), "projects", "project_tasks", ("taskID", "ID"), ("ID", "projectID"), ID, "ASC", "OrderNumber", "DueDate");
+            var query = QueryHelper.GetComplexQuery(obj, table, joinTable, middleTable, p1, p2, ID, null, singleKeyValue: true);
+            return query;
+        }
+
+        public IEnumerable<ProjectTask> GetProjectTasks (string ID)
+        {
+            var query = $"SELECT * FROM tasks WHERE ParentID = '{ID}'";
             
             return base.GetAll<ProjectTask>(query);
         }
 
-        public IEnumerable<SubTask> GetSubTasks (int ID)
+        public IEnumerable<SubTask> GetSubTasks (string ID)
         {
-            var query = QueryHelper.GetComplexQuery(new SubTask(), base.GetTableName<SubTask>(), "tasks", "task_subtasks", ("subtaskID", "ID"), ("ID", "taskID"), ID, "DESC", "IsCompleted", "DueDate", "Priority");
+            var query = $"SELECT * FROM subtasks WHERE ParentID = '{ID}'";
             return base.GetAll<SubTask>(query);
         }
 

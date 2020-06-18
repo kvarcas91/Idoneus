@@ -16,14 +16,62 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        
-        <Button Style="{StaticResource MaterialDesignFlatButton}"
+
+        <Grid >
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="80"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid VerticalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBox Width="200"
+                         materialDesign:HintAssist.Hint="search..."
+                         Margin="20 0 0 0"/>
+                <materialDesign:PackIcon Kind="Search"
+                                         VerticalAlignment="Bottom"
+                                         Grid.Column="1"/>
+            </Grid>
+
+            <ComboBox Grid.Column="2"
+                      BorderThickness="0"
+                      SelectedIndex="0"
+                     >
+                <ComboBoxItem Style="{StaticResource MaterialDesignComboBoxItemStyle}">
+                    All
+                </ComboBoxItem>
+
+                <ComboBoxItem Style="{StaticResource MaterialDesignComboBoxItemStyle}">
+                    Completed
+                </ComboBoxItem>
+
+                <ComboBoxItem Style="{StaticResource MaterialDesignComboBoxItemStyle}">
+                    In Progress
+                </ComboBoxItem>
+
+                <ComboBoxItem Style="{StaticResource MaterialDesignComboBoxItemStyle}">
+                    Delayed
+                </ComboBoxItem>
+            </ComboBox>
+            
+            <Button Style="{StaticResource MaterialDesignFlatButton}"
                 Margin="10"
                 Grid.Row="0"
-                HorizontalAlignment="Right"
+               Grid.Column="3"
+                ToolTip="Export to Excel"
                 Command="{Binding ExportCommand}">
-            <materialDesign:PackIcon Kind="AccountConvert"/>
-        </Button>
+                <materialDesign:PackIcon Kind="AccountConvert"/>
+            </Button>
+        </Grid>
+        
+        
 
         <Grid Grid.Row="1">
 

@@ -24,7 +24,7 @@ namespace Idoneus.ViewModels
             _eventAggregator = eventAggregator;
             storage.UserName = Environment.UserName;
             UserName = storage.UserName;
-            CheckIfUserExist();
+            Login();
             Navigate("Dashboard");
         }
 
@@ -43,14 +43,6 @@ namespace Idoneus.ViewModels
         {
             get => _userName;
             private set { SetProperty(ref _userName, value); }
-        }
-
-        private void CheckIfUserExist()
-        {
-            var repo = new ProjectRepository();
-            repo.AlterTable();
-            Login();
-            
         }
 
         private void Login()

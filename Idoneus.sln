@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "Common\Common.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Idoneust.Test", "Idoneust.Test\Idoneust.Test.csproj", "{30EC9825-2B38-42B1-8200-3FEB059D0A35}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataProcessor.cs", "DataProcessor.cs\DataProcessor.cs.csproj", "{14D92E87-5F1D-4EB8-915B-2D45845A6DBA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataProcessor", "DataProcessor.cs\DataProcessor.csproj", "{14D92E87-5F1D-4EB8-915B-2D45845A6DBA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

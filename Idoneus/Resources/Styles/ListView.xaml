@@ -120,7 +120,7 @@
                         </Grid.InputBindings>
 
                         <TextBlock Grid.Row="0"
-                                   Text="asd"
+                                   Text="{Binding DueDate}"
                                   />
 
                         <TextBlock Grid.Row="1"

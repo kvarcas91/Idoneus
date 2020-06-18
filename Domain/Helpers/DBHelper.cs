@@ -57,76 +57,69 @@ namespace Domain.Repository.Helpers
 				connection.Open();
 
 				var query = @"CREATE TABLE projects (
-								ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+								ID TEXT NOT NULL PRIMARY KEY,
 								SubmitionDate TEXT NOT NULL,
 								Content TEXT NOT NULL,
-								Path TEXT NOT NULL,
 								DueDate TEXT NOT NULL,
 								Header TEXT NOT NULL,
 								Priority INTEGER NOT NULL,
-								IsArchived INTEGER,
+								Status INTEGER,
 								OrderNumber INTEGER);
 
 							CREATE TABLE comments (
-								ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+								ID TEXT NOT NULL PRIMARY KEY,
+								ProjectID TEXT,
 								Content TEXT NOT NULL,
-								SubmitionDate TEXT NOT NULL);
+								SubmitionDate TEXT NOT NULL,
+								FOREIGN KEY(ProjectID) REFERENCES projects(ID));
 
-							CREATE TABLE project_comments (
-								projectID INTEGER NOT NULL,
-								commentID INTEGER NOT NULL,
-								FOREIGN KEY(projectID) REFERENCES projects(ID),
-								FOREIGN KEY(commentID) REFERENCES comments(ID));
+							CREATE TABLE links (
+								ID TEXT NOT NULL PRIMARY KEY,
+								ProjectID TEXT,
+								Content TEXT NOT NULL,
+								SubmitionDate TEXT NOT NULL,
+								FOREIGN KEY(ProjectID) REFERENCES projects(ID));
 
 							CREATE TABLE tasks (
-								ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+								ID TEXT NOT NULL PRIMARY KEY,
+								ParentID TEXT,
 								Content TEXT NOT NULL,
 								Priority INTEGER NOT NULL,
 								DueDate TEXT NOT NULL,
 								IsCompleted INTEGER NOT NULL,
-								OrderNumber INTEGER);
+								OrderNumber INTEGER,
+								FOREIGN KEY(ParentID) REFERENCES projects(ID));
 
 							CREATE TABLE td_tasks (
-								ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+								ID TEXT NOT NULL PRIMARY KEY,
 								Content TEXT NOT NULL,
 								IsCompleted INTEGER NOT NULL,
 								SubmitionDate TEXT NOT NULL);
 
                             CREATE TABLE contributors ( 
-                              [ID] INTEGER NOT NULL,
-                              [FirstName] TEXT NOT NULL,
-                              [LastName] TEXT NOT NULL,
-                              CONSTRAINT[PK_Contributor] PRIMARY KEY([ID]));
+                              Login TEXT NOT NULL,
+                              FirstName TEXT NOT NULL,
+                              LastName TEXT NOT NULL);
 
                             CREATE TABLE project_contributors (
-                                projectID INTEGER NOT NULL,
-	                            contributorID INTEGER NOT NULL,
+                                projectID TEXT NOT NULL,
+	                            contributorID TEXT NOT NULL,
 	                            FOREIGN KEY(contributorID) REFERENCES contributors(ID),
 	                            FOREIGN KEY(projectID) REFERENCES projects(ID));
 
-							CREATE TABLE project_tasks (
-								projectID INTEGER NOT NULL,
-								taskID   INTEGER NOT NULL,
-								FOREIGN KEY(projectID) REFERENCES projects(ID),
-								FOREIGN KEY(taskID) REFERENCES tasks(ID));
-
 							CREATE TABLE subtasks(
-								ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+								ID TEXT NOT NULL PRIMARY KEY,
+								ParentID TEXT,
 								Content TEXT NOT NULL,
 								Priority INTEGER NOT NULL,
 								DueDate TEXT NOT NULL,
 								IsCompleted INTEGER NOT NULL,
-								OrderNumber INTEGER);
-
-							CREATE TABLE task_subtasks(
-								taskID INTEGER NOT NULL,
-								subtaskID INTEGER NOT NULL,
-								FOREIGN KEY(subtaskID) REFERENCES subtasks(ID),
-								FOREIGN KEY(taskID) REFERENCES tasks(ID));
+								OrderNumber INTEGER,
+								FOREIGN KEY(ParentID) REFERENCES tasks(ID));
 
                             CREATE TABLE task_contributors(
-                                taskID INTEGER NOT NULL,
-	                            contributorID INTEGER NOT NULL,
+                                taskID TEXT NOT NULL,
+	                            contributorID TEXT NOT NULL,
 	                            FOREIGN KEY(taskID) REFERENCES tasks(ID),
 	                            FOREIGN KEY(contributorID) REFERENCES contributors(ID));";
 

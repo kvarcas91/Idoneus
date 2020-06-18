@@ -6,5 +6,6 @@ namespace Domain.Models.Tasks
 {
     public interface ITask
     {
+        string ParentID { get; set; }
     }
 }

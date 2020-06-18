@@ -2,8 +2,6 @@
 using Dapper.Contrib.Extensions;
 using Domain.Models.Base;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Domain.Models.Tasks
 {
@@ -13,12 +11,12 @@ namespace Domain.Models.Tasks
     {
 
         [Key]
-        public int ID { get; set; }
-
+        public string ID { get; set; }
+        public string ParentID { get; set; }
         public string Content { get; set; }
         public Priority Priority { get; set; }
         public DateTime DueDate { get; set; }
-        public bool IsCompleted { get; set; } = false;
+        public Status Status { get; set; } = Status.Default;
         public int OrderNumber { get; set; }
     }
 }

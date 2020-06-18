@@ -36,7 +36,7 @@ namespace Domain.Repository.Base
         }
 
 
-        protected string GetTableName<TObject>()
+        public string GetTableName<TObject>()
         {
 
                 var output = ((TableAttribute)typeof(TObject).GetCustomAttributes(true)[0]).Name;
@@ -98,22 +98,6 @@ namespace Domain.Repository.Base
         public Response Initialize()
         {
             return DBHelper.Initialize(GetConnectionString());
-        }
-
-        public bool AlterTable()
-        {
-            using var connection = new SqliteConnection(GetConnectionString());
-         
-            var query = "ALTER TABLE contributors ADD COLUMN Login TEXT";
-            try
-            {
-                var output = connection.Execute(query);
-                return true;
-            }
-            catch (SqliteException)
-            {
-                return false;
-            }
         }
 
         private SqliteConnection GetConnection()
