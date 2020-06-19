@@ -2,9 +2,9 @@
 {
     public enum Status
     {
-        Default,
-        InProgress,
-        Completed,
-        Delayed
+        Default = 0,
+        InProgress = 2,
+        Completed = 3,
+        Delayed = 4
     }
 }

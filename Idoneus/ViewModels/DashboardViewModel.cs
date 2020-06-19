@@ -12,6 +12,7 @@ using Prism.Ioc;
 using Prism.Mvvm;
 using Prism.Regions;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -35,12 +36,9 @@ namespace Idoneus.ViewModels
             set { SetProperty(ref _isDataLoaded, value); }
         }
 
-      
+       
 
-        public ObservableCollection<Project> _projects = new ObservableCollection<Project>();
-
-     
-
+        private ObservableCollection<Project> _projects = new ObservableCollection<Project>();
 
         private bool _activeDashboardTab = true;
         public bool ActiveDashboardTab
@@ -68,7 +66,8 @@ namespace Idoneus.ViewModels
 
             _repository = new ProjectRepository();
             _eventAggregator.GetEvent<UserLoginMessage<Contributor>>().Subscribe(GetUser);
-           
+          
+
         }
 
         #region Navigation

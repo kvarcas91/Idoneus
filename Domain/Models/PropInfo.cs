@@ -1,10 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Domain.Models
 {
-    public class PropInfo
+    public struct PropInfo
     {
+        public Type Type { get; set; }
+        public string Name { get; set; }
+
+#nullable enable
+        public dynamic? Value { get; set; }
     }
 }

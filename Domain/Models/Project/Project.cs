@@ -9,10 +9,13 @@ using System.Collections.ObjectModel;
 namespace Domain.Models.Project
 {
     [Table("projects")]
+    [Serializable]
     public class Project : IEntity, IUpdatableProgress
     {
+
         [Key]
         public string ID { get; set; }
+
         public string Header { get; set; }
         public string Content { get; set; }
         public DateTime SubmitionDate { get; set; }
@@ -64,6 +67,29 @@ namespace Domain.Models.Project
 
 
             return Math.Round(Progress, 0);
+        }
+
+        public bool HasString(string param, ViewType viewType)
+        {
+            var type = viewType switch
+            {
+                ViewType.All => (int)Status,
+                ViewType.Archived => (int)Status.Default,
+                _ => (int)viewType,
+            };
+
+            var lowerParam = param.ToLower();
+            if ((Header.ToLower().Contains(lowerParam) &&  (int)Status == type) ||
+                (Content.ToLower().Contains(lowerParam) && (int)Status == type) ||
+                (Priority.ToString().ToLower().Contains(lowerParam) && (int)Status == type) ||
+                (Status.ToString().ToLower().Contains(lowerParam) && (int)Status == type)) return true;
+
+            foreach (var task in Tasks)
+            {
+                if (task.HasString(lowerParam) && (int)Status == type) return true;
+            }
+
+            return false;
         }
 
         public override string ToString()

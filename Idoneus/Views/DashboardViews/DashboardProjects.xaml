@@ -22,7 +22,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="80"/>
+                <ColumnDefinition Width="100"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
@@ -34,6 +34,8 @@
 
                 <TextBox Width="200"
                          materialDesign:HintAssist.Hint="search..."
+                         BorderThickness="0"
+                         Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          Margin="20 0 0 0"/>
                 <materialDesign:PackIcon Kind="Search"
                                          VerticalAlignment="Bottom"
@@ -42,23 +44,10 @@
 
             <ComboBox Grid.Column="2"
                       BorderThickness="0"
-                      SelectedIndex="0"
-                     >
-                <ComboBoxItem Style="{StaticResource MaterialDesignComboBoxItemStyle}">
-                    All
-                </ComboBoxItem>
-
-                <ComboBoxItem Style="{StaticResource MaterialDesignComboBoxItemStyle}">
-                    Completed
-                </ComboBoxItem>
-
-                <ComboBoxItem Style="{StaticResource MaterialDesignComboBoxItemStyle}">
-                    In Progress
-                </ComboBoxItem>
-
-                <ComboBoxItem Style="{StaticResource MaterialDesignComboBoxItemStyle}">
-                    Delayed
-                </ComboBoxItem>
+                      SelectedIndex="1"
+                      ItemsSource="{Binding ProjectViewType}"
+                      SelectedItem="{Binding SelectedProjectViewType, Mode=TwoWay}"
+                      IsSynchronizedWithCurrentItem="True">
             </ComboBox>
             
             <Button Style="{StaticResource MaterialDesignFlatButton}"

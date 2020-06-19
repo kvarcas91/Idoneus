@@ -1,4 +1,5 @@
-﻿using Domain.Helpers;
+﻿using Common;
+using Domain.Helpers;
 using Domain.Models.Base;
 using Domain.Models.Project;
 using Domain.Models.Tasks;
@@ -6,6 +7,8 @@ using Domain.Repository.Base;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Linq;
 
 namespace Domain.Repository
 {
@@ -59,6 +62,19 @@ namespace Domain.Repository
         {
             var query = $"SELECT * FROM subtasks WHERE ParentID = '{ID}'";
             return base.GetAll<SubTask>(query);
+        }
+
+        public IEnumerable<Project> SortByViewType(IEnumerable<Project> list, string viewType)
+        {
+            Enum.TryParse(viewType.Replace(" ", string.Empty), out ViewType type);
+            return type switch
+            {
+                ViewType.Completed => list.Where(i => i.Status.Equals(Status.Completed)),
+                ViewType.InProgress => list.Where(i => i.Status.Equals(Status.InProgress)),
+                ViewType.Archived => list.Where(i => i.Status.Equals(Status.Default)),
+                ViewType.Delayed => list.Where(i => i.Status.Equals(Status.Delayed)),
+                _ => list,
+            };
         }
 
     }

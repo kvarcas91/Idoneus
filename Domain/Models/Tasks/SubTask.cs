@@ -7,6 +7,7 @@ namespace Domain.Models.Tasks
 {
 
     [Table("subtasks")]
+    [Serializable]
     public class SubTask : IEntity, ITask
     {
 
@@ -18,5 +19,13 @@ namespace Domain.Models.Tasks
         public DateTime DueDate { get; set; }
         public Status Status { get; set; } = Status.Default;
         public int OrderNumber { get; set; }
+
+        public bool HasString(string param)
+        {
+            if (Content.ToLower().Contains(param) ||
+                Status.ToString().ToLower().Contains(param)) return true;
+
+            return false;
+        }
     }
 }

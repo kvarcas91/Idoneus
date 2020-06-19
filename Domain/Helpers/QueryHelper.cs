@@ -1,4 +1,9 @@
-﻿using System.Text;
+﻿using Common;
+using Domain.Models.Project;
+using Domain.Models.Tasks;
+using System;
+using System.Linq;
+using System.Text;
 
 namespace Domain.Helpers
 {
@@ -36,5 +41,6 @@ namespace Domain.Helpers
                 $"INNER JOIN {jointTable} {ts2} ON {ts2}.{p2.Item1} = {ts3}.{p2.Item2} WHERE {ts2}.ID = {ID} {param.ToString()}";
             return query;
         }
+     
     }
 }

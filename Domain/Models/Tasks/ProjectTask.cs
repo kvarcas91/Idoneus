@@ -9,6 +9,7 @@ namespace Domain.Models.Tasks
 {
 
     [Table("tasks")]
+    [Serializable]
     public class ProjectTask : IEntity, IUpdatableProgress, ITask
     {
 
@@ -40,6 +41,20 @@ namespace Domain.Models.Tasks
             }
 
             return Progress;
+        }
+
+        public bool HasString(string param)
+        {
+
+            if (Content.ToLower().Contains(param) ||
+                Status.ToString().ToLower().Contains(param)) return true;
+
+            foreach (var subTask in SubTasks)
+            {
+                if (subTask.HasString(param)) return true;
+            }
+
+            return false;
         }
     }
 }

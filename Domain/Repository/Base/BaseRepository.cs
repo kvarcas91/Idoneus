@@ -35,7 +35,6 @@ namespace Domain.Repository.Base
             return output;
         }
 
-
         public string GetTableName<TObject>()
         {
 
