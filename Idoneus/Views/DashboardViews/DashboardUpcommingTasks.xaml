@@ -30,8 +30,7 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <StackPanel Orientation="Horizontal"
-                        Margin="10 0 0 0">
+                <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon 
                             VerticalAlignment="Center"
                             Kind="Magnify"/>

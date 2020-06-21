@@ -1,5 +1,7 @@
 ﻿using Common;
 using Common.EventAggregators;
+using Common.Settings;
+using DataProcessor;
 using Domain.Models;
 using Domain.Repository;
 using MaterialDesignColors;
@@ -11,7 +13,10 @@ using Prism.Regions;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
 
 namespace Idoneus.ViewModels
 {
@@ -25,6 +30,9 @@ namespace Idoneus.ViewModels
 
         public MainWindowViewModel(IRegionManager regionManager, IStorage storage, IEventAggregator eventAggregator)
         {
+            AppSettings.Load();
+            DarkMode = AppSettings.Instance.DarkMode;
+
             _regionManager = regionManager;
             _storage = storage;
             _eventAggregator = eventAggregator;
@@ -67,6 +75,7 @@ namespace Idoneus.ViewModels
 
         private void SetTheme()
         {
+           
             ITheme theme = _paletteHelper.GetTheme();
             IBaseTheme baseTheme = DarkMode ? new MaterialDesignDarkTheme() : (IBaseTheme)new MaterialDesignLightTheme();
      
@@ -79,7 +88,12 @@ namespace Idoneus.ViewModels
             theme.SetBaseTheme(baseTheme);
             _paletteHelper.SetTheme(theme);
             Mode = DarkMode ? "Light" : "Dark";
-
+            Task.Run(() =>
+            {
+                AppSettings.Load();
+                AppSettings.Instance.DarkMode = DarkMode;
+                AppSettings.Save();
+            });
         }
 
         private void Login()

@@ -10,7 +10,7 @@
                 <materialDesign:BundledTheme BaseTheme="Light" PrimaryColor="Blue" SecondaryColor="Red"/>
                 <materialDesign:BundledTheme BaseTheme="Dark" PrimaryColor="Grey" SecondaryColor="Orange"/>
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
-               
+
                 <ResourceDictionary Source="/Resources/Styles/Scroll.xaml"/>
                 <ResourceDictionary Source="/Resources/Styles/ListView.xaml"/>
             </ResourceDictionary.MergedDictionaries>

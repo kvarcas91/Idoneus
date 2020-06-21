@@ -59,7 +59,8 @@
                       >
                     </ComboBox>
 
-                <materialDesign:PopupBox   Grid.Column="3">
+                <materialDesign:PopupBox   Grid.Column="3"
+                                           Margin="10 0 5 0">
                     
                     <materialDesign:PopupBox.ToggleContent>
 
