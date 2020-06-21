@@ -126,10 +126,16 @@
 
                     </Grid>
                     
-                    <ContentControl Grid.Row="1"
-                    prism:RegionManager.RegionName="ContentRegion"/>
+                <ContentControl Grid.Row="1"
+                prism:RegionManager.RegionName="ContentRegion"/>
 
-                </Grid>
+                <materialDesign:Snackbar 
+                    Grid.Row="1"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center"
+                    Message="{Binding SnackBarMessage}" IsActive="{Binding IsSnackBarActive}"/>
+
+            </Grid>
 
             </materialDesign:Card>
 

@@ -13,11 +13,8 @@ namespace Domain.Models.Tasks
         [Key]
         public string ID { get; set; }
 
-        public bool IsCompleted { get; set; }
+        public bool IsCompleted { get; set; } = false;
         public string Content { get; set; }
-        public DateTime SubmitionDate { get; set; }
-
-        [Computed]
-        public DateTime DueDate { get; set; }
+        public DateTime SubmitionDate { get; set; } = DateTime.Now;
     }
 }

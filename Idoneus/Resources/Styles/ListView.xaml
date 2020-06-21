@@ -137,4 +137,47 @@
         </Setter>
     </Style>
 
+    <!-- Today's task list view from dashboard -->
+    <Style x:Key="TodayTaskListView" TargetType="{x:Type ListView}" BasedOn="{StaticResource MaterialDesignListView}">
+        <Setter Property="ItemTemplate">
+            <Setter.Value>
+                <DataTemplate>
+
+                    <Border>
+
+                        <CheckBox Grid.Row="0"
+                                  Padding="3 0 3 0"
+                                  IsChecked="{Binding IsCompleted, Mode=TwoWay}"
+                                  Command="{Binding ElementName=TaskListView, Path=DataContext.SelectTaskCommand}"
+                                  VerticalAlignment="Center"
+                                  CommandParameter="{Binding}">
+                            <TextBlock  Grid.Column="1"
+                            Text="{Binding Content}"
+                                    TextAlignment="Justify"
+                                    TextWrapping="Wrap"/>
+                        </CheckBox>
+
+                    </Border>
+
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+
+        <!-- Disable onMouseOver and default style -->
+        <Setter Property="ItemContainerStyle">
+            <Setter.Value>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                <ContentPresenter />
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
 </ResourceDictionary>

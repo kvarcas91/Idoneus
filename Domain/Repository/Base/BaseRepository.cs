@@ -1,10 +1,10 @@
 ﻿using Dapper;
 using Dapper.Contrib.Extensions;
+using Domain.Helpers;
 using Domain.Models;
 using Domain.Models.Base;
 using Domain.Repository.Helpers;
 using Microsoft.Data.Sqlite;
-using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -37,45 +37,33 @@ namespace Domain.Repository.Base
 
         public string GetTableName<TObject>()
         {
-
-                var output = ((TableAttribute)typeof(TObject).GetCustomAttributes(true)[0]).Name;
-                return output;
+            var output = ((TableAttribute)typeof(TObject).GetCustomAttributes(true)[0]).Name;
+            return output;
         }
 
+        public bool Update<T>(T obj) where T : class, IEntity, new()
+        {
+            using var connection = GetConnection();
+            var result = connection.Update(obj);
+            return result;
+        }
 
+        public bool Delete<T>(IEnumerable<T> obj) where T : class, IEntity, new()
+        {
+            using var connection = GetConnection();
+            var result = connection.Delete(obj);
+            return result;
+        }
 
+        public bool Insert<T>(T obj) where T : class, IEntity, new()
+        {
+            using var connection = GetConnection();
+            var props = PropertyHelper.GetProperties(obj, includeID: true, searchable: false);
+            var query = QueryHelper.BuildInsertQuery(props, GetTableName<T>());
+            var result = connection.Query<T>(query);
 
-        //public IEnumerable<Project> GetAll() 
-        //{
-        //    using var connection = new SqliteConnection(GetConnectionString());
-        //    var query = "SELECT * FROM projects";
-        //    var output = connection.Query<Project>(query);
-        //    if (output == null) return output;
-
-        //    foreach (var item in output)
-        //    {
-        //        var tasksQuery = "SELECT * " +
-        //        "FROM tasks t " +
-        //        "INNER JOIN project_tasks p ON p.taskID = t.ID " +
-        //        $"INNER JOIN projects pr on pr.ID = p.projectID WHERE pr.ID = {item.ID} order by t.OrderNumber ASC, t.DueDate ASC";
-        //        var tasks = connection.Query<ProjectTask>(tasksQuery);
-        //        if (tasks == null) continue;
-
-        //        foreach (var task in tasks)
-        //        {
-        //            var subtaskQuery = "SELECT s.ID, s.Content, s.IsCompleted, s.Priority, s.DueDate, s.OrderNumber " +
-        //                               "FROM subtasks s " +
-        //                               "INNER JOIN task_subtasks p ON p.subtaskID = s.ID " +
-        //                               $"INNER JOIN tasks ts on ts.ID = p.taskID WHERE ts.ID = {task.ID} order by s.IsCompleted, s.DueDate, s.Priority DESC";
-        //            var subtasks = connection.Query<SubTask>(subtaskQuery);
-        //            task.SubTasks = new ObservableCollection<SubTask>(subtasks);
-        //        }
-        //        item.Tasks = new ObservableCollection<ProjectTask>(tasks);
-        //    }
-
-        //    return output;
-        //}
-
+            return result != null;
+        }
 
         public T Get<T>(string field, string param)
         {

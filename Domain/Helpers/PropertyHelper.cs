@@ -64,17 +64,42 @@ namespace Domain.Helpers
             return propValues;
         }
 
-        public static string GetSearchablePropertyAllocations(List<PropInfo> props, string key, bool caseSensitive, string parentChar = "")
+        public static string GetPropertyAllocations(List<PropInfo> props)
         {
             var output = new StringBuilder();
             for (int i = 0; i < props.Count; i++)
             {
-                if (caseSensitive) output.Append($"{parentChar}{ props[i].Name} LIKE '%{key}%'");
-                else output.Append($"lower({parentChar}{ props[i].Name}) LIKE lower('%{key}%')");
-
-                if (i + 1 < props.Count) output.Append(" OR ");
+                output.Append($"{ props[i].Name} = {TypeHelper.GetValueBasedOnType(props[i].Value)}");
+                if (i + 1 < props.Count) output.Append(", ");
             }
             return output.ToString();
+        }
+
+        public static string GetPropertyNamesAndValues(List<PropInfo> props, string middleConnection)
+        {
+            if (props.Count == 0) return string.Empty;
+            var maxCount = (((props.Count) * 4) + 3);
+            string[] query = new string[maxCount];
+            byte position = 1;
+            query[0] = "(";
+            query[maxCount-- - 1] = ")";
+
+            for (int i = 0; i < props.Count; i++)
+            {
+                query[position] = props[i].Name;
+                query[maxCount - position++] = TypeHelper.GetValueBasedOnType(props[props.Count - 1 - i].Value);
+                if (i + 1 < props.Count)
+                {
+                    query[position] = ", ";
+                    query[maxCount - position++] = ", ";
+                }
+            }
+
+            query[position] = ") ";
+            query[maxCount - position++] = " (";
+            query[position] = middleConnection;
+
+            return string.Concat(query);
         }
     }
 }

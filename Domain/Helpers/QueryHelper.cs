@@ -1,7 +1,9 @@
 ﻿using Common;
+using Domain.Models;
 using Domain.Models.Project;
 using Domain.Models.Tasks;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -41,6 +43,11 @@ namespace Domain.Helpers
                 $"INNER JOIN {jointTable} {ts2} ON {ts2}.{p2.Item1} = {ts3}.{p2.Item2} WHERE {ts2}.ID = {ID} {param.ToString()}";
             return query;
         }
-     
+
+        public static string BuildUpdateQuery(List<PropInfo> props, string tableName, string ID) =>
+           $"UPDATE {tableName} SET {PropertyHelper.GetPropertyAllocations(props)} WHERE ID = '{ID}'";
+
+        public static string BuildInsertQuery(List<PropInfo> props, string tableName) =>
+         $"INSERT INTO {tableName} {PropertyHelper.GetPropertyNamesAndValues(props, "VALUES")}";
     }
 }

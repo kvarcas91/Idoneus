@@ -106,7 +106,7 @@ namespace Idoneus.ViewModels
                 {
                     _projects = new ObservableCollection<Project>(_repository.GetProjects());
                     var upcommingTasks = new ObservableCollection<ITask>(_repository.GetUpcommingTasks(DateTime.Now.AddDays(7)));
-                    var todaysTasks = new ObservableCollection<TodaysTask>(_repository.GetTodaysTasks(DateTime.Now));
+                    var todaysTasks = new ObservableCollection<TodaysTask>(_repository.GetTodaysTasks(0));
 
                     _eventAggregator.GetEvent<SendMessageEvent<ObservableCollection<Project>>>().Publish(_projects);
                     _eventAggregator.GetEvent<SendMessageToUpcommingTasks<ObservableCollection<ITask>>>().Publish(upcommingTasks);

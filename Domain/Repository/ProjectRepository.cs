@@ -45,9 +45,10 @@ namespace Domain.Repository
             return output;
         }
         
-        public IEnumerable<TodaysTask> GetTodaysTasks(DateTime targetDate)
+        public IEnumerable<TodaysTask> GetTodaysTasks(int targetDate)
         {
-            var query = $"SELECT * FROM {GetTableName<TodaysTask>()} WHERE SubmitionDate like '{targetDate.ToString(dateFormat)}%' ORDER BY IsCompleted";
+            string dateQuery = targetDate == -2 ? "" : $"WHERE SubmitionDate like '{DateTime.Now.AddDays(targetDate).ToString(dateFormat)}%'";
+            var query = $"SELECT * FROM {GetTableName<TodaysTask>()} {dateQuery} ORDER BY IsCompleted";
             return base.GetAll<TodaysTask>(query);
         }
 

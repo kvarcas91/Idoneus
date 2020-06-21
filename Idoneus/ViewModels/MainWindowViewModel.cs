@@ -1,9 +1,7 @@
 ﻿using Common;
 using Common.EventAggregators;
 using Common.Settings;
-using DataProcessor;
 using Domain.Models;
-using Domain.Repository;
 using MaterialDesignColors;
 using MaterialDesignThemes.Wpf;
 using Prism.Commands;
@@ -12,10 +10,7 @@ using Prism.Mvvm;
 using Prism.Regions;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Idoneus.ViewModels
@@ -40,6 +35,8 @@ namespace Idoneus.ViewModels
             UserName = storage.UserName;
             Login();
             Navigate("Dashboard");
+
+            _eventAggregator.GetEvent<SendSnackBarMessage>().Subscribe(ReceiveMessage);
         }
 
         private DelegateCommand<string> _navigateCommand = null;
@@ -71,6 +68,26 @@ namespace Idoneus.ViewModels
         {
             get => _darkMode;
             set { SetProperty(ref _darkMode, value); SetTheme(); }
+        }
+
+        private string _snackBarMessage;
+        public string SnackBarMessage
+        {
+            get { return _snackBarMessage; }
+            set
+            {
+                SetProperty(ref _snackBarMessage, value);
+            }
+        }
+
+        private bool _isSnackBarActive = false;
+        public bool IsSnackBarActive
+        {
+            get { return _isSnackBarActive; }
+            set
+            {
+                SetProperty(ref _isSnackBarActive, value);
+            }
         }
 
         private void SetTheme()
@@ -106,6 +123,17 @@ namespace Idoneus.ViewModels
             };
             _eventAggregator.GetEvent <UserLoginMessage<Contributor>>().Publish(user);
           
+        }
+
+        private void ReceiveMessage(string message)
+        {
+            IsSnackBarActive = true;
+            SnackBarMessage = message;
+            Task.Run(() => {
+                Task.Delay(3000).Wait();
+                SnackBarMessage = string.Empty;
+                IsSnackBarActive = false;
+            });
         }
 
         private void Navigate(string navigatePath)
