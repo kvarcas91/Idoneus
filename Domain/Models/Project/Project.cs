@@ -10,7 +10,7 @@ namespace Domain.Models.Project
 {
     [Table("projects")]
     [Serializable]
-    public class Project : IEntity, IUpdatableProgress
+    public class Project : IEntity, IUpdatableProgress, IStatus
     {
 
         [Key]

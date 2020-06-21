@@ -45,7 +45,7 @@ namespace Domain.Models.Tasks
 
         public bool HasString(string param)
         {
-
+            
             if (Content.ToLower().Contains(param) ||
                 Status.ToString().ToLower().Contains(param)) return true;
 

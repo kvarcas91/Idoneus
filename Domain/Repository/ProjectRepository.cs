@@ -35,14 +35,20 @@ namespace Domain.Repository
 
         public IEnumerable<ITask> GetUpcommingTasks(DateTime targetDate)
         {
-            var taskQuery = $"SELECT * FROM tasks WHERE Status != '2' AND DueDate <= '{targetDate.ToString(dateFormat)}%' ORDER BY DueDate ASC";
-            var subtaskQuery = $"SELECT * FROM subtasks WHERE Status != '2' AND DueDate <= '{targetDate.ToString(dateFormat)}%' ORDER BY DueDate ASC";
+            var taskQuery = $"SELECT * FROM tasks WHERE Status != '3' AND DueDate <= '{targetDate.ToString(dateFormat)}%' ORDER BY DueDate ASC";
+            var subtaskQuery = $"SELECT * FROM subtasks WHERE Status != '3' AND DueDate <= '{targetDate.ToString(dateFormat)}%' ORDER BY DueDate ASC";
             var output = new List<ITask>();
             var tasks = base.GetAll<ProjectTask>(taskQuery);
             var subTasks = base.GetAll<SubTask>(subtaskQuery);
             output.AddRange(tasks);
             output.AddRange(subTasks);
             return output;
+        }
+        
+        public IEnumerable<TodaysTask> GetTodaysTasks(DateTime targetDate)
+        {
+            var query = $"SELECT * FROM {GetTableName<TodaysTask>()} WHERE SubmitionDate like '{targetDate.ToString(dateFormat)}%' ORDER BY IsCompleted";
+            return base.GetAll<TodaysTask>(query);
         }
 
         public dynamic GetParentID<T>(int ID, T obj, string table, string joinTable, string middleTable, (string, string) p1, (string, string) p2) where T : class, IEntity
@@ -65,6 +71,19 @@ namespace Domain.Repository
         }
 
         public IEnumerable<Project> SortByViewType(IEnumerable<Project> list, string viewType)
+        {
+            Enum.TryParse(viewType.Replace(" ", string.Empty), out ViewType type);
+            return type switch
+            {
+                ViewType.Completed => list.Where(i => i.Status.Equals(Status.Completed)),
+                ViewType.InProgress => list.Where(i => i.Status.Equals(Status.InProgress)),
+                ViewType.Archived => list.Where(i => i.Status.Equals(Status.Default)),
+                ViewType.Delayed => list.Where(i => i.Status.Equals(Status.Delayed)),
+                _ => list,
+            };
+        }
+
+        public IEnumerable<ITask> SortByViewType(IEnumerable<ITask> list, string viewType)
         {
             Enum.TryParse(viewType.Replace(" ", string.Empty), out ViewType type);
             return type switch

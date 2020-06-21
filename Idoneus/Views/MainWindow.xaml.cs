@@ -1,6 +1,9 @@
-﻿using Prism.Ioc;
+﻿using Idoneus.Helpers;
+using Prism.Ioc;
 using Prism.Regions;
+using System;
 using System.Windows;
+using System.Windows.Interop;
 
 namespace Idoneus.Views
 {
@@ -19,11 +22,17 @@ namespace Idoneus.Views
         public MainWindow(IContainerExtension container, IRegionManager regionManager)
         {
             InitializeComponent();
+            SourceInitialized += (s, e) =>
+            {
+                IntPtr handle = (new WindowInteropHelper(this)).Handle;
+                HwndSource.FromHwnd(handle).AddHook(new HwndSourceHook(WindowSizeHelper.WindowProc));
+            };
 
             _container = container;
             _regionManager = regionManager;
 
             Loaded += MainWindow_Loaded;
+            CloseButton.Click += (s, e) => this.Close();
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -33,11 +42,6 @@ namespace Idoneus.Views
             _region = _regionManager.Regions["ContentRegion"];
             _region.Add(_dashboard);
             _region.Add(_projects);
-        }
-
-        private void Close(object sender, RoutedEventArgs e)
-        {
-            this.Close();
         }
     }
 }

@@ -9,60 +9,84 @@
              xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
              d:DesignHeight="450" d:DesignWidth="800">
-    
+
     <Grid>
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="46"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Grid >
+        <materialDesign:ColorZone 
+            materialDesign:ShadowAssist.ShadowDepth="Depth2"
+            Background="Transparent"
+            BorderBrush="{DynamicResource PrimaryHueMidBrush}"
+            BorderThickness="0 0 0 0.2"
+            VerticalAlignment="Stretch">
+                    
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
 
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="100"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
+                    <StackPanel Orientation="Horizontal"
+                                Margin="10 0">
+                        <materialDesign:PackIcon 
+                            VerticalAlignment="Center"
+                            Kind="Magnify"/>
 
-            <Grid VerticalAlignment="Center">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-
-                <TextBox Width="200"
+                        <TextBox MinWidth="200"
+                                 VerticalAlignment="Center"
                          materialDesign:HintAssist.Hint="search..."
                          BorderThickness="0"
+                         materialDesign:TextFieldAssist.DecorationVisibility="Collapsed"
+                         materialDesign:TextFieldAssist.HasClearButton="True"
                          Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                         Margin="20 0 0 0"/>
-                <materialDesign:PackIcon Kind="Search"
-                                         VerticalAlignment="Bottom"
-                                         Grid.Column="1"/>
-            </Grid>
+                         Margin="5 0"/>
 
-            <ComboBox Grid.Column="2"
+
+                    </StackPanel>
+
+                    <ComboBox Grid.Column="2"
                       BorderThickness="0"
                       SelectedIndex="1"
                       ItemsSource="{Binding ProjectViewType}"
                       SelectedItem="{Binding SelectedProjectViewType, Mode=TwoWay}"
-                      IsSynchronizedWithCurrentItem="True">
-            </ComboBox>
-            
-            <Button Style="{StaticResource MaterialDesignFlatButton}"
-                Margin="10"
-                Grid.Row="0"
-               Grid.Column="3"
-                ToolTip="Export to Excel"
-                Command="{Binding ExportCommand}">
-                <materialDesign:PackIcon Kind="AccountConvert"/>
-            </Button>
-        </Grid>
-        
-        
+                      IsSynchronizedWithCurrentItem="True"
+                      >
+                    </ComboBox>
 
-        <Grid Grid.Row="1">
+                <materialDesign:PopupBox   Grid.Column="3">
+                    
+                    <materialDesign:PopupBox.ToggleContent>
+
+                        <materialDesign:PackIcon Kind="AccountConvert"
+                                                    Margin="10"
+                                                 ToolTip="Export to.."
+                                                 Foreground="{DynamicResource PrimaryHueMidBrush}"/>
+    
+                    </materialDesign:PopupBox.ToggleContent>
+                    
+                    <StackPanel Orientation="Vertical">
+                        <Button Style="{StaticResource MaterialDesignFlatButton}"
+                        Grid.Row="0"
+                        Content="Excel"
+                        Command="{Binding ExportCommand}"/>
+
+                        <Button  Style="{StaticResource MaterialDesignFlatButton}"
+                        Grid.Row="0"
+                        Content="JSON"/>
+                    </StackPanel>
+
+                </materialDesign:PopupBox>
+            </Grid>
+                    
+                </materialDesign:ColorZone>
+                  
+        <Grid Grid.Row="1" Margin="0 10 0 0">
 
             <StackPanel Orientation="Vertical"
                         HorizontalAlignment="Center"

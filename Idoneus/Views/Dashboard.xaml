@@ -14,8 +14,8 @@
     <Grid Margin="10">
 
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="5*"/>
             <ColumnDefinition Width="3*"/>
-            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
         <!-- Initial loader -->
@@ -51,12 +51,14 @@
                     <RadioButton Style="{StaticResource MaterialDesignTabRadioButton}"
                                  IsChecked="{Binding ActiveDashboardTab}">
                         <TextBlock Text="Project Summary"
+                                   Typography.Capitals="AllSmallCaps"
                                Style="{StaticResource MaterialDesignOverlineTextBlock}"/>
                     </RadioButton>
 
                     <RadioButton Style="{StaticResource MaterialDesignTabRadioButton}"
                          IsChecked="{Binding ActiveDashboardTab, Converter={StaticResource InverseBoolToVisConverter}}">
                         <TextBlock Text="Upcomming Tasks"
+                                    Typography.Capitals="AllSmallCaps"
                                Style="{StaticResource MaterialDesignOverlineTextBlock}"/>
                     </RadioButton>
                 </StackPanel>
@@ -72,13 +74,14 @@
                                  Height="40"
                                  Width="40"
                                  Value="99.9"
+                                     Foreground="LightGray"
                                  HorizontalAlignment="Center"
                                  VerticalAlignment="Center"/>
 
                         <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
                                  Height="40"
                                  Width="40"
-                                 Foreground="{StaticResource SecondaryAccentBrush}"
+                                 Foreground="{DynamicResource SecondaryHueMidBrush}"
                                  Value="{Binding TotalProjectProgress}"
                                  HorizontalAlignment="Center"
                                  VerticalAlignment="Center"/>

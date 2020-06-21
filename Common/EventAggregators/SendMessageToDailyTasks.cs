@@ -2,7 +2,7 @@
 
 namespace Common.EventAggregators
 {
-    public class SendMessageToUpcommingTasks<T> : PubSubEvent<T>
+    public class SendMessageToDailyTasks<T> : PubSubEvent<T>
     {
     }
 }

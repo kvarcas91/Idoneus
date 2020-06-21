@@ -33,11 +33,6 @@ namespace DataProcessor.cs
             {
                 Success = true
             };
-            return new Response
-            {
-                Success = true
-            };
-
         }
 
         private static string GetRowTemplate(Project project)

@@ -11,8 +11,6 @@
                 <DataTemplate>
                     <Grid VerticalAlignment="Center"
                           Margin="10">
-
-
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="3*"/>
                             <ColumnDefinition Width="2*"/>
@@ -100,35 +98,24 @@
         <Setter Property="ItemTemplate">
             <Setter.Value>
                 <DataTemplate>
+                    <Grid VerticalAlignment="Center"
+                          Margin="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
 
-                    <Grid
-                        Background="Transparent"
-                        Margin="10 0">
-                        <Grid.RowDefinitions>
+                        <TextBlock Text="{Binding DueDate, Converter={converters:DateTimeToStringConverter}, ConverterParameter=0}"
+                                       FontSize="10"
+                                       Style="{StaticResource MaterialDesignCaptionTextBlock}"/>
 
-                            <!-- Due on date -->
-                            <RowDefinition Height="Auto"/>
-
-                            <!-- content -->
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-
-                        <Grid.InputBindings>
-                            <MouseBinding Gesture="LeftDoubleClick" 
-                                          Command="{Binding ElementName=UpcomingTasksListView, Path=DataContext.OpenProjectFromSubtaskCommand}"
-                                          CommandParameter="{Binding}"/>
-                        </Grid.InputBindings>
-
-                        <TextBlock Grid.Row="0"
-                                   Text="{Binding DueDate}"
-                                  />
-
-                        <TextBlock Grid.Row="1"
+                        <!-- Item summary -->
+                        <TextBlock Grid.Column="1"
+                                       VerticalAlignment="Center"
                                    Text="{Binding Content}"
-                                    TextTrimming="CharacterEllipsis"/>
+                                   TextTrimming="WordEllipsis"/>
 
                     </Grid>
-
                 </DataTemplate>
             </Setter.Value>
         </Setter>

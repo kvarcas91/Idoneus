@@ -66,7 +66,6 @@ namespace Idoneus.ViewModels
 
             _repository = new ProjectRepository();
             _eventAggregator.GetEvent<UserLoginMessage<Contributor>>().Subscribe(GetUser);
-          
 
         }
 
@@ -106,9 +105,12 @@ namespace Idoneus.ViewModels
                 if (response.Success)
                 {
                     _projects = new ObservableCollection<Project>(_repository.GetProjects());
-                    var upcommingTasks = new ObservableCollection<ITask>(_repository.GetUpcommingTasks(DateTime.Now));
+                    var upcommingTasks = new ObservableCollection<ITask>(_repository.GetUpcommingTasks(DateTime.Now.AddDays(7)));
+                    var todaysTasks = new ObservableCollection<TodaysTask>(_repository.GetTodaysTasks(DateTime.Now));
+
                     _eventAggregator.GetEvent<SendMessageEvent<ObservableCollection<Project>>>().Publish(_projects);
                     _eventAggregator.GetEvent<SendMessageToUpcommingTasks<ObservableCollection<ITask>>>().Publish(upcommingTasks);
+                    _eventAggregator.GetEvent<SendMessageToDailyTasks<ObservableCollection<TodaysTask>>>().Publish(todaysTasks);
                     SetTotalProgress();
                 }
                 _storage.FirstLoad = false;

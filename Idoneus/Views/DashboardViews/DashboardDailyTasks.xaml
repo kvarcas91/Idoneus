@@ -5,12 +5,102 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Idoneus.Views"
              mc:Ignorable="d" 
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
              d:DesignHeight="450" d:DesignWidth="800">
+    
     <Grid>
-        <TextBlock Text="{Binding Header}"
-                   HorizontalAlignment="Center"
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <materialDesign:ColorZone
+             materialDesign:ShadowAssist.ShadowDepth="Depth2"
+            Background="Transparent"
+            BorderBrush="{DynamicResource PrimaryHueMidBrush}"
+            BorderThickness="0 0 0 0.2">
+
+            <Grid  Grid.Row="0"   
+               Margin="10">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="Today's Tasks"
+                   Typography.Capitals="AllSmallCaps"
+                   Style="{StaticResource MaterialDesignOverlineTextBlock}"
                    VerticalAlignment="Center"/>
+
+                <Button  Grid.Column="1"
+                     ToolTip="Delete completed tasks"
+                Style="{StaticResource MaterialDesignFlatButton}">
+                    <materialDesign:PackIcon Kind="Delete"/>
+                </Button>
+
+            </Grid>
+
+        </materialDesign:ColorZone>
+        
+        <materialDesign:ColorZone 
+                                  Grid.Row="1"
+                                  Background="Transparent"
+                                  materialDesign:ShadowAssist.ShadowDepth="Depth2">
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <DatePicker />
+
+            </Grid>
+
+
+
+
+
+        </materialDesign:ColorZone>
+
+        <ListView Grid.Row="2" 
+                  ItemsSource="{Binding Tasks}"
+                  materialDesign:RippleAssist.IsDisabled="True"/>
+
+        <materialDesign:ColorZone 
+                                  Grid.Row="3"
+                                 Margin="0 0 1 0"
+                                  materialDesign:ShadowAssist.ShadowDepth="Depth2">
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                    <TextBox VerticalAlignment="Center"
+                         materialDesign:HintAssist.Hint="Add new task..."
+                         BorderThickness="0"
+                         materialDesign:TextFieldAssist.DecorationVisibility="Collapsed"
+                         materialDesign:TextFieldAssist.HasClearButton="True"
+                         Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         Margin="5 0"/>
+
+                <Button Style="{StaticResource MaterialDesignFlatButton}"
+                        Grid.Column="1">
+                    <materialDesign:PackIcon Kind="Send"/>
+                </Button>
+                
+            </Grid>
+            
+        </materialDesign:ColorZone>
+
+       
+
     </Grid>
 </UserControl>

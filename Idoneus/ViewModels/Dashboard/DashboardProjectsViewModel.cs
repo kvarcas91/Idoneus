@@ -144,8 +144,6 @@ namespace Idoneus.ViewModels
                 }
             });
            
-
-
         }
 
         private void Export()

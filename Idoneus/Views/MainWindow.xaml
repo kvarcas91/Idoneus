@@ -11,22 +11,25 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
-        TextElement.FontSize="13"
+        TextElement.FontSize="12"
         TextOptions.TextFormattingMode="Ideal"
         TextOptions.TextRenderingMode="Auto"
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}" 
         WindowStartupLocation="CenterScreen" 
         AllowsTransparency="True" 
-        WindowStyle="None">
+        WindowStyle="None" Icon="main.ico">
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="42"/>
+    </WindowChrome.WindowChrome>
 
-
-        <materialDesign:DrawerHost>
+    <materialDesign:DrawerHost>
             <materialDesign:DrawerHost.LeftDrawerContent>
 
                 <StackPanel Margin="10" Orientation="Vertical"
                         VerticalAlignment="Top"
-                            HorizontalAlignment="Center">
+                            HorizontalAlignment="Center"
+                            WindowChrome.IsHitTestVisibleInChrome="True">
                     <Button 
                         Style="{StaticResource MaterialDesignFlatButton}"
                         VerticalAlignment="Center"
@@ -57,17 +60,22 @@
             </materialDesign:DrawerHost.LeftDrawerContent>
 
             <materialDesign:Card HorizontalAlignment="Stretch"
-                         VerticalAlignment="Stretch">
+                         VerticalAlignment="Stretch"           
+        materialDesign:ShadowAssist.ShadowDepth="Depth3"
+                                 materialDesign:ShadowAssist.ShadowEdges="All">
 
 
                 <Grid>
 
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="42"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <Grid>
+                    
+                    
+                <Grid WindowChrome.IsHitTestVisibleInChrome="True"
+                      VerticalAlignment="Stretch">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
@@ -78,7 +86,7 @@
                             Margin="10">
 
                             <Button HorizontalAlignment="Left"
-                                VerticalAlignment="Top"
+                                VerticalAlignment="Center"
                                  Style="{StaticResource MaterialDesignFlatButton}"
                                     Command="{x:Static materialDesign:DrawerHost.OpenDrawerCommand}">
                                 <materialDesign:PackIcon Kind="HamburgerMenu"/>
@@ -91,19 +99,24 @@
                         <StackPanel Grid.Column="1"
                                 Orientation="Horizontal">
 
-                            <Button HorizontalAlignment="Center"
+                        <ToggleButton Style="{StaticResource MaterialDesignSwitchToggleButton}"
+                                      IsChecked="{Binding DarkMode, Mode=TwoWay}"
+                                      ToolTip="{Binding Mode}"
+                                      VerticalAlignment="Center"
+                                      Height="10"/>
+
+                        <Button HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
                                 Style="{StaticResource MaterialDesignFlatButton}">
-                                <TextBlock Text="{Binding UserName}"
+                            <TextBlock Text="{Binding UserName}"
                                        Style="{StaticResource MaterialDesignOverlineTextBlock}"/>
-                            </Button>
+                        </Button>
 
-                            <Button Grid.Column="1"
-                        HorizontalAlignment="Left"
-                                VerticalAlignment="Center"
-                            ToolTip="Close"
-                                 Style="{StaticResource MaterialDesignFlatButton}"
-                                    Click="Close">
+                        <Button HorizontalAlignment="Left"
+                                VerticalAlignment="Stretch"
+                                Name="CloseButton"
+                                ToolTip="Close"
+                                 Style="{StaticResource MaterialDesignFlatButton}">
                                 <materialDesign:PackIcon Kind="Close"/>
                             </Button>
 
