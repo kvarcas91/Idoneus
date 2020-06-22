@@ -17,7 +17,7 @@ namespace Domain.Models
 
         public override string ToString()
         {
-            return $"ID: {ID}; FirstName: {FirstName}; LastName: {LastName};";
+            return $"{FirstName} {LastName}";
         }
     }
 }

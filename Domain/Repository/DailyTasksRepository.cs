@@ -22,7 +22,7 @@ namespace Domain.Repository
 
         public IEnumerable<RepetetiveTask> GetRepetetiveTasks()
         {
-            var query = $"SELECT * FROM td_tasks";
+            var query = $"SELECT * FROM repetetive_tasks";
             return GetAll<RepetetiveTask>(query);
         }
 

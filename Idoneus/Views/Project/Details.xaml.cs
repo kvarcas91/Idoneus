@@ -1,4 +1,8 @@
-﻿using System.Windows.Controls;
+﻿using Domain.Models;
+using Idoneus.ViewModels;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Windows.Controls;
 
 namespace Idoneus.Views
 {
@@ -10,6 +14,14 @@ namespace Idoneus.Views
         public Details()
         {
             InitializeComponent();
+        }
+
+        private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var viewmodel = (DetailsViewModel)DataContext;
+            viewmodel.SelectedContributors.Clear();
+            viewmodel.SelectedContributors.AddRange(contributorList.SelectedItems.Cast<Contributor>());
+            viewmodel.Test();
         }
     }
 }

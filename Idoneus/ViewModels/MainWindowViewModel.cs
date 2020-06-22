@@ -2,6 +2,7 @@
 using Common.EventAggregators;
 using Common.Settings;
 using Domain.Models;
+using Domain.Repository;
 using MaterialDesignColors;
 using MaterialDesignThemes.Wpf;
 using Prism.Commands;
@@ -28,6 +29,13 @@ namespace Idoneus.ViewModels
         {
             AppSettings.Load();
             DarkMode = AppSettings.Instance.DarkMode;
+            
+           if(storage.FirstLoad)  {
+                var repository = new ProjectRepository();
+                repository.Initialize();
+                storage.FirstLoad = false;
+            }
+           
 
             _regionManager = regionManager;
             _storage = storage;

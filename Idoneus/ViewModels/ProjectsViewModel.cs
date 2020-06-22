@@ -55,7 +55,6 @@ namespace Idoneus.ViewModels
             set
             {
                 SetProperty(ref _viewType, value);
-                //ActivateTab();
             }
         }
 
@@ -125,22 +124,6 @@ namespace Idoneus.ViewModels
             });
 
         }
-
-        //public void ActivateTab()
-        //{
-
-        //    switch (ViewType)
-        //    {
-        //        case 0:
-        //            ActiveTab = Tabs[0];
-        //            break;
-        //        case 1:
-        //            ActiveTab = Tabs[1];
-        //            break;
-        //        default:
-        //            break;
-        //    }
-        //}
 
         #region Navigation
 

@@ -71,6 +71,7 @@ namespace Idoneus.ViewModels
             _storage = storage;
           
             _repository = new ProjectRepository();
+          
             _eventAggregator.GetEvent<UserLoginMessage<Contributor>>().Subscribe(GetUser);
 
         }
@@ -104,22 +105,17 @@ namespace Idoneus.ViewModels
 
         public void InitializeData()
         {
-            IsDataLoaded = _storage.FirstLoad ? false : true;
-            var response = _repository.Initialize();
-            Debug.WriteLine(response);
+          
+          
             Task.Run(() =>
             {
-                if (response.Success)
-                {
-                    _projects = new ObservableCollection<Project>(_repository.GetProjects());
-                    var upcommingTasks = new ObservableCollection<ITask>(_repository.GetUpcommingTasks(DateTime.Now.AddDays(7)));
-                    //var todaysTasks = new ObservableCollection<TodaysTask>(_repository.GetTodaysTasks(0));
+                _projects = new ObservableCollection<Project>(_repository.GetProjects());
+                var upcommingTasks = new ObservableCollection<ITask>(_repository.GetUpcommingTasks(DateTime.Now.AddDays(7)));
 
-                    _eventAggregator.GetEvent<SendMessageEvent<ObservableCollection<Project>>>().Publish(_projects);
-                    _eventAggregator.GetEvent<SendMessageToUpcommingTasks<ObservableCollection<ITask>>>().Publish(upcommingTasks);
-                    //_eventAggregator.GetEvent<SendMessageToDailyTasks<ObservableCollection<TodaysTask>>>().Publish(todaysTasks);
-                    SetTotalProgress();
-                }
+                _eventAggregator.GetEvent<SendMessageEvent<ObservableCollection<Project>>>().Publish(_projects);
+                _eventAggregator.GetEvent<SendMessageToUpcommingTasks<ObservableCollection<ITask>>>().Publish(upcommingTasks);
+                SetTotalProgress();
+              
                 _storage.FirstLoad = false;
                 IsDataLoaded = true;
             });
