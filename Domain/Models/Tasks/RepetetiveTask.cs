@@ -1,10 +1,12 @@
 ﻿using Dapper.Contrib.Extensions;
 using Domain.Models.Base;
+using System;
 
 namespace Domain.Models.Tasks
 {
 
     [Table("repetetive_tasks")]
+    [Serializable]
     public class RepetetiveTask : IEntity
     {
 

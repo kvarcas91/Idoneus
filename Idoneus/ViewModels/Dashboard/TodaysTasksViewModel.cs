@@ -206,7 +206,7 @@ namespace Idoneus.ViewModels
                 Content = TaskContent
             };
 
-            var results = _repository.Insert(newTask);
+            var results = _repository.Insert(newTask, "td_tasks");
 
             if (!results) return;
             Tasks.Insert(0, newTask);
@@ -228,7 +228,7 @@ namespace Idoneus.ViewModels
                 if (item == null)
                 {
                     var newTask = new TodaysTask(task);
-                    if (!_repository.Insert(newTask))
+                    if (!_repository.Insert(newTask, "td_tasks"))
                     {
                         failed = true;
                         continue;

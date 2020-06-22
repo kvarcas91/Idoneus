@@ -5,6 +5,7 @@ namespace Domain.Models.Comments
 {
 
     [Table("comments")]
+    [Serializable]
     public class Comment : IComment
     {
         [Key]

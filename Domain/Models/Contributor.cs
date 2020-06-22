@@ -1,10 +1,12 @@
 ﻿using Dapper.Contrib.Extensions;
 using Domain.Models.Base;
+using System;
 
 namespace Domain.Models
 {
 
     [Table("contributors")]
+    [Serializable]
     public class Contributor : IEntity
     {
 

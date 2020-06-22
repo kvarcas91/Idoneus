@@ -7,6 +7,7 @@ namespace Domain.Models.Tasks
 
 
     [Table("td_tasks")]
+    [Serializable]
     public class TodaysTask : IEntity
     {
 

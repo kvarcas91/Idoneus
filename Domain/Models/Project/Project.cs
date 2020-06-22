@@ -24,6 +24,8 @@ namespace Domain.Models.Project
         public Priority Priority { get; set; } = Priority.Default;
         public Status Status { get; set; } = Status.Default;
         public int OrderNumber { get; set; }
+
+        [Computed]
         public double Progress { get; set; } = 0D;
 
         [Computed]

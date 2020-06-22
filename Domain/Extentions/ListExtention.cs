@@ -28,6 +28,5 @@ namespace Domain.Extentions
             return (ObservableCollection<T>)formatter.Deserialize(stream);
             
         }
-
     }
 }

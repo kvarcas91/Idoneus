@@ -4,6 +4,7 @@ using System;
 namespace Domain.Models.Comments
 {
     [Table("links")]
+    [Serializable]
     public class Link : IComment
     {
         [Key]

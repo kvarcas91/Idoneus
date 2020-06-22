@@ -34,6 +34,7 @@ namespace Domain.Repository
 
         private void GetProjectContent(Project project)
         {
+            project.GetProgress();
             project.Tasks = new ObservableCollection<ProjectTask>(GetProjectTasks(project.ID));
             project.Contributors = new ObservableCollection<Contributor>(GetProjectContributors(project.ID));
             project.Comments = new ObservableCollection<IComment>(GetComments(project.ID));

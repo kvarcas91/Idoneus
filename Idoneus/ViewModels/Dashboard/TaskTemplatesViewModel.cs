@@ -107,7 +107,8 @@ namespace Idoneus.ViewModels
                 IsActive = false
             };
 
-            var results = _repository.Insert(newTemplate);
+            var results = _repository.Insert(newTemplate, "repetetive_tasks");
+
 
             if (!results) return;
            

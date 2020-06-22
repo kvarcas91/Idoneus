@@ -37,12 +37,6 @@ namespace Domain.Repository.Base
             return output;
         }
 
-        public string GetTableName<TObject>()
-        {
-            var output = ((TableAttribute)typeof(TObject).GetCustomAttributes(true)[0]).Name;
-            return output;
-        }
-
         public bool Update<T>(T obj) where T : class, IEntity, new()
         {
             using var connection = GetConnection();
@@ -71,11 +65,11 @@ namespace Domain.Repository.Base
             return result;
         }
 
-        public bool Insert<T>(T obj) where T : class, IEntity, new()
+        public bool Insert<T>(T obj, string table) where T : class, IEntity, new()
         {
             using var connection = GetConnection();
             var props = PropertyHelper.GetProperties(obj, includeID: true, searchable: false);
-            var query = QueryHelper.BuildInsertQuery(props, GetTableName<T>());
+            var query = QueryHelper.BuildInsertQuery(props, table);
             var result = connection.Query<T>(query);
 
             return result != null;
@@ -89,17 +83,17 @@ namespace Domain.Repository.Base
             return output;
         }
 
-        public int GetCount<T>()
+        public int GetCount<T>(string table)
         {
             using var connection = GetConnection();
-            var query = $"SELECT COUNT(*) FROM {GetTableName<T>()}";
+            var query = $"SELECT COUNT(*) FROM {table}";
             return connection.QuerySingle<int>(query);
         }
 
-        public int GetCount<T>(string condition)
+        public int GetCount<T>(string condition, string table)
         {
             using var connection = GetConnection();
-            var query = $"SELECT COUNT(*) FROM {GetTableName<T>()} WHERE {condition}";
+            var query = $"SELECT COUNT(*) FROM {table} WHERE {condition}";
             return connection.QuerySingle<int>(query);
 
         }
