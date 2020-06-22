@@ -10,7 +10,7 @@ namespace Domain.Models.Tasks
 
     [Table("tasks")]
     [Serializable]
-    public class ProjectTask : IEntity, IUpdatableProgress, ITask
+    public class ProjectTask : IUpdatableProgress, ITask
     {
 
         [Key]

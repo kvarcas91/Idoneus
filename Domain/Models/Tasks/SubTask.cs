@@ -8,7 +8,7 @@ namespace Domain.Models.Tasks
 
     [Table("subtasks")]
     [Serializable]
-    public class SubTask : IEntity, ITask
+    public class SubTask : ITask
     {
 
         [Key]

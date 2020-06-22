@@ -28,9 +28,26 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                 <Button  Grid.Column="2"
+                <Button  Grid.Column="1"
+                     ToolTip="Complete all tasks"
+                         Command="{Binding CompleteAllCommand}"
+                Style="{StaticResource MaterialDesignFlatButton}">
+                    <materialDesign:PackIcon Kind="DoneAll"/>
+                </Button>
+
+                <Button  Grid.Column="2"
+                         
+                     ToolTip="Delete completed tasks"
+                         Command="{Binding DeleteCompletedTasksCommand}"
+                Style="{StaticResource MaterialDesignFlatButton}">
+                    <materialDesign:PackIcon Kind="Delete"/>
+                </Button>
+
+                <Button  Grid.Column="3"
                          
                      ToolTip="Refresh data"
                          Command="{Binding RefreshCommand}"
@@ -47,6 +64,8 @@
                   Margin="10 10 10 5"
                   ItemsSource="{Binding Tasks}"
                    Style="{StaticResource TodayTaskListView}" 
+                   HorizontalContentAlignment="Stretch"
+          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                     />
     </Grid>
 </UserControl>

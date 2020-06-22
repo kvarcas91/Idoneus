@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Domain.Models.Tasks
 {
-    public interface ITask : IStatus, ISearchable
+    public interface ITask : IStatus, ISearchable, IEntity
     {
         string ParentID { get; set; }
     }

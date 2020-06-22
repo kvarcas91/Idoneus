@@ -83,6 +83,8 @@
                   Margin="10 10 10 5"
                   ItemsSource="{Binding Tasks}"
                    Style="{StaticResource TodayTaskListView}" 
+                   HorizontalContentAlignment="Stretch"
+          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                     />
         
         <materialDesign:ColorZone Margin="-3 0 -2 -1"

@@ -1,18 +1,9 @@
 ﻿using Common.EventAggregators;
-using Domain.Models.Tasks;
-using Domain.Repository;
 using Idoneus.Views;
-using Prism.Commands;
 using Prism.Events;
-using Prism.Ioc;
 using Prism.Mvvm;
-using Prism.Regions;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 
 namespace Idoneus.ViewModels

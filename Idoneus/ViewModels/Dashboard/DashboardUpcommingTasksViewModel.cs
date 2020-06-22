@@ -3,6 +3,7 @@ using Common.EventAggregators;
 using Domain.Extentions;
 using Domain.Models.Tasks;
 using Domain.Repository;
+using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
 using System;
@@ -41,6 +42,9 @@ namespace Idoneus.ViewModels
             get => _selectedDate;
             set { SetProperty(ref _selectedDate, value); HandleDateChange(); }
         }
+
+        private DelegateCommand<ITask> _onItemClickedCommand;
+        public DelegateCommand<ITask> OnItemClickedCommand => _onItemClickedCommand ?? (_onItemClickedCommand = new DelegateCommand<ITask>(OnItemClicked));
 
         public DashboardUpcommingTasksViewModel(IEventAggregator eventAggregator)
         {
@@ -88,6 +92,11 @@ namespace Idoneus.ViewModels
                 }
             });
 
+        }
+
+        private void OnItemClicked(ITask task)
+        {
+            var parentProject = _repository.GetParentProject(task);
         }
 
     }

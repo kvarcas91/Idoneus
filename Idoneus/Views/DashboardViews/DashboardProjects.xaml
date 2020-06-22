@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Idoneus.Views"
              mc:Ignorable="d" 
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
@@ -109,7 +110,12 @@
                       Visibility="{Binding IsExporting, Converter={StaticResource InverseBoolToVisConverter}}"
                       ItemsSource="{Binding Projects}"
                       Style="{StaticResource ProjectListViewSnippet}">
-            
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseDoubleClick">
+                        <i:InvokeCommandAction CommandParameter="{Binding ElementName=projectSnippetListView, Path=SelectedItem}"
+                                   Command="{Binding OnItemClickedCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
             </ListView>
         </Grid>
 

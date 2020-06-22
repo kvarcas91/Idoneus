@@ -57,6 +57,13 @@ namespace Domain.Repository.Base
             return result;
         }
 
+        public bool Delete<T>(T obj) where T : class, IEntity, new()
+        {
+            using var connection = GetConnection();
+            var result = connection.Delete(obj);
+            return result;
+        }
+
         public bool Delete<T>(IEnumerable<T> obj) where T : class, IEntity, new()
         {
             using var connection = GetConnection();
@@ -74,10 +81,10 @@ namespace Domain.Repository.Base
             return result != null;
         }
 
-        public T Get<T>(string field, string param)
+        public T Get<T>(string field, string param, string table)
         {
             using var connection = new SqliteConnection(GetConnectionString());
-            var query = $"SELECT * FROM contributors WHERE {field}='{param}'";
+            var query = $"SELECT * FROM {table} WHERE {field}='{param}'";
             var output = connection.QueryFirstOrDefault<T>(query);
             return output;
         }
@@ -95,6 +102,13 @@ namespace Domain.Repository.Base
             var query = $"SELECT COUNT(*) FROM {GetTableName<T>()} WHERE {condition}";
             return connection.QuerySingle<int>(query);
 
+        }
+
+        public dynamic GetScalar<Type>(string query)
+        {
+            using var connection = GetConnection();
+            var output = connection.QueryFirstOrDefault(typeof(Type), query);
+            return output;
         }
 
         #region Init

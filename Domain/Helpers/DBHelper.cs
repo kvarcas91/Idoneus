@@ -98,9 +98,11 @@ namespace Domain.Repository.Helpers
 
 							CREATE TABLE repetetive_tasks (
 								ID TEXT NOT NULL PRIMARY KEY,
-								Content TEXT NOT NULL);
+								Content TEXT NOT NULL,
+								IsActive INTEGER);
 
-                            CREATE TABLE contributors ( 
+
+							CREATE TABLE contributors ( 
                               Login TEXT NOT NULL,
                               FirstName TEXT NOT NULL,
                               LastName TEXT NOT NULL);

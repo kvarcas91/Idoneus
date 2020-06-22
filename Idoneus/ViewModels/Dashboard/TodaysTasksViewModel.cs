@@ -223,6 +223,7 @@ namespace Idoneus.ViewModels
             var failed = false;
             foreach (var task in rTasks)
             {
+                if (!task.IsActive) continue;
                 var item = Tasks.FirstOrDefault(x => x.RepetetiveTaskID.Equals(task.ID));
                 if (item == null)
                 {

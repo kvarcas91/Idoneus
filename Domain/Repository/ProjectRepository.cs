@@ -87,7 +87,21 @@ namespace Domain.Repository
             };
         }
 
-       
+        public Project GetParentProject(ITask task)
+        {
+            if (task is ProjectTask)
+            {
+                return Get<Project>("ID", task.ParentID, "projects");
+            }
+            if (task is SubTask)
+            {
+                var query = $"SELECT ParentID FROM subtasks WHERE ID ='{task.ID}'";
+                string parentID = GetScalar<string>(query);
+                return Get<Project>("ID", parentID, "projects");
+            }
+
+            return null;
+        }
 
     }
 }

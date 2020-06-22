@@ -70,6 +70,9 @@ namespace Idoneus.ViewModels
 
         public DelegateCommand ExportCommand => _exportCommand ?? (_exportCommand = new DelegateCommand(Export));
 
+        private DelegateCommand<Project> _onItemClickedCommand;
+        public DelegateCommand<Project> OnItemClickedCommand => _onItemClickedCommand ?? (_onItemClickedCommand = new DelegateCommand<Project>(OnItemClicked));
+
         #endregion // UI Properties
 
         public DashboardProjectsViewModel(IEventAggregator eventAggregator, IStorage storage)
@@ -166,5 +169,11 @@ namespace Idoneus.ViewModels
                 Process.Start(fileName);
             });
         }
+
+        private void OnItemClicked(Project project)
+        {
+
+        }
+
     }
 }
