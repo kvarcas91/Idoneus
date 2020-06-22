@@ -1,4 +1,5 @@
-﻿using Domain.Extentions;
+﻿using Common.EventAggregators;
+using Domain.Extentions;
 using Domain.Models.Project;
 using Domain.Repository;
 using Idoneus.Views;
@@ -32,6 +33,13 @@ namespace Idoneus.ViewModels
         {
             get => _searchText;
             set { SetProperty(ref _searchText, value); HandleSearch(); }
+        }
+
+        private string _projectTitle = string.Empty;
+        public string ProjectTitle
+        {
+            get => _projectTitle;
+            set { SetProperty(ref _projectTitle, value); HandleSearch(); }
         }
 
         private bool _isDataLoaded = false;
@@ -140,6 +148,11 @@ namespace Idoneus.ViewModels
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
             _project = navigationContext.Parameters["project"] as Project;
+            if(_project != null)
+            {
+                ProjectTitle = _project.Header;
+                _eventAggregator.GetEvent<SendCurrentProject<Project>>().Publish(_project);
+            }
             InitData();
         }
 

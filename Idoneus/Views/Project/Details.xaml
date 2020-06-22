@@ -9,6 +9,7 @@
              xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
              d:DesignHeight="450" d:DesignWidth="800">
+
     <Grid>
 
         <Grid.ColumnDefinitions>
@@ -21,8 +22,8 @@
             <RowDefinition Height="5*"/>
         </Grid.RowDefinitions>
 
+        <!-- Description/contributors -->
         <materialDesign:Card Margin="10"
-                             Grid.ColumnSpan="2"
                              materialDesign:ShadowAssist.ShadowDepth="Depth2">
 
             <Grid>
@@ -55,6 +56,7 @@
                     Background="Transparent"
                     BorderThickness="0" 
                     SelectedIndex="{Binding DescriptionViewType}">
+                    
                     <TabControl.ItemContainerStyle>
                         <Style TargetType="{x:Type TabItem}">
                             <Setter Property="Visibility" Value="Collapsed"/>
@@ -62,20 +64,111 @@
                     </TabControl.ItemContainerStyle>
                     <TabItem BorderThickness="0"
                              BorderBrush="Transparent">
-                        <TextBlock Text="testTab1"/>
+                        <TextBlock Text="{Binding ProjectDescription}"/>
                     </TabItem>
+                    
                     <TabItem BorderThickness="0"
                              BorderBrush="Transparent">
-                        <ListView Margin="10"
+                        
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- Controls -->
+                            <materialDesign:ColorZone 
+                                materialDesign:ShadowAssist.ShadowDepth="Depth2"
+                                Background="Transparent"
+                                BorderBrush="{DynamicResource PrimaryHueMidBrush}"
+                                BorderThickness="0 0 0 0.2"
+                                VerticalAlignment="Stretch"
+                                Visibility="{Binding SelectedContributorCount, Converter={StaticResource NotZeroToVisibilityConverter}}">
+
+                                <StackPanel Orientation="Horizontal"
+                                            HorizontalAlignment="Right">
+                                    <Button 
+                                        Style="{StaticResource MaterialDesignFlatButton}"
+                                        ToolTip="Unselect contributors"
+                                        Command="{Binding UnselectContributorsCommand}">
+                                        <materialDesign:PackIcon Kind="CheckAll"/>
+                                    </Button>
+
+                                    <Button 
+                                        Style="{StaticResource MaterialDesignFlatButton}"
+                                        ToolTip="Remove selected contributors"
+                                        Command="{Binding DeleteSelectedContributorsCommand}">
+                                        <materialDesign:PackIcon Kind="DeleteEmpty"/>
+                                    </Button>
+                                </StackPanel>
+
+                            </materialDesign:ColorZone>
+
+                            <Grid Grid.Row="1">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <ListView Margin="10"
+                                      Grid.Row="0"
                                   x:Name="contributorList"
                                   ItemsSource="{Binding Contributors}"
                                   SelectionChanged="ListView_SelectionChanged"
                                  Style="{StaticResource MaterialDesignFilterChipListBox}"/>
+
+                                <materialDesign:ColorZone Margin="-3 0 -2 -1"
+                                  Grid.Row="1"
+                                  materialDesign:ShadowAssist.ShadowDepth="Depth2">
+
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBox VerticalAlignment="Center"
+                                             materialDesign:HintAssist.Hint="Add new contributor..."
+                                             BorderThickness="0"
+                                             materialDesign:TextFieldAssist.DecorationVisibility="Collapsed"
+                                             materialDesign:TextFieldAssist.HasClearButton="True"
+                                             Text="{Binding TaskContent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                             Margin="5 0"/>
+
+                                        <Button Style="{StaticResource MaterialDesignFlatButton}"
+                        Grid.Column="1"
+                        Command="{Binding InsertTaskCommand}">
+                                            <materialDesign:PackIcon Kind="Send"/>
+                                        </Button>
+
+                                    </Grid>
+
+                                </materialDesign:ColorZone>
+                            </Grid>
+                        </Grid>
+                        
                     </TabItem>
+                    
                 </TabControl>
             </Grid>
             
         </materialDesign:Card>
-        
+
+        <!-- Files -->
+        <materialDesign:Card Margin="10"
+                             Grid.Row="1"
+                             Grid.Column="0"
+                             materialDesign:ShadowAssist.ShadowDepth="Depth2">
+            
+        </materialDesign:Card>
+
+        <!-- Comments/links -->
+        <materialDesign:Card Margin="10"
+                             Grid.RowSpan="2"
+                             Grid.Column="1"
+                             materialDesign:ShadowAssist.ShadowDepth="Depth2">
+
+        </materialDesign:Card>
+
     </Grid>
 </UserControl>

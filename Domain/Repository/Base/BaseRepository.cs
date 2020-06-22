@@ -15,7 +15,7 @@ namespace Domain.Repository.Base
 
         protected readonly string dateFormat = "yyyy-MM-dd";
 
-        protected IEnumerable<TEntity> GetAll<TEntity>() where TEntity : class, IEntity, new()
+        public IEnumerable<TEntity> GetAll<TEntity>() where TEntity : class, IEntity, new()
         {
             using var connection = GetConnection();
             var output = connection.GetAll<TEntity>();
@@ -63,6 +63,14 @@ namespace Domain.Repository.Base
             using var connection = GetConnection();
             var result = connection.Delete(obj);
             return result;
+        }
+
+        public bool Delete(string query)
+        {
+            using var connection = GetConnection();
+  
+            var result = connection.Execute(query);
+            return result != 0;
         }
 
         public bool Insert<T>(T obj, string table) where T : class, IEntity, new()

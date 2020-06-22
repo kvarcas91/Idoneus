@@ -87,7 +87,9 @@
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="50"/>
+                            <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
                         <Button HorizontalAlignment="Left"
@@ -100,6 +102,7 @@
                         <ListBox Grid.Column="1"
                             Style="{StaticResource MaterialDesignToolToggleListBox}" 
                          HorizontalAlignment="Left"
+                                 Margin="10 0 10 0"
                          Background="Transparent"
                          SelectedIndex="{Binding ViewType}">
 
@@ -129,6 +132,25 @@
                             </ListBoxItem>
                         </ListBox>
 
+                        <TextBlock Text="{Binding ProjectTitle}"
+                                   Margin="10 0 0 0"
+                                   Grid.Column="2"
+                                   VerticalAlignment="Center"
+                                    Typography.Capitals="AllSmallCaps"
+                                    Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                                   FontSize="14"
+                                   Foreground="{DynamicResource PrimaryHueMidBrush}"
+                                   HorizontalAlignment="Left"/>
+
+                        
+
+                        <Button Style="{StaticResource MaterialDesignFlatButton}"
+                                Grid.Column="3"
+                                VerticalAlignment="Center"
+                                ToolTip="Edit Project"
+                                Margin="0 0 10 0">
+                            <materialDesign:PackIcon Kind="EditOutline"/>
+                        </Button>
                     </Grid>
 
                 </materialDesign:ColorZone>

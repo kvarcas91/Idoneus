@@ -1,6 +1,5 @@
 ﻿using Domain.Models;
 using Idoneus.ViewModels;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Controls;
 
@@ -11,17 +10,24 @@ namespace Idoneus.Views
     /// </summary>
     public partial class Details : UserControl
     {
+
+        private readonly DetailsViewModel viewModel;
+
         public Details()
         {
             InitializeComponent();
+            viewModel = (DetailsViewModel)DataContext;
+            viewModel.SetDeselectAction(DeselectContributors);
         }
 
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var viewmodel = (DetailsViewModel)DataContext;
-            viewmodel.SelectedContributors.Clear();
-            viewmodel.SelectedContributors.AddRange(contributorList.SelectedItems.Cast<Contributor>());
-            viewmodel.Test();
+            viewModel.SetSelectedContributors(contributorList.SelectedItems.Cast<Contributor>());
+        }
+
+        private void DeselectContributors()
+        {
+            contributorList.UnselectAll();
         }
     }
 }

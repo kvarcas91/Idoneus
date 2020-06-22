@@ -139,5 +139,19 @@ namespace Domain.Repository
             return null;
         }
 
+        public void UnassignContributors(IEnumerable<Contributor> contributors, string projectID)
+        {
+            foreach (var item in contributors)
+            {
+                UnassignContributor(item.ID, projectID);
+            }
+        }
+
+        public void UnassignContributor(string contributorID, string projectID)
+        {
+            var query = $"DELETE FROM project_contributors WHERE projectID = '{projectID}' AND contributorID = '{contributorID}'";
+            Delete(query);
+        }
+
     }
 }

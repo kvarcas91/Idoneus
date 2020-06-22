@@ -2,7 +2,7 @@
 
 namespace Common.EventAggregators
 {
-    class SendCurrentProject<T> : PubSubEvent<T>
+    public class SendCurrentProject<T> : PubSubEvent<T>
     {
     }
 }
