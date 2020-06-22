@@ -6,5 +6,6 @@
         public bool IsUserGuest { get; set; }
         public bool FirstLoad { get; set; } = true;
         public bool IsExporting { get; set; } = false;
+        public string CurrentRegion { get; set; } = string.Empty;
     }
 }

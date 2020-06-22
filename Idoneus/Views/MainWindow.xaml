@@ -92,7 +92,10 @@
                                 <materialDesign:PackIcon Kind="HamburgerMenu"/>
                             </Button>
 
-                            <TextBlock VerticalAlignment="Center" Text="{Binding Title}" />
+                            <TextBlock VerticalAlignment="Center" 
+                                       Text="{Binding Title}" 
+                                       Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                                       Foreground="{DynamicResource PrimaryHueMidBrush}"/>
 
                         </StackPanel>
 

@@ -6,6 +6,7 @@ using Domain.Repository;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
+using Prism.Regions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -22,6 +23,8 @@ namespace Idoneus.ViewModels
         private ObservableCollection<ITask> _allTasks;
         public ObservableCollection<ITask> _upcomingTasks;
         private readonly ProjectRepository _repository;
+        private readonly IEventAggregator _eventAggregator;
+
         public ObservableCollection<ITask> UpcomingTasks
         {
             get { return _upcomingTasks; }
@@ -48,6 +51,7 @@ namespace Idoneus.ViewModels
 
         public DashboardUpcommingTasksViewModel(IEventAggregator eventAggregator)
         {
+            _eventAggregator = eventAggregator;
             eventAggregator.GetEvent<SendMessageToUpcommingTasks<ObservableCollection<ITask>>>().Subscribe(MessageReceived);
             _repository = new ProjectRepository();
         }
@@ -97,6 +101,12 @@ namespace Idoneus.ViewModels
         private void OnItemClicked(ITask task)
         {
             var parentProject = _repository.GetParentProject(task);
+            var navigationParams = new NavigationParameters
+            {
+                { "project", parentProject }
+            };
+
+            _eventAggregator.GetEvent<NavigateRequest<NavigationParameters>>().Publish(("Projects", navigationParams));
         }
 
     }

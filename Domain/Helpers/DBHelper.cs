@@ -103,11 +103,13 @@ namespace Domain.Repository.Helpers
 
 
 							CREATE TABLE contributors ( 
-                              Login TEXT NOT NULL,
+                              ID TEXT NOT NULL,
                               FirstName TEXT NOT NULL,
-                              LastName TEXT NOT NULL);
+                              LastName TEXT NOT NULL,
+						      PRIMARY KEY(ID));
 
-                            CREATE TABLE project_contributors (
+
+							CREATE TABLE project_contributors (
                                 projectID TEXT NOT NULL,
 	                            contributorID TEXT NOT NULL,
 	                            FOREIGN KEY(contributorID) REFERENCES contributors(ID),

@@ -1,16 +1,19 @@
-﻿using Prism.Mvvm;
+﻿using Domain.Models.Project;
+using Prism.Mvvm;
 using Prism.Regions;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Idoneus.ViewModels
 {
     public class ProjectsViewModel : BindableBase, INavigationAware
     {
+
+        private Project _project;
+
+
+
+        #region Navigation
+
         public bool IsNavigationTarget(NavigationContext navigationContext)
         {
             return true;
@@ -23,7 +26,9 @@ namespace Idoneus.ViewModels
 
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
-            Debug.WriteLine("OnVaigatedTo", nameof(ProjectsViewModel));
+            _project = navigationContext.Parameters["project"] as Project;
         }
+
+        #endregion // Navigation
     }
 }

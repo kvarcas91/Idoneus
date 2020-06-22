@@ -1,6 +1,7 @@
 ﻿using Common;
 using Domain.Helpers;
-using Domain.Models.Base;
+using Domain.Models;
+using Domain.Models.Comments;
 using Domain.Models.Project;
 using Domain.Models.Tasks;
 using Domain.Repository.Base;
@@ -16,18 +17,33 @@ namespace Domain.Repository
 
         public IEnumerable<Project> GetProjects()
         {
-            var output = base.GetAll<Project>();
+            var output = GetAll<Project>();
             foreach (var item in output)
             {
-                item.Tasks = new ObservableCollection<ProjectTask>(GetProjectTasks(item.ID));
-                if (item.Tasks == null) continue;
-
-                foreach (var task in item.Tasks)
-                {
-                    task.SubTasks = new ObservableCollection<SubTask>(GetSubTasks(task.ParentID));
-                }
+                GetProjectContent(item);
             }
             return output;
+        }
+
+        public Project GetProject(string ID)
+        {
+            var project = Get<Project>("ID", ID, "projects");
+            GetProjectContent(project);
+            return project;
+        }
+
+        private void GetProjectContent(Project project)
+        {
+            project.Tasks = new ObservableCollection<ProjectTask>(GetProjectTasks(project.ID));
+            project.Contributors = new ObservableCollection<Contributor>(GetProjectContributors(project.ID));
+            project.Comments = new ObservableCollection<IComment>(GetComments(project.ID));
+            if (project.Tasks == null) return;
+
+            foreach (var task in project.Tasks)
+            {
+                task.SubTasks = new ObservableCollection<SubTask>(GetSubTasks(task.ParentID));
+                task.Contributors = new ObservableCollection<Contributor>(GetTaskContributors(task.ID));
+            }
         }
 
         public IEnumerable<ITask> GetUpcommingTasks(DateTime targetDate)
@@ -42,17 +58,36 @@ namespace Domain.Repository
             return output;
         }
         
-        public dynamic GetParentID<T>(int ID, T obj, string table, string joinTable, string middleTable, (string, string) p1, (string, string) p2) where T : class, IEntity
-        {
-            var query = QueryHelper.GetComplexQuery(obj, table, joinTable, middleTable, p1, p2, ID, null, singleKeyValue: true);
-            return query;
-        }
-
         public IEnumerable<ProjectTask> GetProjectTasks (string ID)
         {
             var query = $"SELECT * FROM tasks WHERE ParentID = '{ID}'";
             
             return base.GetAll<ProjectTask>(query);
+        }
+
+        public IEnumerable<Contributor> GetProjectContributors(string ID)
+        {
+            var query = QueryHelper.GetComplexQuery(new Contributor(), "contributors", "projects", "project_contributors", ("contributorID", "ID"), ("ID", "projectID"), ID, string.Empty);
+            var output = GetAll<Contributor>(query);
+            return output;
+        }
+
+        public IEnumerable<IComment> GetComments(string ID)
+        {
+            var commentsQuery = $"SELECT * FROM comments WHERE ProjectID = '{ID}'";
+            var linksQuery = $"SELECT * FROM links WHERE ProjectID = '{ID}'";
+            var output = new List<IComment>();
+            output.AddRange(GetAll<Comment>(commentsQuery));
+            output.AddRange(GetAll<Link>(linksQuery));
+
+            return output;
+        }
+
+        public IEnumerable<Contributor> GetTaskContributors(string ID)
+        {
+            var query = QueryHelper.GetComplexQuery(new Contributor(), "contributors", "tasks", "task_contributors", ("contributorID", "ID"), ("ID", "taskID"), ID, string.Empty);
+            var output = GetAll<Contributor>(query);
+            return output;
         }
 
         public IEnumerable<SubTask> GetSubTasks (string ID)

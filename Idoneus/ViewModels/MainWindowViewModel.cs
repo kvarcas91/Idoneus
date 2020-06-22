@@ -38,6 +38,7 @@ namespace Idoneus.ViewModels
             Navigate("Dashboard");
 
             _eventAggregator.GetEvent<SendSnackBarMessage>().Subscribe(ReceiveMessage);
+            _eventAggregator.GetEvent<NavigateRequest<NavigationParameters>>().Subscribe(ReceiveNavigateRequest);
         }
 
         private DelegateCommand<string> _navigateCommand = null;
@@ -119,8 +120,7 @@ namespace Idoneus.ViewModels
             var user = new Contributor
             {
                 FirstName = "Eduardas",
-                LastName = "Slutas",
-                Login = UserName
+                LastName = "Slutas"
             };
             _eventAggregator.GetEvent <UserLoginMessage<Contributor>>().Publish(user);
           
@@ -137,7 +137,17 @@ namespace Idoneus.ViewModels
             });
         }
 
+        private void ReceiveNavigateRequest((string, NavigationParameters) param)
+        {
+            Navigate(param.Item1, param.Item2);
+        }
+
         private void Navigate(string navigatePath)
+        {
+            Navigate(navigatePath, null);
+        }
+
+        private void Navigate(string navigatePath, NavigationParameters param)
         {
             var drawer = DrawerHost.CloseDrawerCommand;
             drawer.Execute(null, null);
@@ -146,18 +156,18 @@ namespace Idoneus.ViewModels
 
             if (_currentRegion.Equals(navigatePath)) return;
 
-            Title = navigatePath;
+
             if (navigatePath.Equals("Dashboard"))
             {
                 _storage.FirstLoad = true;
             }
-           
+
             if (navigatePath != null)
             {
                 _currentRegion = navigatePath;
-                _regionManager.RequestNavigate("ContentRegion", navigatePath);
-            }
+                Title = _currentRegion;
+                _regionManager.RequestNavigate("ContentRegion", navigatePath, param);
+            } 
         }
-
     }
 }

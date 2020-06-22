@@ -2,6 +2,7 @@
 using Dapper.Contrib.Extensions;
 using Domain.Attributes;
 using Domain.Models.Base;
+using Domain.Models.Comments;
 using Domain.Models.Tasks;
 using System;
 using System.Collections.ObjectModel;
@@ -27,6 +28,12 @@ namespace Domain.Models.Project
 
         [Computed]
         public ObservableCollection<ProjectTask> Tasks { get; set; } = new ObservableCollection<ProjectTask>();
+
+        [Computed]
+        public ObservableCollection<Contributor> Contributors { get; set; } = new ObservableCollection<Contributor>();
+
+        [Computed]
+        public ObservableCollection<IComment> Comments { get; set; } = new ObservableCollection<IComment>();
 
         [Computed]
         public int CompletedTaskCount { get; set; } = 0;

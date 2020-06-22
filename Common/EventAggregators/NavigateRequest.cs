@@ -2,7 +2,7 @@
 
 namespace Common.EventAggregators
 {
-    public class SendMessageEvent<T> : PubSubEvent<T>
+    public class NavigateRequest<T> : PubSubEvent<(string, T)>
     {
     }
 }

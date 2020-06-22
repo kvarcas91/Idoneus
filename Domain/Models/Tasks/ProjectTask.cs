@@ -25,6 +25,9 @@ namespace Domain.Models.Tasks
         [Computed]
         public ObservableCollection<SubTask> SubTasks { get; set; } = new ObservableCollection<SubTask>();
 
+        [Computed]
+        public ObservableCollection<Contributor> Contributors { get; set; } = new ObservableCollection<Contributor>();
+
         [Exportable]
         public double Progress { get; set; }
 

@@ -8,6 +8,7 @@ using Microsoft.Win32;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
+using Prism.Regions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -64,14 +65,19 @@ namespace Idoneus.ViewModels
             set { SetProperty(ref _searchText, value); HandleSearch(); }
         }
 
-        private DelegateCommand _exportCommand;
         private readonly IStorage _storage;
         private readonly ProjectRepository _repository;
+        private readonly IEventAggregator _eventAggregator;
 
+        #region Delegates
+
+        private DelegateCommand _exportCommand;
         public DelegateCommand ExportCommand => _exportCommand ?? (_exportCommand = new DelegateCommand(Export));
 
         private DelegateCommand<Project> _onItemClickedCommand;
         public DelegateCommand<Project> OnItemClickedCommand => _onItemClickedCommand ?? (_onItemClickedCommand = new DelegateCommand<Project>(OnItemClicked));
+
+        #endregion // Delegates
 
         #endregion // UI Properties
 
@@ -79,6 +85,7 @@ namespace Idoneus.ViewModels
         {
             _storage = storage;
             _repository = new ProjectRepository();
+            _eventAggregator = eventAggregator;
             eventAggregator.GetEvent<SendMessageEvent<ObservableCollection<Project>>>().Subscribe(MessageReceived);
             _projectViewType = new List<string>() { "All", "In Progress", "Completed", "Archived", "Delayed" };
         }
@@ -172,7 +179,12 @@ namespace Idoneus.ViewModels
 
         private void OnItemClicked(Project project)
         {
+            var navigationParams = new NavigationParameters
+            {
+                { "project", project }
+            };
 
+            _eventAggregator.GetEvent<NavigateRequest<NavigationParameters>>().Publish(("Projects", navigationParams));
         }
 
     }

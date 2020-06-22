@@ -1,17 +1,12 @@
-﻿using Common;
-using Domain.Models;
-using Domain.Models.Project;
-using Domain.Models.Tasks;
-using System;
+﻿using Domain.Models;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace Domain.Helpers
 {
     public class QueryHelper
     {
-        public static string GetComplexQuery<T>(T obj, string originalTable, string jointTable, string middleTable, (string, string) p1, (string, string) p2, int ID, string orderParam, bool singleKeyValue = false, params string[] orderBy)
+        public static string GetComplexQuery<T>(T obj, string originalTable, string jointTable, string middleTable, (string, string) p1, (string, string) p2, string ID, string orderParam, bool singleKeyValue = false, params string[] orderBy)
         {
             var ts1 = 'a';
             var ts2 = 'b';
@@ -40,7 +35,7 @@ namespace Domain.Helpers
             
             var query = $"SELECT {properties.ToString()} FROM {originalTable} {ts1} "+
                 $"INNER JOIN {middleTable} {ts3} ON {ts3}.{p1.Item1} = {ts1}.{p1.Item2} "+
-                $"INNER JOIN {jointTable} {ts2} ON {ts2}.{p2.Item1} = {ts3}.{p2.Item2} WHERE {ts2}.ID = {ID} {param.ToString()}";
+                $"INNER JOIN {jointTable} {ts2} ON {ts2}.{p2.Item1} = {ts3}.{p2.Item2} WHERE {ts2}.ID = '{ID}' {param.ToString()}";
             return query;
         }
 

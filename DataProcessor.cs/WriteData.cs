@@ -75,32 +75,5 @@ namespace DataProcessor.cs
             return output.ToString();
         }
 
-
-        //public static string GetHeader<T, P>(T obj, P parentObj, string middleTable = null)  where P : class where T : class, IEntity, new()
-        //{
-        //    var props = PropertyHelper.GetProperties(obj, exportable: true);
-        //    var output = new StringBuilder(string.Empty);
-        //    for (int i = 0; i < props.Count; i++)
-        //    {
-        //        output.Append($"{typeof(T).Name}{props[i]}");
-        //        output.Append(i+1 >= props.Count ? (parentObj is IEntity ? GetParentID(new T(), (IEntity)parentObj, obj.ID, middleTable) : "\n") : "\t");
-        //    }
-        //    return output.ToString();
-        //}
-
-        private static string GetParentID<T, P>(T obj, P parent, int ID, string middleTable) where T : class, IEntity where P : class, IEntity
-        {
-            var repo = new ProjectRepository();
-            var parentTable = string.Empty;
-            if (parent is Project) parentTable = repo.GetTableName<Project>();
-            if (parent is SubTask) parentTable = repo.GetTableName<SubTask>();
-           
-            var output = repo.GetParentID(ID, obj, parentTable, repo.GetTableName<T>(), middleTable, ("taskID", "ID"), ("ID", "projectID"));
-            return "";
-        }
-
-       
-
-
     }
 }
