@@ -5,13 +5,113 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Idoneus.Views"
              mc:Ignorable="d" 
+             xmlns:converter="clr-namespace:Idoneus.Converters"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
              d:DesignHeight="450" d:DesignWidth="800">
-    
+
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+
+        <!-- Header -->
+        <materialDesign:ColorZone 
+            materialDesign:ShadowAssist.ShadowDepth="Depth2"
+            Background="Transparent"
+            BorderBrush="{DynamicResource PrimaryHueMidBrush}"
+            BorderThickness="0 0 0 0.2"
+            VerticalAlignment="Stretch">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <ListBox Style="{StaticResource MaterialDesignToolToggleListBox}" 
+                         HorizontalAlignment="Left"
+                         Background="Transparent"
+                         SelectedIndex="{Binding ViewType}">
+
+                    <ListBoxItem>
+                        <TextBlock Text="Current tasks"
+                            Typography.Capitals="AllSmallCaps"
+                            Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                            VerticalAlignment="Center"/>
+                    </ListBoxItem>
+                    <ListBoxItem>
+                        <TextBlock Text="Missed tasks"
+                            Typography.Capitals="AllSmallCaps"
+                            Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                            VerticalAlignment="Center"/>
+                    </ListBoxItem>
+                    <ListBoxItem>
+                        <TextBlock Text="Templates"
+                            Typography.Capitals="AllSmallCaps"
+                            Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                            VerticalAlignment="Center"/>
+                    </ListBoxItem>
+                </ListBox>
+                <Border Grid.Column="1"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Margin="0 3 10 3">
+
+                    <Grid>
+
+                        <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                 Height="40"
+                                 Width="40"
+                                 Value="99.9"
+                                     Foreground="LightGray"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Center"/>
+
+                        <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                 Height="40"
+                                 Width="40"
+                                 Foreground="{DynamicResource SecondaryHueMidBrush}"
+                                 Value="{Binding TotalProjectProgress,  Converter={converter:ProgressConverter}}"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Center"/>
+
+                        <TextBlock
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center">
+                            <Run Text="{Binding TotalProjectProgress}"/>
+                            <Run Text="%"/>
+                        </TextBlock>
+                    </Grid>
+
+                </Border>
+
+            </Grid>
+        </materialDesign:ColorZone>
+
+        <TabControl Grid.Row="1"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    ItemsSource="{Binding Tabs}"
+                    SelectedIndex="{Binding ViewType}"
+                    >
+            <TabControl.ItemContainerStyle>
+                <Style TargetType="{x:Type TabItem}">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                </Style>
+            </TabControl.ItemContainerStyle>
+        </TabControl>
+       
+
+
+    </Grid>
+    
+    <!--
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -30,6 +130,7 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
                 <TextBlock Text="Today's Tasks"
@@ -38,6 +139,13 @@
                    VerticalAlignment="Center"/>
 
                 <Button  Grid.Column="1"
+                     ToolTip="Add task template"
+                         Command="{Binding ShowTaskTemplateCommand}"
+                Style="{StaticResource MaterialDesignFlatButton}">
+                    <materialDesign:PackIcon Kind="CommentAddOutline"/>
+                </Button>
+                
+                <Button  Grid.Column="2"
                      ToolTip="Delete completed tasks"
                          Command="{Binding DeleteCompletedTasksCommand}"
                 Style="{StaticResource MaterialDesignFlatButton}">
@@ -47,9 +155,31 @@
             </Grid>
 
         </materialDesign:ColorZone>
-        
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBox VerticalAlignment="Center"
+                     materialDesign:HintAssist.Hint="Add new task..."
+                     BorderThickness="0"
+                     materialDesign:TextFieldAssist.DecorationVisibility="Collapsed"
+                     materialDesign:TextFieldAssist.HasClearButton="True"
+                     Text="{Binding RepetetiveTaskContent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     Margin="5 0"/>
+
+            <Button Style="{StaticResource MaterialDesignFlatButton}"
+                        Grid.Column="1"
+                        Command="{Binding InsertRepetetiveTaskCommand}">
+                <materialDesign:PackIcon Kind="Send"/>
+            </Button>
+
+        </Grid>
+
         <materialDesign:ColorZone 
-                                  Grid.Row="1"
+                                  Grid.Row="2"
                                   Background="Transparent"
                                   materialDesign:ShadowAssist.ShadowDepth="Depth2">
 
@@ -89,14 +219,14 @@
         </materialDesign:ColorZone>
 
         <ListView x:Name="TaskListView"
-                  Grid.Row="2" 
-                  Margin="10 10 10 0"
+                  Grid.Row="3" 
+                  Margin="10 10 10 5"
                   ItemsSource="{Binding Tasks}"
                    Style="{StaticResource TodayTaskListView}" 
                     />
         
         <materialDesign:ColorZone 
-                                  Grid.Row="3"
+                                  Grid.Row="4"
                                  Margin="0 0 1 0"
                                   materialDesign:ShadowAssist.ShadowDepth="Depth2">
 
@@ -107,7 +237,7 @@
                 </Grid.ColumnDefinitions>
 
                     <TextBox VerticalAlignment="Center"
-                             x:Name="TaskContent"
+                            
                          materialDesign:HintAssist.Hint="Add new task..."
                          BorderThickness="0"
                          materialDesign:TextFieldAssist.DecorationVisibility="Collapsed"
@@ -127,4 +257,6 @@
         </materialDesign:ColorZone>
 
     </Grid>
+    
+    -->
 </UserControl>

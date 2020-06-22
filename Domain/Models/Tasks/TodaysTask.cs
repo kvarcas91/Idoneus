@@ -10,10 +10,23 @@ namespace Domain.Models.Tasks
     public class TodaysTask : IEntity
     {
 
+        public TodaysTask()
+        {
+
+        }
+
+        public TodaysTask(RepetetiveTask task)
+        {
+            ID = Guid.NewGuid().ToString();
+            RepetetiveTaskID = task.ID;
+            Content = task.Content;
+        }
+
         [Key]
         public string ID { get; set; }
 
-        public bool IsCompleted { get; set; } = false;
+        public string RepetetiveTaskID { get; set; } = string.Empty;
+        public bool IsCompleted { get; set; }
         public string Content { get; set; }
         public DateTime SubmitionDate { get; set; } = DateTime.Now;
     }

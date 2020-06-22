@@ -22,6 +22,7 @@ namespace Idoneus.ViewModels
         private readonly IEventAggregator _eventAggregator;
         private readonly PaletteHelper _paletteHelper = new PaletteHelper();
         private readonly SwatchesProvider _swatchesProvider = new SwatchesProvider();
+        private string _currentRegion = string.Empty;
 
         public MainWindowViewModel(IRegionManager regionManager, IStorage storage, IEventAggregator eventAggregator)
         {
@@ -143,6 +144,8 @@ namespace Idoneus.ViewModels
 
             if (_storage.IsExporting) return;
 
+            if (_currentRegion.Equals(navigatePath)) return;
+
             Title = navigatePath;
             if (navigatePath.Equals("Dashboard"))
             {
@@ -151,6 +154,7 @@ namespace Idoneus.ViewModels
            
             if (navigatePath != null)
             {
+                _currentRegion = navigatePath;
                 _regionManager.RequestNavigate("ContentRegion", navigatePath);
             }
         }

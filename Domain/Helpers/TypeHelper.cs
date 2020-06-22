@@ -20,6 +20,10 @@ namespace Domain.Helpers
             {
                 return $"'{value}'";
             }
+            if (type == typeof(bool))
+            {
+                return $"'{Convert.ToInt32(value)}'";
+            }
 
             return $"'{value}'";
         }

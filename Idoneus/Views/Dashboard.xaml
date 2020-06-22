@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Idoneus.Views"
              mc:Ignorable="d" 
+             xmlns:converter="clr-namespace:Idoneus.Converters"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
@@ -82,7 +83,7 @@
                                  Height="40"
                                  Width="40"
                                  Foreground="{DynamicResource SecondaryHueMidBrush}"
-                                 Value="{Binding TotalProjectProgress}"
+                                 Value="{Binding TotalProjectProgress, Converter={converter:ProgressConverter}}"
                                  HorizontalAlignment="Center"
                                  VerticalAlignment="Center"/>
 

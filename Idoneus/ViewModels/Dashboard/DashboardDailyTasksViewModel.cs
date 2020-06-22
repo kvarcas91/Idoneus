@@ -1,159 +1,140 @@
 ﻿using Common.EventAggregators;
 using Domain.Models.Tasks;
 using Domain.Repository;
+using Idoneus.Views;
 using Prism.Commands;
 using Prism.Events;
+using Prism.Ioc;
 using Prism.Mvvm;
+using Prism.Regions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace Idoneus.ViewModels
 {
     public class DashboardDailyTasksViewModel : BindableBase
     {
 
-        private ObservableCollection<TodaysTask> _tasks;
-        public ObservableCollection<TodaysTask> Tasks
+        private string _repetetiveTaskContent;
+        public string RepetetiveTaskContent
         {
-            get { return _tasks; }
-            private set { SetProperty(ref _tasks, value); }
+            get { return _repetetiveTaskContent; }
+            set
+            {
+                SetProperty(ref _repetetiveTaskContent, value);
+            }
         }
 
-        private int _viewType = 1;
+        private int _viewType = 0;
         public int ViewType
         {
             get { return _viewType; }
             set
             {
                 SetProperty(ref _viewType, value);
-                OnViewTypeChanged();
+                ActivateTab();
             }
         }
 
-        private string _taskContent;
-        public string TaskContent
+        public ObservableCollection<UserControl> Tabs { get; set; }
+
+        private UserControl _activeTab;
+        public UserControl ActiveTab
         {
-            get { return _taskContent; }
-            set
-            {
-                SetProperty(ref _taskContent, value);
-            }
+            get { return _activeTab; }
+            set { SetProperty(ref _activeTab, value); }
         }
 
-        private DelegateCommand<TodaysTask> _selectTaskCommand;
-        public DelegateCommand<TodaysTask> SelectTaskCommand => _selectTaskCommand ?? (_selectTaskCommand = new DelegateCommand<TodaysTask>(SelectTask));
+        private double _totalProjectProgress = 0;
+        public double TotalProjectProgress
+        {
+            get { return _totalProjectProgress; }
+            set { SetProperty(ref _totalProjectProgress, value); }
+        }
 
-        private DelegateCommand _deleteCompletedTasksCommand;
-        public DelegateCommand DeleteCompletedTasksCommand => _deleteCompletedTasksCommand ?? (_deleteCompletedTasksCommand = new DelegateCommand(DeleteCompletedTasks));
+        #region Delegates
 
-        private DelegateCommand<string> _insertTaskCommand;
-        public DelegateCommand<string> InsertTaskCommand => _insertTaskCommand ?? (_insertTaskCommand = new DelegateCommand<string>(InsertTask));
+        // private DelegateCommand _insertRepetetiveTaskCommand;
+        //public DelegateCommand InsertRepetetiveTaskCommand => _insertRepetetiveTaskCommand ?? (_insertRepetetiveTaskCommand = new DelegateCommand(InsertRepetetiveTask));
 
-        private readonly ProjectRepository _repository;
-        private readonly IEventAggregator _eventAggregator;
+        #endregion // Delegates
+
 
         public DashboardDailyTasksViewModel(IEventAggregator eventAggregator)
         {
-            _eventAggregator = eventAggregator;
-            _eventAggregator.GetEvent<SendMessageToDailyTasks<ObservableCollection<TodaysTask>>>().Subscribe(MessageReceived);
-            _repository = new ProjectRepository();
-            
+            Tabs = new ObservableCollection<UserControl>
+            {
+                new TodaysTasks(),
+                new MissedTasks()
+            };
+            eventAggregator.GetEvent<SendMessageToDailyTasks>().Subscribe(MessageReceived);
         }
 
-        private void SendSnackBarMessage(string message)
+        private void MessageReceived(double progress)
         {
-            _eventAggregator.GetEvent<SendSnackBarMessage>().Publish(message);
+            TotalProjectProgress = Math.Round(progress, 0);
+            Debug.WriteLine(progress, "PROGRESS");
         }
 
-        private void OnViewTypeChanged()
+        //private void InsertRepetetiveTask()
+        //{
+        //    if (string.IsNullOrEmpty(RepetetiveTaskContent))
+        //    {
+        //        SendSnackBarMessage("Cannot add empty template...");
+        //        return;
+        //    }
+
+        //    var repetetiveTask = new RepetetiveTask
+        //    {
+        //        ID = Guid.NewGuid().ToString(),
+        //        Content = RepetetiveTaskContent
+        //    };
+
+        //    var insertRepetetiveTaskResult = _repository.Insert(repetetiveTask);
+
+        //   if (!insertRepetetiveTaskResult)
+        //    {
+        //        SendSnackBarMessage("Something went wrong...");
+        //        return;
+        //    }
+
+        //    var newTask = new TodaysTask(repetetiveTask);
+
+        //    var results = _repository.Insert(newTask);
+
+        //    if (!results) return;
+        //    Tasks.Insert(0, newTask);
+        //    TaskContent = string.Empty;
+        //    SendSnackBarMessage("Task has been created!");
+        //}
+
+        //private void MessageReceived(ObservableCollection<TodaysTask> tasks)
+        //{
+        //    Tasks = tasks;
+        //    CheckAndAddRepetetiveTasks();
+        //}
+
+       
+
+        public void ActivateTab()
         {
-            switch(ViewType)
+
+            switch (ViewType)
             {
                 case 0:
-                    GetTasks(-1);
+                    ActiveTab = Tabs[0];
                     break;
                 case 1:
-                    GetTasks(0);
+                    ActiveTab = Tabs[1];
                     break;
-                case 2:
-                    GetTasks(-2);
+                default:
                     break;
             }
         }
-
-        private void GetTasks(int days)
-        {
-            Task.Run(() =>
-            {
-                App.Current.Dispatcher.Invoke(() => Tasks.Clear());
-                var tasks = _repository.GetTodaysTasks(days);
-                App.Current.Dispatcher.Invoke(() => Tasks.AddRange(tasks));
-            });
-           
-           
-        }
-
-        private void SelectTask(TodaysTask task)
-        {
-            var index = Tasks.IndexOf(task);
-
-            // If task is completed - move it to the end. Otherwise, move to front
-            var newIndex = task.IsCompleted ? Tasks.Count - 1 : 0;
-
-            //DBHelper.UpdateTodaysTask(task);
-            var results = _repository.Update(task);
-            if (results) Tasks.Move(index, newIndex);
-        }
-
-        private void DeleteCompletedTasks()
-        {
-            var completedTasks = new List<TodaysTask>();
-            for (int i = Tasks.Count - 1; i >= 0; i--)
-            {
-                if (Tasks[i].IsCompleted)
-                {
-                    completedTasks.Add(Tasks[i]);
-                    Tasks.Remove(Tasks[i]);
-                }
-            }
-
-            if (completedTasks.Count == 0)
-            {
-                SendSnackBarMessage("No completed tasks found");
-                return;
-            }
-
-            _repository.Delete(completedTasks);
-            SendSnackBarMessage("Completed tasks were removed");
-        }
-
-        private void InsertTask(string task)
-        {
-            if (string.IsNullOrEmpty(task))
-            {
-                SendSnackBarMessage("Cannot add empty task...");
-                return;
-            }
-            var newTask = new TodaysTask
-            {
-                ID = Guid.NewGuid().ToString(),
-                Content = task
-            };
-
-            var results = _repository.Insert(newTask);
-
-            if (!results) return;
-            Tasks.Insert(0, newTask);
-            TaskContent = string.Empty;
-            SendSnackBarMessage("Task has been created!");
-        }
-
-        private void MessageReceived(ObservableCollection<TodaysTask> tasks)
-        {
-            Tasks = tasks;
-        }
-
     }
 }

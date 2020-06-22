@@ -96,6 +96,10 @@ namespace Domain.Repository.Helpers
 								IsCompleted INTEGER NOT NULL,
 								SubmitionDate TEXT NOT NULL);
 
+							CREATE TABLE repetetive_tasks (
+								ID TEXT NOT NULL PRIMARY KEY,
+								Content TEXT NOT NULL);
+
                             CREATE TABLE contributors ( 
                               Login TEXT NOT NULL,
                               FirstName TEXT NOT NULL,

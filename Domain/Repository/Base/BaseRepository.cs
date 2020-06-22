@@ -13,6 +13,8 @@ namespace Domain.Repository.Base
     public abstract class BaseRepository
     {
 
+        protected readonly string dateFormat = "yyyy-MM-dd";
+
         protected IEnumerable<TEntity> GetAll<TEntity>() where TEntity : class, IEntity, new()
         {
             using var connection = GetConnection();
@@ -48,6 +50,13 @@ namespace Domain.Repository.Base
             return result;
         }
 
+        public bool UpdateAll<T>(IEnumerable<T> obj) where T : class, IEntity, new()
+        {
+            using var connection = GetConnection();
+            var result = connection.Update(obj);
+            return result;
+        }
+
         public bool Delete<T>(IEnumerable<T> obj) where T : class, IEntity, new()
         {
             using var connection = GetConnection();
@@ -71,6 +80,21 @@ namespace Domain.Repository.Base
             var query = $"SELECT * FROM contributors WHERE {field}='{param}'";
             var output = connection.QueryFirstOrDefault<T>(query);
             return output;
+        }
+
+        public int GetCount<T>()
+        {
+            using var connection = GetConnection();
+            var query = $"SELECT COUNT(*) FROM {GetTableName<T>()}";
+            return connection.QuerySingle<int>(query);
+        }
+
+        public int GetCount<T>(string condition)
+        {
+            using var connection = GetConnection();
+            var query = $"SELECT COUNT(*) FROM {GetTableName<T>()} WHERE {condition}";
+            return connection.QuerySingle<int>(query);
+
         }
 
         #region Init

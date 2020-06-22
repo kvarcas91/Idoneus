@@ -7,15 +7,12 @@ using Domain.Repository.Base;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 
 namespace Domain.Repository
 {
     public class ProjectRepository : BaseRepository
     {
-
-        private static readonly string dateFormat = "yyyy-MM-dd";
 
         public IEnumerable<Project> GetProjects()
         {
@@ -45,13 +42,6 @@ namespace Domain.Repository
             return output;
         }
         
-        public IEnumerable<TodaysTask> GetTodaysTasks(int targetDate)
-        {
-            string dateQuery = targetDate == -2 ? "" : $"WHERE SubmitionDate like '{DateTime.Now.AddDays(targetDate).ToString(dateFormat)}%'";
-            var query = $"SELECT * FROM {GetTableName<TodaysTask>()} {dateQuery} ORDER BY IsCompleted";
-            return base.GetAll<TodaysTask>(query);
-        }
-
         public dynamic GetParentID<T>(int ID, T obj, string table, string joinTable, string middleTable, (string, string) p1, (string, string) p2) where T : class, IEntity
         {
             var query = QueryHelper.GetComplexQuery(obj, table, joinTable, middleTable, p1, p2, ID, null, singleKeyValue: true);
@@ -96,6 +86,8 @@ namespace Domain.Repository
                 _ => list,
             };
         }
+
+       
 
     }
 }
