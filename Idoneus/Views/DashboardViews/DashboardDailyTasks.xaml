@@ -43,10 +43,16 @@
                             VerticalAlignment="Center"/>
                     </ListBoxItem>
                     <ListBoxItem>
+                        <materialDesign:Badged
+                            BadgeBackground="{DynamicResource SecondaryHueMidBrush}"
+                            Badge="{Binding MissedTaskCount}">
                         <TextBlock Text="Missed tasks"
                             Typography.Capitals="AllSmallCaps"
                             Style="{StaticResource MaterialDesignOverlineTextBlock}"
-                            VerticalAlignment="Center"/>
+                            VerticalAlignment="Center"
+                                   />
+                        </materialDesign:Badged>
+
                     </ListBoxItem>
                     <ListBoxItem>
                         <TextBlock Text="Templates"

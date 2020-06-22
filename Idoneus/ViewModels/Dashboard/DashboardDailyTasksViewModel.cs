@@ -57,6 +57,13 @@ namespace Idoneus.ViewModels
             set { SetProperty(ref _totalProjectProgress, value); }
         }
 
+        private string _missedTaskCount = "0";
+        public string MissedTaskCount
+        {
+            get { return _missedTaskCount; }
+            set { SetProperty(ref _missedTaskCount, value); }
+        }
+
         #region Delegates
 
         // private DelegateCommand _insertRepetetiveTaskCommand;
@@ -67,18 +74,21 @@ namespace Idoneus.ViewModels
 
         public DashboardDailyTasksViewModel(IEventAggregator eventAggregator)
         {
+
             Tabs = new ObservableCollection<UserControl>
             {
                 new TodaysTasks(),
-                new MissedTasks()
+                new MissedTasks(),
+                new TaskTemplates()
             };
             eventAggregator.GetEvent<SendMessageToDailyTasks>().Subscribe(MessageReceived);
         }
 
-        private void MessageReceived(double progress)
+        private void MessageReceived((double progress, int missedCount) param)
         {
-            TotalProjectProgress = Math.Round(progress, 0);
-            Debug.WriteLine(progress, "PROGRESS");
+            
+            if (param.progress != -1) TotalProjectProgress = Math.Round(param.progress, 0);
+            if (param.missedCount != -1) MissedTaskCount = param.missedCount.ToString();
         }
 
         //private void InsertRepetetiveTask()

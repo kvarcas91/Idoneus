@@ -77,20 +77,24 @@ namespace Idoneus.ViewModels
 
         private void CalculateProgress()
         {
-            var progressData = _repository.GetTodaysTaskProgress();
-            if (progressData.Item1 == 0 || progressData.Item2 == 0)
+            Task.Run(() =>
             {
-                SetProgress(0);
-                return;
-            }
+                var progressData = _repository.GetTodaysTaskProgress();
+                if (progressData.Item1 == 0 || progressData.Item2 == 0)
+                {
+                    SetProgress(0);
+                    return;
+                }
 
-            var progress = progressData.Item2 * 100 / progressData.Item1;
-            SetProgress(progress);
+                var progress = progressData.Item2 * 100 / progressData.Item1;
+                SetProgress(progress);
+            });
+            
         }
 
         private void SetProgress(double progress)
         {
-            _eventAggregator.GetEvent<SendMessageToDailyTasks>().Publish(progress);
+            _eventAggregator.GetEvent<SendMessageToDailyTasks>().Publish((progress, -1));
         }
 
         private void SendSnackBarMessage(string message)
@@ -123,8 +127,6 @@ namespace Idoneus.ViewModels
                 App.Current.Dispatcher.Invoke(() => Tasks.AddRange(tasks));
                 CheckAndAddRepetetiveTasks();
             });
-
-
         }
 
         private void SelectTask(TodaysTask task)

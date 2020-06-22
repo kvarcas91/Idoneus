@@ -15,6 +15,12 @@ namespace Domain.Repository
             return GetAll<TodaysTask>(query);
         }
 
+        public IEnumerable<TodaysTask> GetMissedTasks()
+        {
+            var query = $"SELECT * FROM {GetTableName<TodaysTask>()} WHERE SubmitionDate < DATE('now') AND IsCompleted = '0' ORDER BY IsCompleted";
+            return GetAll<TodaysTask>(query);
+        }
+
         public IEnumerable<RepetetiveTask> GetRepetetiveTasks()
         {
             var query = $"SELECT * FROM {GetTableName<RepetetiveTask>()}";
