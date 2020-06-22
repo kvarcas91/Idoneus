@@ -13,6 +13,7 @@
 
                 <ResourceDictionary Source="/Resources/Styles/Scroll.xaml"/>
                 <ResourceDictionary Source="/Resources/Styles/ListView.xaml"/>
+                <ResourceDictionary Source="/Resources/Styles/Animations.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

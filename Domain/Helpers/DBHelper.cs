@@ -78,6 +78,7 @@ namespace Domain.Repository.Helpers
 								ProjectID TEXT,
 								Content TEXT NOT NULL,
 								SubmitionDate TEXT NOT NULL,
+								Header TEXT NOT NULL,
 								FOREIGN KEY(ProjectID) REFERENCES projects(ID));
 
 							CREATE TABLE tasks (
@@ -101,13 +102,20 @@ namespace Domain.Repository.Helpers
 								Content TEXT NOT NULL,
 								IsActive INTEGER);
 
-
 							CREATE TABLE contributors ( 
-                              ID TEXT NOT NULL,
-                              FirstName TEXT NOT NULL,
-                              LastName TEXT NOT NULL,
-						      PRIMARY KEY(ID));
+								  ID TEXT NOT NULL,
+								  FirstName TEXT NOT NULL,
+								  LastName TEXT NOT NULL,
+								  PRIMARY KEY(ID));
 
+							CREATE TABLE project_changelog (
+								ContributorID TEXT NOT NULL,
+								Content TEXT NOT NULL,
+								ChangeDate TEXT,
+								ChangeAction INTEGER,
+								ProjectID TEXT NOT NULL,
+								FOREIGN KEY(ContributorID) REFERENCES contributors(ID),
+								FOREIGN KEY(ProjectID) REFERENCES projects(ID));
 
 							CREATE TABLE project_contributors (
                                 projectID TEXT NOT NULL,

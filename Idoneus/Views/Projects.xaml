@@ -10,15 +10,9 @@
              prism:ViewModelLocator.AutoWireViewModel="True"
              d:DesignHeight="450" d:DesignWidth="800">
 
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="300"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
 
-        <materialDesign:Card Margin="10"
-                             materialDesign:ShadowAssist.ShadowDepth="Depth1">
-
+    <materialDesign:DrawerHost>
+        <materialDesign:DrawerHost.LeftDrawerContent>
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -43,12 +37,6 @@
                          Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          Margin="5 0"/>
 
-                        <ToggleButton HorizontalAlignment="Right"
-                                      Height="24"
-                                      Width="24"
-                                      Style="{DynamicResource MaterialDesignHamburgerToggleButton}"/>
-
-
                     </StackPanel>
                 </materialDesign:ColorZone>
 
@@ -58,13 +46,110 @@
                         ItemsSource="{Binding Projects}"
                         x:Name="ProjectList"
                         Style="{StaticResource ProjectListView}"
-                          HorizontalContentAlignment="Stretch"
+                        HorizontalContentAlignment="Stretch"
                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
 
             </Grid>
-        </materialDesign:Card>
-        
-    </Grid>
-    
+
+        </materialDesign:DrawerHost.LeftDrawerContent>
+
+        <Grid>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Initial loader -->
+        <StackPanel Orientation="Vertical"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Visibility="{Binding IsDataLoaded, Converter={StaticResource InverseBoolToVisConverter}}"
+                    Grid.RowSpan="2">
+            <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" IsIndeterminate="True" Width="80" Height="80"/>
+            <TextBlock Style="{StaticResource MaterialDesignSubtitle2TextBlock}" 
+                                   Text="Loading..." 
+                                   Padding="0 20 0 0"
+                                   TextAlignment="Center"/>
+
+        </StackPanel>
+
+        <Grid
+            Visibility="{Binding IsDataLoaded, Converter={StaticResource BooleanToVisibilityConverter}}">
+
+                <!-- Header -->
+                <materialDesign:ColorZone 
+                    materialDesign:ShadowAssist.ShadowDepth="Depth2"
+                    BorderBrush="{DynamicResource PrimaryHueMidBrush}"
+                    BorderThickness="0 0 0 0.2"
+                    VerticalAlignment="Stretch">
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="50"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Button HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                 Style="{StaticResource MaterialDesignFlatButton}"
+                                    Command="{x:Static materialDesign:DrawerHost.OpenDrawerCommand}">
+                            <materialDesign:PackIcon Kind="FilterList"/>
+                        </Button>
+
+                        <ListBox Grid.Column="1"
+                            Style="{StaticResource MaterialDesignToolToggleListBox}" 
+                         HorizontalAlignment="Left"
+                         Background="Transparent"
+                         SelectedIndex="{Binding ViewType}">
+
+                            <ListBoxItem>
+                                <TextBlock Text="Overview"
+                            Typography.Capitals="AllSmallCaps"
+                            Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                            VerticalAlignment="Center"/>
+                            </ListBoxItem>
+                            <ListBoxItem>
+                                <TextBlock Text="Details"
+                            Typography.Capitals="AllSmallCaps"
+                            Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                            VerticalAlignment="Center"/>
+                            </ListBoxItem>
+                            <ListBoxItem>
+                                <materialDesign:Badged
+                            BadgeBackground="{DynamicResource SecondaryHueMidBrush}"
+                            Badge="{Binding TasksCount}">
+                                    <TextBlock Text="Tasks"
+                            Typography.Capitals="AllSmallCaps"
+                            Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                            VerticalAlignment="Center"
+                                   />
+                                </materialDesign:Badged>
+
+                            </ListBoxItem>
+                        </ListBox>
+
+                    </Grid>
+
+                </materialDesign:ColorZone>
+
+            </Grid>
+
+            <TabControl Grid.Row="1"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    ItemsSource="{Binding Tabs}"
+                    SelectedIndex="{Binding ViewType}"
+                    >
+                <TabControl.ItemContainerStyle>
+                    <Style TargetType="{x:Type TabItem}">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                    </Style>
+                </TabControl.ItemContainerStyle>
+            </TabControl>
+
+        </Grid>
+
+    </materialDesign:DrawerHost>
 
 </UserControl>

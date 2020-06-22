@@ -257,110 +257,101 @@
             <Setter.Value>
                 <DataTemplate>
 
-                    <Expander>
-                        <Expander.Header>
-                            <Grid x:Name="container"
-                          Background="Transparent">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
+                    <Grid x:Name="container"
+                            Background="Transparent">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
 
-                                <Grid.InputBindings>
-                                    <MouseBinding Gesture="LeftClick" 
-                                          Command="{Binding ElementName=projectListView, Path=DataContext.SelectProjectCommand}"
-                                          CommandParameter="{Binding}"/>
-                                </Grid.InputBindings>
+                        <Grid.InputBindings>
+                            <MouseBinding Gesture="LeftClick" 
+                                    Command="{Binding ElementName=projectListView, Path=DataContext.SelectProjectCommand}"
+                                    CommandParameter="{Binding}"/>
+                        </Grid.InputBindings>
 
+                        <!-- Priority bar -->
+                        <Border Background="{Binding Priority, Converter={converter:PriorityToColorConverter}}" 
+                                Width="4" 
+                                HorizontalAlignment="Left"/>
 
-                                <!-- Priority bar -->
-                                <Border Background="{Binding Priority, Converter={converter:PriorityToColorConverter}}" 
-                                        Width="4" 
-                                        HorizontalAlignment="Left"/>
+                        <!-- Progress -->
+                        <Border Grid.Column="0" 
+                        Padding="8 15">
 
-                                <!-- Progress -->
-                                <Border Grid.Column="0" 
-                                Padding="8 15">
+                            <Grid >
 
-                                    <Grid >
+                                <Border Background="Transparent"
+                                BorderBrush="{Binding Priority, Converter={converter:PriorityToColorConverter}}"
+                                BorderThickness="1.5"
+                                Margin="1"
+                                Opacity="0.5"
+                                CornerRadius="{Binding ActualHeight, RelativeSource={RelativeSource self}}"
+                                Width="{Binding ActualHeight, RelativeSource={RelativeSource self}}">
 
-                                        <Border Background="Transparent"
-                                        BorderBrush="{Binding Priority, Converter={converter:PriorityToColorConverter}}"
-                                        BorderThickness="1.5"
-                                        Margin="1"
-                                        Opacity="0.5"
-                                        CornerRadius="{Binding ActualHeight, RelativeSource={RelativeSource self}}"
-                                        Width="{Binding ActualHeight, RelativeSource={RelativeSource self}}">
-
-                                            <TextBlock  
-                                        VerticalAlignment="Center"
-                                        HorizontalAlignment="Center"
-                                        FontFamily="Arial"
-                                        FontWeight="Bold"
-                                         Foreground="{DynamicResource SecondaryHueMidBrush}" >
-                                            <Run Text="{Binding Progress}"/>
-                                            <Run Text="%"/>
-                                            </TextBlock>
-                                        </Border>
-
-                                        <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
-                                 Height="40"
-                                 Width="40"
-                                 Value="99.9"
-                                 Foreground="LightGray"
-                                 HorizontalAlignment="Center"
-                                 VerticalAlignment="Center"/>
-
-                                        <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
-                                 Height="40"
-                                 Width="40"
-                                  Foreground="{Binding Priority, Converter={converter:PriorityToColorConverter}}"
-                                 Value="{Binding Progress, Converter={converter:ProgressConverter}}"
-                                 HorizontalAlignment="Center"
-                                 VerticalAlignment="Center"/>
-
-
-
-                                    </Grid>
-
+                                    <TextBlock  
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center"
+                                FontFamily="Arial"
+                                FontWeight="Bold"
+                                    Foreground="{DynamicResource SecondaryHueMidBrush}" >
+                                    <Run Text="{Binding Progress}"/>
+                                    <Run Text="%"/>
+                                    </TextBlock>
                                 </Border>
 
-                                <!-- Main Content -->
-                                <Border Padding="0 0 8 0"  Grid.Column="1">
+                                <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
+                            Height="40"
+                            Width="40"
+                            Value="99.9"
+                            Foreground="LightGray"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"/>
 
-                                    <StackPanel VerticalAlignment="Center" >
+                                <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
+                            Height="40"
+                            Width="40"
+                            Foreground="{Binding Priority, Converter={converter:PriorityToColorConverter}}"
+                            Value="{Binding Progress, Converter={converter:ProgressConverter}}"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"/>
 
-                                        <!-- Header -->
-                                        <TextBlock Text="{Binding Header}"
-                                           Padding="0 0 0 2"
-                                         
-                                         Foreground="{DynamicResource PrimaryHueMidBrush}"
-                                           TextTrimming="CharacterEllipsis"/>
 
-                                        <!-- Content -->
-                                        <TextBlock Text="{Binding Content}"
-                                           Padding="0 2 0 0"
-                                           Foreground="Gray"
-                                           ToolTip="{Binding Content}"
-                                           TextTrimming="CharacterEllipsis"/>
-                                    </StackPanel>
-                                </Border>
 
-                                <Separator Grid.Row="1" 
-                                   Grid.ColumnSpan="2"
-                                   Margin="10 0 10 0"/>
                             </Grid>
-                        </Expander.Header>
-                        <ListView ItemsSource="{Binding Tasks}"
-                                  Style="{StaticResource ProjectListViewSnippet}"/>
-                    </Expander>
 
-                  
+                        </Border>
 
+                        <!-- Main Content -->
+                        <Border Padding="0 0 8 0"  Grid.Column="1">
+
+                            <StackPanel VerticalAlignment="Center" >
+
+                                <!-- Header -->
+                                <TextBlock Text="{Binding Header}"
+                                    Padding="0 0 0 2"
+                                         
+                                    Foreground="{DynamicResource PrimaryHueMidBrush}"
+                                    TextTrimming="CharacterEllipsis"/>
+
+                                <!-- Content -->
+                                <TextBlock Text="{Binding Content}"
+                                    Padding="0 2 0 0"
+                                    Foreground="Gray"
+                                    ToolTip="{Binding Content}"
+                                    TextTrimming="CharacterEllipsis"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Separator Grid.Row="1" 
+                            Grid.ColumnSpan="2"
+                            Margin="10 0 10 0"/>
+                    </Grid>
+                        
                 </DataTemplate>
             </Setter.Value>
         </Setter>

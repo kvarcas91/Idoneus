@@ -1,0 +1,35 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:Idoneus.Resources.Styles">
+
+    <Style x:Key="ProjectListSideBarAnimation" TargetType="{x:Type FrameworkElement}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsExpanded}" Value="True">
+                <DataTrigger.EnterActions>
+                    <StopStoryboard BeginStoryboardName="EndAnimation" />
+                    <BeginStoryboard x:Name="NewAnimation">
+                        <Storyboard>
+                            <!--<ThicknessAnimation Storyboard.TargetProperty="Margin" From="-300,0,300,0" To="0,0,0,0" Duration="0:0:0.5" />-->
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.2" />
+                            <DoubleAnimation Storyboard.TargetProperty="Width" From="30" To="300" Duration="0:0:0.4" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.EnterActions>
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding IsExpanded}" Value="False">
+                <DataTrigger.EnterActions>
+                    <StopStoryboard BeginStoryboardName="EndAnimation" />
+                    <BeginStoryboard x:Name="EndAnimation">
+                        <Storyboard>
+                            <!--<ThicknessAnimation Storyboard.TargetProperty="Margin" From="0,0,0,0" To="-300,0,300,0" Duration="0:0:0.5" />-->
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.2" />
+                            <DoubleAnimation Storyboard.TargetProperty="Width" To="30" Duration="0:0:0.4" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.EnterActions>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+</ResourceDictionary>
