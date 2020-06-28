@@ -21,7 +21,17 @@ namespace Common.Settings
         public static void Load()
         {
             if (File.Exists(filePath))
-                Instance = System.Text.Json.JsonSerializer.Deserialize<T>(File.ReadAllText(filePath));
+            {
+                try
+                {
+                    Instance = System.Text.Json.JsonSerializer.Deserialize<T>(File.ReadAllText(filePath));
+                }
+                catch
+                {
+                    File.Delete(filePath);
+                    Instance = new T();
+                }
+            }
             else
                 Instance = new T();
         }

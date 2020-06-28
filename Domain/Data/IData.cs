@@ -12,7 +12,7 @@ namespace Domain.Data
         Icon Icon { get; set; }
         string Name { get; set; }
 
-        Response Copy(string newPath);
+        Response Copy(string newPath, bool overwrite);
         Response Delete();
     }
 }

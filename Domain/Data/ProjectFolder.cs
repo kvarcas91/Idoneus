@@ -30,11 +30,11 @@ namespace Domain.Data
             return Name;
         }
 
-        public Response Copy(string newPath)
+        public Response Copy(string newPath, bool overwrite)
         {
-            
-            return FileHelper.Copy(this, newPath);
+            return FileHelper.Copy(this, newPath, overwrite);
         }
+
         public Response Delete()
         {
             var dir = new DirectoryInfo(Path);

@@ -1,4 +1,5 @@
-﻿using Domain.Data;
+﻿using Common.Enums;
+using Domain.Data;
 using Domain.Models;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,46 @@ namespace Domain.Helpers
 {
     public class FileHelper
     {
+        /*
+       * https://docs.microsoft.com/en-us/dotnet/standard/io/how-to-copy-directories
+       */
+        private static Response DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs = true)
+        {
+            // Get the subdirectories for the specified directory.
+            DirectoryInfo dir = new DirectoryInfo(sourceDirName);
+
+            if (!dir.Exists)
+            {
+                return new Response() { Success = false, Message = "Source directory does not exist or could not be found" };
+            }
+
+            DirectoryInfo[] dirs = dir.GetDirectories();
+            // If the destination directory doesn't exist, create it.
+            if (!Directory.Exists(destDirName))
+            {
+                Directory.CreateDirectory(destDirName);
+            }
+
+            // Get the files in the directory and copy them to the new location.
+            FileInfo[] files = dir.GetFiles();
+            foreach (FileInfo file in files)
+            {
+                string temppath = Path.Combine(destDirName, file.Name);
+                file.CopyTo(temppath, false);
+            }
+
+            // If copying subdirectories, copy them and their contents to new location.
+            if (copySubDirs)
+            {
+                foreach (DirectoryInfo subdir in dirs)
+                {
+                    string temppath = Path.Combine(destDirName, subdir.Name);
+                    DirectoryCopy(subdir.FullName, temppath, copySubDirs);
+                }
+            }
+
+            return new Response() { Success = true };
+        }
 
         public static bool CreateFolderIfNotExist(string path)
         {
@@ -60,13 +101,13 @@ namespace Domain.Helpers
             return output;
         }
 
-        public static Response Copy(IData data, string newPath)
+        public static Response Copy(IData data, string newPath, bool overwrite)
         {
             if (data is ProjectFile file)
             {
                 try
                 {
-                    File.Copy(file.Path, Path.Combine(newPath, $"{data.Name}{file.Extention}"));
+                    File.Copy(file.Path, Path.Combine(newPath, $"{data.Name}{file.Extention}"), overwrite);
                     return new Response { Success = true };
                 }
                 catch (Exception e) { return new Response { Success = false, Message = e.Message }; }
@@ -103,47 +144,51 @@ namespace Domain.Helpers
             return $"{Path.Combine(parent, Path.GetFileName(path))}";
         }
 
-        /*
-         * https://docs.microsoft.com/en-us/dotnet/standard/io/how-to-copy-directories
-         */
-
-        private static Response DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs = true)
+        private static ParameterizedResponse<bool> IsDirectory(string path)
         {
-            // Get the subdirectories for the specified directory.
-            DirectoryInfo dir = new DirectoryInfo(sourceDirName);
-
-            if (!dir.Exists)
+            FileAttributes attr = 0;
+            try
             {
-                return new Response() { Success = false, Message = "Source directory does not exist or could not be found" };
+                attr = File.GetAttributes(path);
+            }
+            catch (FileNotFoundException)
+            {
+                return new ParameterizedResponse<bool>() { Message = "Sorry, coulnd't drop file. It might not exist" };
             }
 
-            DirectoryInfo[] dirs = dir.GetDirectories();
-            // If the destination directory doesn't exist, create it.
-            if (!Directory.Exists(destDirName))
-            {
-                Directory.CreateDirectory(destDirName);
-            }
-
-            // Get the files in the directory and copy them to the new location.
-            FileInfo[] files = dir.GetFiles();
-            foreach (FileInfo file in files)
-            {
-                string temppath = Path.Combine(destDirName, file.Name);
-                file.CopyTo(temppath, false);
-            }
-
-            // If copying subdirectories, copy them and their contents to new location.
-            if (copySubDirs)
-            {
-                foreach (DirectoryInfo subdir in dirs)
-                {
-                    string temppath = Path.Combine(destDirName, subdir.Name);
-                    DirectoryCopy(subdir.FullName, temppath, copySubDirs);
-                }
-            }
-
-            return new Response() { Success = true };
+            return new ParameterizedResponse<bool>() {Data = attr.HasFlag(FileAttributes.Directory) };
         }
 
+        public static ParameterizedResponse<IEnumerable<IData>> GetFilesFromPath(string[] filePaths)
+        {
+            var output = new List<IData>();
+            foreach (var path in filePaths)
+            {
+
+                var isDirectory = IsDirectory(path);
+                if (!string.IsNullOrEmpty(isDirectory.Message))
+                {
+                    return new ParameterizedResponse<IEnumerable<IData>>() { Message = isDirectory.Message};
+                }
+
+                IData data;
+                if (isDirectory.Data) data = new ProjectFolder(path);
+                else data = new ProjectFile(path);
+
+                output.Add(data);
+            }
+            return new ParameterizedResponse<IEnumerable<IData>>() { Data = output };
+        }
+
+        public static bool Contains(IEnumerable<IData> data, string fileName)
+        {
+
+            foreach (var item in data)
+            { 
+               if (Path.GetFileName(item.Path).Equals(fileName)) return true;
+            }
+
+            return false;
+        }
     }
 }

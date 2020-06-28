@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Idoneus.Views"
              mc:Ignorable="d" 
+              xmlns:helpers="clr-namespace:Idoneus.Helpers"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
@@ -290,10 +291,12 @@
 
 
                 <ListView Grid.Row="2"
-                                      x:Name="FileListView"
-                                    Visibility="{Binding IsFileDataLoading, Converter={StaticResource InverseBoolToVisConverter}}"
-                                     
-                                      ItemsSource="{Binding RelatedFiles}"
+                          x:Name="FileListView"
+                          Visibility="{Binding IsFileDataLoading, Converter={StaticResource InverseBoolToVisConverter}}"
+                          AllowDrop="True"
+                          helpers:FileDragDropHelper.IsFileDragDropEnabled="True" 
+                          helpers:FileDragDropHelper.FileDragDropTarget="{Binding}"
+                          ItemsSource="{Binding RelatedFiles}"
                           Style="{StaticResource FileListView}">
 
                 </ListView>

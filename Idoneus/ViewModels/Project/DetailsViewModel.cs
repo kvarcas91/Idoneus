@@ -1,36 +1,38 @@
-﻿using Common.EventAggregators;
+﻿using Common.Enums;
+using Common.EventAggregators;
+using Common.Settings;
 using Domain.Data;
 using Domain.Helpers;
 using Domain.Models;
 using Domain.Models.Comments;
 using Domain.Models.Project;
 using Domain.Repository;
+using Idoneus.Helpers;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Idoneus.ViewModels
 {
-    public class DetailsViewModel : BindableBase
+    public class DetailsViewModel : BindableBase, IFileDragDropTarget
     {
-        private Project _currentProject;
 
+        #region Local members
+
+        private Project _currentProject;
         private string _basePath = string.Empty;
 
-        private string _currentPath = string.Empty;
-        public string CurrentPath
-        {
-            get { return _currentPath; }
-            set { SetProperty(ref _currentPath, value); }
-        }
+        #endregion // Local members
+
+        #region Properties
+
+        #region Description / Contributors
 
         private int _descriptionViewType = 0;
         public int DescriptionViewType
@@ -51,6 +53,24 @@ namespace Idoneus.ViewModels
         {
             get { return _projectDescription; }
             set { SetProperty(ref _projectDescription, value); }
+        }
+
+        private string _selectedContributor;
+        public string SelectedContributor
+        {
+            get { return _selectedContributor; }
+            set { SetProperty(ref _selectedContributor, value); }
+        }
+
+        #endregion // Description / Contributors
+
+        #region Files
+
+        private string _currentPath = string.Empty;
+        public string CurrentPath
+        {
+            get { return _currentPath; }
+            set { SetProperty(ref _currentPath, value); }
         }
 
         private string _folderName = string.Empty;
@@ -74,8 +94,51 @@ namespace Idoneus.ViewModels
             set { SetProperty(ref _currentVersion, value); if (_currentVersion != null) SetVersion(); }
         }
 
-        private readonly IEventAggregator _eventAggregator;
-        private readonly ProjectRepository _repository;
+        #endregion // Files
+
+        #endregion // Properties
+
+        #region Observable Collections
+
+        private ObservableCollection<Comment> _comments;
+        public ObservableCollection<Comment> Comments
+        {
+            get { return _comments; }
+            set { SetProperty(ref _comments, value); }
+        }
+
+        private ObservableCollection<Link> _links;
+        public ObservableCollection<Link> Links
+        {
+            get { return _links; }
+            set { SetProperty(ref _links, value); }
+        }
+
+        private ObservableCollection<Contributor> _contributors;
+        public ObservableCollection<Contributor> Contributors
+        {
+            get { return _contributors; }
+            set { SetProperty(ref _contributors, value); }
+        }
+
+        public ObservableCollection<Contributor> AllContributors { get; set; }
+        public ObservableCollection<ProjectFolder> DataVersions { get; set; }
+
+        private ObservableCollection<Contributor> _selectedContributors;
+        public ObservableCollection<Contributor> SelectedContributors
+        {
+            get { return _selectedContributors; }
+            set { SetProperty(ref _selectedContributors, value); }
+        }
+
+        private ObservableCollection<IData> _relatedFiles;
+        public ObservableCollection<IData> RelatedFiles
+        {
+            get { return _relatedFiles; }
+            set { SetProperty(ref _relatedFiles, value); }
+        }
+
+        #endregion // ObservableCollections
 
         #region Loaders
 
@@ -108,60 +171,6 @@ namespace Idoneus.ViewModels
         }
 
         #endregion // Loaders
-
-        #region Observable Collections
-
-        private ObservableCollection<Comment> _comments;
-        public ObservableCollection<Comment> Comments
-        {
-            get { return _comments; }
-            set { SetProperty(ref _comments, value); }
-        }
-
-        private ObservableCollection<Link> _links;
-        public ObservableCollection<Link> Links
-        {
-            get { return _links; }
-            set { SetProperty(ref _links, value); }
-        }
-
-        private ObservableCollection<Contributor> _contributors;
-        public ObservableCollection<Contributor> Contributors
-        {
-            get { return _contributors; }
-            set { SetProperty(ref _contributors, value); }
-        }
-
-        public ObservableCollection<Contributor> AllContributors { get; set; }
-        public ObservableCollection<ProjectFolder> DataVersions { get; set; }
-
-        
-        private ObservableCollection<Contributor> _selectedContributors;
-        public ObservableCollection<Contributor> SelectedContributors
-        {
-            get { return _selectedContributors; }
-            set { SetProperty(ref _selectedContributors, value); }
-        }
-
-        private ObservableCollection<IData> _relatedFiles;
-        public ObservableCollection<IData> RelatedFiles
-        {
-            get { return _relatedFiles; }
-            set { SetProperty(ref _relatedFiles, value); }
-        }
-
-        private string _selectedContributor;
-        public string SelectedContributor
-        {
-            get { return _selectedContributor; }
-            set { SetProperty(ref _selectedContributor, value); }
-        }
-
-        
-
-        #endregion // ObservableCollections
-
-        private Action _deselectContributors;
 
         #region Delegates
 
@@ -203,6 +212,10 @@ namespace Idoneus.ViewModels
 
         #endregion // Delegates
 
+        private readonly IEventAggregator _eventAggregator;
+        private readonly ProjectRepository _repository;
+        private Action _deselectContributors;
+
         public DetailsViewModel(IEventAggregator eventAggregator)
         {
             _eventAggregator = eventAggregator;
@@ -216,7 +229,7 @@ namespace Idoneus.ViewModels
             AllContributors = new ObservableCollection<Contributor>(_repository.GetAllContributors());
             DataVersions = new ObservableCollection<ProjectFolder>();
             RelatedFiles = new ObservableCollection<IData>();
-         
+
             eventAggregator.GetEvent<SendCurrentProject<Project>>().Subscribe(ProjectReceived);
         }
 
@@ -411,7 +424,7 @@ namespace Idoneus.ViewModels
                 {
                     CurrentLoaderValue = counter;
 
-                    var response = item.Copy(Path.Combine(_basePath, versionName));
+                    var response = item.Copy(Path.Combine(_basePath, versionName), false);
                     if (!response.Success)
                     {
                         PublishSnackBar(response.Message);
@@ -434,6 +447,55 @@ namespace Idoneus.ViewModels
                 IsFileDataLoading = false;
             });
 
+        }
+
+        public void OnFileDrop(string[] filePaths)
+        {
+            if (filePaths == null || filePaths.Length == 0) return;
+            var response = FileHelper.GetFilesFromPath(filePaths);
+            if (!string.IsNullOrEmpty(response.Message))
+            {
+                PublishSnackBar($"Failed to move files: {response.Message}");
+                return;
+            }
+
+            AppSettings.Load();
+            var fileAction = AppSettings.Instance.FileAction;
+
+            var files = response.Data;
+            var overwrite = (fileAction == FileAction.CopyAndReplace || fileAction == FileAction.MoveAndReplace) ? true : false;
+
+            Task.Run(() =>
+            {
+                foreach (var item in files)
+                {
+                    if (fileAction == FileAction.CopyAndReplace || fileAction == FileAction.Copy)
+                    {
+                        try
+                        {
+                            var copyResponse = item.Copy(CurrentPath, overwrite);
+                            if (!copyResponse.Success)
+                            {
+                                PublishSnackBar($"Failed to copy file: {copyResponse.Message}");
+                                continue;
+                            }
+
+                            if (FileHelper.Contains(RelatedFiles, Path.GetFileName(item.Path))) continue;
+
+                            App.Current.Dispatcher.Invoke(() => RelatedFiles.Add(item));
+
+                           
+                        }
+                        catch (Exception e)
+                        {
+                            PublishSnackBar($"Couldn't move file: {e.Message}");
+                        }
+
+                    }
+                }
+
+            });
+            
         }
 
         #endregion // Files
@@ -550,7 +612,7 @@ namespace Idoneus.ViewModels
             ProjectDescription = project.Content;
             SeparateComments();
 
-            _basePath = Path.Combine("./Projects", _currentProject.ID);
+            _basePath = Path.Combine(".\\Projects", _currentProject.ID);
             CurrentPath = _basePath;
             FileHelper.CreateFolderIfNotExist(_basePath);
 

@@ -18,6 +18,7 @@ namespace Idoneus.Views
         IRegion _region;
         Dashboard _dashboard;
         Projects _projects;
+        UserSettings _settings;
 
         public MainWindow(IContainerExtension container, IRegionManager regionManager)
         {
@@ -39,9 +40,11 @@ namespace Idoneus.Views
         {
             _dashboard = _container.Resolve<Dashboard>();
             _projects = _container.Resolve<Projects>();
+            _settings = _container.Resolve<UserSettings>();
             _region = _regionManager.Regions["ContentRegion"];
             _region.Add(_dashboard);
             _region.Add(_projects);
+            _region.Add(_settings);
         }
     }
 }

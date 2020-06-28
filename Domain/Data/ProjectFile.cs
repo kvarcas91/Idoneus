@@ -26,9 +26,9 @@ namespace Domain.Data
             Icon = Icon.ExtractAssociatedIcon(filePath);
         }
 
-        public Response Copy(string newPath)
+        public Response Copy(string newPath, bool overwrite)
         {
-            return FileHelper.Copy(this, newPath);
+            return FileHelper.Copy(this, newPath, overwrite);
         }
 
         public Response Delete()

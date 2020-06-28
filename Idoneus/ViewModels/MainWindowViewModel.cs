@@ -1,4 +1,5 @@
 ﻿using Common;
+using Common.Enums;
 using Common.EventAggregators;
 using Common.Settings;
 using Domain.Models;
@@ -29,14 +30,13 @@ namespace Idoneus.ViewModels
         {
             AppSettings.Load();
             DarkMode = AppSettings.Instance.DarkMode;
-            
-           if(storage.FirstLoad)  {
+
+            if (storage.FirstLoad)  {
                 var repository = new ProjectRepository();
                 repository.Initialize();
                 storage.FirstLoad = false;
             }
            
-
             _regionManager = regionManager;
             _storage = storage;
             _eventAggregator = eventAggregator;

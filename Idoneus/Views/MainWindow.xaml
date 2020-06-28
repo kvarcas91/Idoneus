@@ -24,82 +24,88 @@
     </WindowChrome.WindowChrome>
 
     <materialDesign:DrawerHost>
-            <materialDesign:DrawerHost.LeftDrawerContent>
+        <materialDesign:DrawerHost.LeftDrawerContent>
 
-                <StackPanel Margin="10" Orientation="Vertical"
+            <StackPanel Margin="10" Orientation="Vertical"
                         VerticalAlignment="Top"
                             HorizontalAlignment="Center"
                             WindowChrome.IsHitTestVisibleInChrome="True">
-                    <Button 
+                <Button 
                         Style="{StaticResource MaterialDesignFlatButton}"
                         VerticalAlignment="Center"
                         ToolTip="Create new project">
-                        <materialDesign:PackIcon Kind="AddCircleOutline"/>
-                    </Button>
+                    <materialDesign:PackIcon Kind="AddCircleOutline"/>
+                </Button>
 
-                    <Button 
+                <Button 
                         Style="{StaticResource MaterialDesignFlatButton}"
                         VerticalAlignment="Center"
                         ToolTip="Dashboard"
                         Command="{Binding NavigateCommand}"
                         CommandParameter="Dashboard">
-                        <materialDesign:PackIcon Kind="ViewDashboard"/>
-                    </Button>
+                    <materialDesign:PackIcon Kind="ViewDashboard"/>
+                </Button>
 
-                    <Button 
+                <Button 
                         Style="{StaticResource MaterialDesignFlatButton}"
                         VerticalAlignment="Center"
                         ToolTip="Projects"
                         Command="{Binding NavigateCommand}"
                         CommandParameter="Projects">
-                        <materialDesign:PackIcon Kind="FilterList"/>
-                    </Button>
+                    <materialDesign:PackIcon Kind="FilterList"/>
+                </Button>
 
-                </StackPanel>
+                <Button 
+                        Style="{StaticResource MaterialDesignFlatButton}"
+                        VerticalAlignment="Center"
+                        ToolTip="Settings"
+                        Command="{Binding NavigateCommand}"
+                        CommandParameter="UserSettings">
+                    <materialDesign:PackIcon Kind="Gear"/>
+                </Button>
 
-            </materialDesign:DrawerHost.LeftDrawerContent>
+            </StackPanel>
 
-            <materialDesign:Card HorizontalAlignment="Stretch"
+        </materialDesign:DrawerHost.LeftDrawerContent>
+
+        <materialDesign:Card HorizontalAlignment="Stretch"
                          VerticalAlignment="Stretch"           
         materialDesign:ShadowAssist.ShadowDepth="Depth3"
                                  materialDesign:ShadowAssist.ShadowEdges="All">
 
 
-                <Grid>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="42"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
 
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="42"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-
-                    
-                    
                 <Grid WindowChrome.IsHitTestVisibleInChrome="True"
                       VerticalAlignment="Stretch">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
 
-                        <StackPanel Grid.Column="0"
+                    <StackPanel Grid.Column="0"
                             Orientation="Horizontal"
                             Margin="10">
 
-                            <Button HorizontalAlignment="Left"
+                        <Button HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
                                  Style="{StaticResource MaterialDesignFlatButton}"
                                     Command="{x:Static materialDesign:DrawerHost.OpenDrawerCommand}">
-                                <materialDesign:PackIcon Kind="HamburgerMenu"/>
-                            </Button>
+                            <materialDesign:PackIcon Kind="HamburgerMenu"/>
+                        </Button>
 
-                            <TextBlock VerticalAlignment="Center" 
+                        <TextBlock VerticalAlignment="Center" 
                                        Text="{Binding Title}" 
                                        Style="{StaticResource MaterialDesignCaptionTextBlock}"
                                        Foreground="{DynamicResource PrimaryHueMidBrush}"/>
 
-                        </StackPanel>
+                    </StackPanel>
 
-                        <StackPanel Grid.Column="1"
+                    <StackPanel Grid.Column="1"
                                 Orientation="Horizontal">
 
                         <ToggleButton Style="{StaticResource MaterialDesignSwitchToggleButton}"
@@ -120,15 +126,15 @@
                                 Name="CloseButton"
                                 ToolTip="Close"
                                  Style="{StaticResource MaterialDesignFlatButton}">
-                                <materialDesign:PackIcon Kind="Close"/>
-                            </Button>
+                            <materialDesign:PackIcon Kind="Close"/>
+                        </Button>
 
-                        </StackPanel>
+                    </StackPanel>
 
 
 
-                    </Grid>
-                    
+                </Grid>
+
                 <ContentControl Grid.Row="1"
                 prism:RegionManager.RegionName="ContentRegion"/>
 
@@ -140,8 +146,7 @@
 
             </Grid>
 
-            </materialDesign:Card>
+        </materialDesign:Card>
 
-        </materialDesign:DrawerHost>
-
+    </materialDesign:DrawerHost>
 </Window>
