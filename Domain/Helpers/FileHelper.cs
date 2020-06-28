@@ -79,6 +79,29 @@ namespace Domain.Helpers
             return new Response() { Success = false, Message = "Not supported copy action" };
         }
 
+        public static bool CanNavigateBack(string currentPath, string basePath)
+        {
+            return string.Compare(currentPath, basePath) != 0;
+        }
+
+        public static string GetParentPath (string currentPath)
+        {
+            string[] directories = currentPath.Split(Path.DirectorySeparatorChar);
+            if (directories.Length > 1) directories.SetValue(string.Empty, directories.Length - 1);
+
+            return Path.Combine(directories);
+        }
+
+        public static string GetFullParentPath(string path)
+        {
+            return Directory.GetParent(path).FullName;
+        }
+
+        public static string GetExecutablePath(string path)
+        {
+            var parent = Directory.GetParent(path).FullName;
+            return $"{Path.Combine(parent, Path.GetFileName(path))}";
+        }
 
         /*
          * https://docs.microsoft.com/en-us/dotnet/standard/io/how-to-copy-directories

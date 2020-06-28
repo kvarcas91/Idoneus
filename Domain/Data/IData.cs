@@ -13,5 +13,6 @@ namespace Domain.Data
         string Name { get; set; }
 
         Response Copy(string newPath);
+        Response Delete();
     }
 }

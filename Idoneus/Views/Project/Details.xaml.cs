@@ -29,5 +29,7 @@ namespace Idoneus.Views
         {
             contributorList.UnselectAll();
         }
+
+       
     }
 }

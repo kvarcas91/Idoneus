@@ -11,8 +11,10 @@ using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Idoneus.ViewModels
@@ -22,7 +24,13 @@ namespace Idoneus.ViewModels
         private Project _currentProject;
 
         private string _basePath = string.Empty;
+
         private string _currentPath = string.Empty;
+        public string CurrentPath
+        {
+            get { return _currentPath; }
+            set { SetProperty(ref _currentPath, value); }
+        }
 
         private int _descriptionViewType = 0;
         public int DescriptionViewType
@@ -181,6 +189,18 @@ namespace Idoneus.ViewModels
         private DelegateCommand _addFolderCommand;
         public DelegateCommand AddFolderCommand => _addFolderCommand ?? (_addFolderCommand = new DelegateCommand(AddFolder));
 
+        private DelegateCommand _removeVersionCommand;
+        public DelegateCommand RemoveVersionCommand => _removeVersionCommand ?? (_removeVersionCommand = new DelegateCommand(RemoveVersion));
+
+        private DelegateCommand<IData> _fileListItemClickCommand;
+        public DelegateCommand<IData> FileListItemClickCommand => _fileListItemClickCommand ?? (_fileListItemClickCommand = new DelegateCommand<IData>(FileListItemClick));
+
+        private DelegateCommand<IData> _howInExplorerCommand;
+        public DelegateCommand<IData> ShowInExplorerCommand => _howInExplorerCommand ?? (_howInExplorerCommand = new DelegateCommand<IData>(ShowInExplorer));
+
+        private DelegateCommand<IData> _deleteFileCommand;
+        public DelegateCommand<IData> DeleteFileCommand => _deleteFileCommand ?? (_deleteFileCommand = new DelegateCommand<IData>(DeleteFile));
+
         #endregion // Delegates
 
         public DetailsViewModel(IEventAggregator eventAggregator)
@@ -200,7 +220,84 @@ namespace Idoneus.ViewModels
             eventAggregator.GetEvent<SendCurrentProject<Project>>().Subscribe(ProjectReceived);
         }
 
-        #region Delegate Commands
+        #region Files
+
+        private void DeleteFile(IData data)
+        {
+            var response = data.Delete();
+            if (!response.Success)
+            {
+                PublishSnackBar($"Failed to delete: {response.Message}");
+                return;
+            }
+
+            RelatedFiles.Remove(data);
+            PublishSnackBar($"Deleted successfully!");
+        }
+
+        private void ShowInExplorer(IData data)
+        {
+            try
+            {
+                if (data is ProjectFile)
+            {
+                ProcessHelper.Run(FileHelper.GetFullParentPath(data.Path));
+                return;
+            }
+           
+                ProcessHelper.Run(FileHelper.GetExecutablePath(data.Path));
+            }
+            catch(Exception e)
+            {
+                PublishSnackBar(e.Message);
+            }
+           
+        }
+
+        private void RemoveVersion()
+        {
+            if (DataVersions.Count < 2)
+            {
+                PublishSnackBar("At least one version must be present");
+                return;
+            }
+
+            var version = CurrentVersion.ToString();
+            Task.Run(() =>
+            {
+                var response = CurrentVersion.Delete();
+                if (!response.Success)
+                {
+                    PublishSnackBar($"Failed to remove version: {response.Message}");
+                    return;
+                }
+                App.Current.Dispatcher.Invoke(() => DataVersions.Remove(CurrentVersion));
+
+                CurrentPath = Path.Combine(_basePath, CurrentVersion.ToString());
+            });
+        }
+
+        private void FileListItemClick(IData data)
+        {
+            if (data is ProjectFolder folder)
+            {
+                CurrentPath = Path.Combine(CurrentPath, folder.Name);
+
+                Task.Run(() => {
+                    SetFiles();
+                });
+                return;
+            }
+            try
+            {
+                ProcessHelper.Run(FileHelper.GetExecutablePath(data.Path));
+            }
+            catch (Exception e)
+            {
+                PublishSnackBar(e.Message);
+            }
+          
+        }
 
         private void AddFolder()
         {
@@ -210,7 +307,7 @@ namespace Idoneus.ViewModels
                 return;
             }
 
-            var newPath = Path.Combine(_currentPath, FolderName);
+            var newPath = Path.Combine(CurrentPath, FolderName);
 
             try
             {
@@ -227,52 +324,58 @@ namespace Idoneus.ViewModels
             IsAddFolderPanelVisible = false;
         }
 
-        private void ShowAddFolderPanel ()
+        private void ShowAddFolderPanel()
         {
             IsAddFolderPanelVisible = !IsAddFolderPanelVisible;
         }
 
         private void Home()
         {
-            _currentPath = Path.Combine(_basePath, CurrentVersion.ToString());
-            IsFileDataLoading = true;
+            var homePath = Path.Combine(_basePath, CurrentVersion.ToString());
+            if (CurrentPath.Equals(homePath)) return;
+
+            CurrentPath = homePath;
             Task.Run(() =>
             {
                 SetFiles();
-                IsFileDataLoading = false;
-            }); 
+            });
         }
 
         private void NavigateBack()
         {
+            if (!FileHelper.CanNavigateBack(CurrentPath, Path.Combine(_basePath, CurrentVersion.ToString()))) return;
+            CurrentPath = FileHelper.GetParentPath(CurrentPath);
 
-        }
-
-        private void DeleteSelectedContributors()
-        {
             Task.Run(() =>
             {
-                _repository.UnassignContributors(SelectedContributors, _currentProject.ID);
-
-                for (int i = SelectedContributors.Count - 1; i >= 0; i--)
-                {
-                    App.Current.Dispatcher.Invoke(() => Contributors.Remove(SelectedContributors[i]));
-                }
-
-                App.Current.Dispatcher.Invoke(() =>
-                {
-                    SelectedContributors.Clear();
-                    SelectedContributorCount = SelectedContributors.Count;
-                    PublishSnackBar("Contributors were removed!");
-                });
+                SetFiles();
             });
         }
 
-        private void UnselectContributors()
+        private void SetFiles()
         {
-            _deselectContributors();
-            SelectedContributors.Clear();
-            SelectedContributorCount = SelectedContributors.Count;
+            if (_currentProject == null) return;
+
+            if (RelatedFiles != null)
+            {
+                App.Current.Dispatcher.Invoke(() => RelatedFiles.Clear());
+            }
+
+            foreach (var item in FileHelper.GetFolderContent(CurrentPath))
+            {
+                App.Current.Dispatcher.Invoke(() => RelatedFiles.Add(item));
+            }
+
+        }
+
+        private void SetVersion()
+        {
+            CurrentPath = Path.Combine(_basePath, CurrentVersion.ToString());
+            Task.Run(() =>
+            {
+                SetFiles();
+            });
+
         }
 
         private void AddNewVersion()
@@ -318,7 +421,7 @@ namespace Idoneus.ViewModels
                     counter++;
                 }
 
-                _currentPath = Path.Combine(_basePath, versionName);
+                CurrentPath = Path.Combine(_basePath, versionName);
                 CurrentVersion = DataVersions.Where(v => v.Name.Equals(versionName)).FirstOrDefault();
                 if (CurrentVersion == null)
                 {
@@ -327,9 +430,41 @@ namespace Idoneus.ViewModels
                     return;
                 }
 
+                PublishSnackBar($"New version added successfully!");
                 IsFileDataLoading = false;
             });
 
+        }
+
+        #endregion // Files
+
+        #region Contributors / Details
+
+        private void DeleteSelectedContributors()
+        {
+            Task.Run(() =>
+            {
+                _repository.UnassignContributors(SelectedContributors, _currentProject.ID);
+
+                for (int i = SelectedContributors.Count - 1; i >= 0; i--)
+                {
+                    App.Current.Dispatcher.Invoke(() => Contributors.Remove(SelectedContributors[i]));
+                }
+
+                App.Current.Dispatcher.Invoke(() =>
+                {
+                    SelectedContributors.Clear();
+                    SelectedContributorCount = SelectedContributors.Count;
+                    PublishSnackBar("Contributors were removed!");
+                });
+            });
+        }
+
+        private void UnselectContributors()
+        {
+            _deselectContributors();
+            SelectedContributors.Clear();
+            SelectedContributorCount = SelectedContributors.Count;
         }
 
         private void AddContributor()
@@ -377,84 +512,6 @@ namespace Idoneus.ViewModels
             SelectedContributor = string.Empty;
         }
 
-        #endregion // Delegate Commands
-
-        private void ProjectReceived(Project project)
-        {
-            _currentProject = project;
-            if (project == null) return;
-
-            Contributors.AddRange(_currentProject.Contributors);
-            ProjectDescription = project.Content;
-            SeparateComments();
-
-            _basePath = Path.Combine("./Projects", _currentProject.ID);
-            _currentPath = _basePath;
-            FileHelper.CreateFolderIfNotExist(_basePath);
-
-            DataVersions.AddRange(FileHelper.GetVersions(_basePath));
-            if (DataVersions.Count == 0)
-            {
-                FileHelper.CreateFolderIfNotExist(Path.Combine(_basePath, "V1"));
-                DataVersions.AddRange(FileHelper.GetVersions(_basePath));
-            }
-
-            _currentPath = Path.Combine(_basePath, DataVersions[DataVersions.Count - 1].ToString());
-            IsFileDataLoading = true;
-          
-           
-            Task.Run(() =>
-            {
-                CurrentVersion = DataVersions[DataVersions.Count - 1];
-                IsFileDataLoading = false;
-            });
-           
-        }
-
-        private void SetFiles()
-        {
-            if (_currentProject == null) return;
-
-            if (RelatedFiles != null)
-            {
-                App.Current.Dispatcher.Invoke(() => RelatedFiles.Clear());
-            }
-
-            foreach (var item in FileHelper.GetFolderContent(_currentPath))
-            {
-                App.Current.Dispatcher.Invoke(() => RelatedFiles.Add(item));
-            }
-
-        }
-
-        private void SetVersion()
-        {
-            IsFileDataLoading = true;
-            _currentPath = Path.Combine(_basePath, CurrentVersion.ToString());
-            Task.Run(() =>
-            {
-                SetFiles();
-                IsFileDataLoading = false;
-            });
-          
-        }
-
-        private void SeparateComments()
-        {
-            Comments.Clear();
-            Links.Clear();
-            foreach (var item in _currentProject.Comments)
-            {
-                if (item is Comment comment) Comments.Add(comment);
-                if (item is Link link) Links.Add(link);
-            }
-        }
-
-        private void PublishSnackBar(string text)
-        {
-            _eventAggregator.GetEvent<SendSnackBarMessage>().Publish(text);
-        }
-
         public void SetSelectedContributors(IEnumerable<Contributor> list)
         {
             SelectedContributors.Clear();
@@ -467,7 +524,59 @@ namespace Idoneus.ViewModels
             _deselectContributors = action;
         }
 
+        #endregion // Contributors / Details
 
+        #region Comments / Links
+
+        private void SeparateComments()
+        {
+            Comments.Clear();
+            Links.Clear();
+            foreach (var item in _currentProject.Comments)
+            {
+                if (item is Comment comment) Comments.Add(comment);
+                if (item is Link link) Links.Add(link);
+            }
+        }
+
+        #endregion // Comments Links
+
+        private void ProjectReceived(Project project)
+        {
+            _currentProject = project;
+            if (project == null) return;
+
+            Contributors.AddRange(_currentProject.Contributors);
+            ProjectDescription = project.Content;
+            SeparateComments();
+
+            _basePath = Path.Combine("./Projects", _currentProject.ID);
+            CurrentPath = _basePath;
+            FileHelper.CreateFolderIfNotExist(_basePath);
+
+            DataVersions.AddRange(FileHelper.GetVersions(_basePath));
+            if (DataVersions.Count == 0)
+            {
+                FileHelper.CreateFolderIfNotExist(Path.Combine(_basePath, "V1"));
+                DataVersions.AddRange(FileHelper.GetVersions(_basePath));
+            }
+
+            CurrentPath = Path.Combine(_basePath, DataVersions[DataVersions.Count - 1].ToString());
+            IsFileDataLoading = true;
+          
+           
+            Task.Run(() =>
+            {
+                CurrentVersion = DataVersions[DataVersions.Count - 1];
+                IsFileDataLoading = false;
+            });
+           
+        }
+
+        private void PublishSnackBar(string text)
+        {
+            _eventAggregator.GetEvent<SendSnackBarMessage>().Publish(text);
+        }
 
     }
 }

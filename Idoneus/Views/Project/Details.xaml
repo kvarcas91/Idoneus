@@ -175,12 +175,13 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="180"/>
                     </Grid.ColumnDefinitions>
 
                     <StackPanel Orientation="Horizontal">
@@ -218,6 +219,12 @@
                             ToolTip="Add new version"
                                 Command="{Binding AddNewVersionCommand}">
                             <materialDesign:PackIcon Kind="ContentSaveEdit"/>
+                        </Button>
+
+                        <Button Style="{StaticResource MaterialDesignFlatButton}"
+                            ToolTip="Remove current version"
+                                Command="{Binding RemoveVersionCommand}">
+                            <materialDesign:PackIcon Kind="Cancel"/>
                         </Button>
                     </StackPanel>
                 </Grid>
@@ -290,6 +297,16 @@
                           Style="{StaticResource FileListView}">
 
                 </ListView>
+
+                <Border Grid.Row="3"
+                        BorderBrush="{DynamicResource SecondaryHueMidBrush}"
+                        BorderThickness="0 0.3 0 0"
+                        Margin="5 0 0 0"
+                        >
+                    <TextBlock Text="{Binding CurrentPath}" 
+                               Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                               Margin="10"/>
+                </Border>
 
             </Grid>
             

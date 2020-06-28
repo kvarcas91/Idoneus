@@ -1,6 +1,8 @@
 ﻿using Domain.Helpers;
 using Domain.Models;
+using System;
 using System.Drawing;
+using System.IO;
 
 namespace Domain.Data
 {
@@ -27,7 +29,19 @@ namespace Domain.Data
         public Response Copy(string newPath)
         {
             return FileHelper.Copy(this, newPath);
+        }
 
+        public Response Delete()
+        {
+            try
+            {
+                File.Delete(Path);
+                return new Response() { Success = true };
+            }
+            catch (Exception e)
+            {
+                return new Response() { Success = false, Message = e.Message };
+            }
         }
             
     }
