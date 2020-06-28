@@ -1,4 +1,6 @@
-﻿using System.Drawing;
+﻿using Domain.Helpers;
+using Domain.Models;
+using System.Drawing;
 
 namespace Domain.Data
 {
@@ -20,6 +22,12 @@ namespace Domain.Data
             Name = System.IO.Path.GetFileNameWithoutExtension(filePath);
             Extention = System.IO.Path.GetExtension(filePath);
             Icon = Icon.ExtractAssociatedIcon(filePath);
+        }
+
+        public Response Copy(string newPath)
+        {
+            return FileHelper.Copy(this, newPath);
+
         }
             
     }

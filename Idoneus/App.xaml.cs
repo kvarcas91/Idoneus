@@ -1,5 +1,4 @@
 ﻿using Common;
-using Domain.Repository;
 using Idoneus.Commands;
 using Idoneus.Views;
 using Prism.Ioc;

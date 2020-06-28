@@ -1,4 +1,6 @@
-﻿using Domain.Utils;
+﻿using Domain.Helpers;
+using Domain.Models;
+using Domain.Utils;
 using System.Drawing;
 
 namespace Domain.Data
@@ -19,6 +21,17 @@ namespace Domain.Data
             Path = filePath;
             Name = System.IO.Path.GetFileNameWithoutExtension(filePath);
             Icon = DefaultIcons.FolderLarge;
+        }
+
+        public override string ToString()
+        {
+            return Name;
+        }
+
+        public Response Copy(string newPath)
+        {
+            
+            return FileHelper.Copy(this, newPath);
         }
     }
 }

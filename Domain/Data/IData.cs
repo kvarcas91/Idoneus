@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Models;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
@@ -10,5 +11,7 @@ namespace Domain.Data
         string Path { get; set; }
         Icon Icon { get; set; }
         string Name { get; set; }
+
+        Response Copy(string newPath);
     }
 }

@@ -83,10 +83,25 @@ namespace Domain.Repository.Base
             return result != null;
         }
 
+        public bool Insert(string query)
+        {
+            using var connection = GetConnection();
+            var result = connection.Query(query);
+
+            return result != null;
+        }
+
         public T Get<T>(string field, string param, string table)
         {
             using var connection = new SqliteConnection(GetConnectionString());
             var query = $"SELECT * FROM {table} WHERE {field}='{param}'";
+            var output = connection.QueryFirstOrDefault<T>(query);
+            return output;
+        }
+
+        protected T Get<T>(string query)
+        {
+            using var connection = new SqliteConnection(GetConnectionString());
             var output = connection.QueryFirstOrDefault<T>(query);
             return output;
         }

@@ -32,6 +32,24 @@ namespace Domain.Repository
             return project;
         }
 
+        public IEnumerable<Contributor> GetAllContributors()
+        {
+            return base.GetAll<Contributor>("SELECT * FROM contributors");
+        }
+
+        public Contributor GetContributor(string[] names)
+        {
+            
+            var query = $"SELECT * FROM contributors WHERE FirstName = '{names[0]}' AND LastName = '{names[1]}'";
+            return Get<Contributor>(query);
+        }
+
+        public bool AssignContributor(string projectID, string contributorID)
+        {
+            var query = $"INSERT INTO project_contributors (projectID, contributorID) VALUES ('{projectID}', '{contributorID}')";
+            return Insert(query);
+        }
+
         private void GetProjectContent(Project project)
         {
             project.GetProgress();
