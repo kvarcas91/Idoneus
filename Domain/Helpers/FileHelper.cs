@@ -4,6 +4,7 @@ using Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Domain.Helpers
 {
@@ -48,6 +49,30 @@ namespace Domain.Helpers
             }
 
             return new Response() { Success = true };
+        }
+
+        /*
+         * https://stackoverflow.com/questions/2553008/directory-move-doesnt-work-file-already-exist
+         */
+        public static void MoveDirectory(string source, string target)
+        {
+            var sourcePath = source.TrimEnd('\\', ' ');
+            var targetPath = target.TrimEnd('\\', ' ');
+            var files = Directory.EnumerateFiles(sourcePath, "*", SearchOption.AllDirectories)
+                                 .GroupBy(s => Path.GetDirectoryName(s));
+
+            foreach (var folder in files)
+            {
+                var targetFolder = folder.Key.Replace(sourcePath, targetPath);
+                Directory.CreateDirectory(targetFolder);
+                foreach (var file in folder)
+                {
+                    var targetFile = Path.Combine(targetFolder, Path.GetFileName(file));
+                    if (File.Exists(targetFile)) File.Delete(targetFile);
+                    File.Move(file, targetFile);
+                }
+            }
+            Directory.Delete(source, true);
         }
 
         public static bool CreateFolderIfNotExist(string path)
@@ -114,6 +139,7 @@ namespace Domain.Helpers
             }
             if (data is ProjectFolder folder)
             {
+                if (!overwrite && Directory.Exists(folder.Path)) return new Response() { Success = false, Message = "Directory already exist" };
                 return DirectoryCopy(folder.Path, Path.Combine(newPath, data.Name));
             }
 
@@ -142,6 +168,16 @@ namespace Domain.Helpers
         {
             var parent = Directory.GetParent(path).FullName;
             return $"{Path.Combine(parent, Path.GetFileName(path))}";
+        }
+
+        public static string GetFullPath(string path)
+        {
+            return Path.Combine(GetFullParentPath(path), Path.GetFileName(path));
+        }
+
+        public static string Combine(string basePath, string oldPath)
+        {
+            return Path.Combine(basePath, Path.GetFileName(oldPath));
         }
 
         private static ParameterizedResponse<bool> IsDirectory(string path)

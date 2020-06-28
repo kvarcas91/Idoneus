@@ -43,6 +43,18 @@ namespace Domain.Data
                 return new Response() { Success = false, Message = e.Message };
             }
         }
-            
+
+        public Response Move(string destinationPath, bool overwrite)
+        {
+            try
+            {
+                File.Move(Path, FileHelper.Combine(destinationPath, Path), overwrite);
+                return new Response() { Success = true };
+            }
+            catch(Exception e)
+            {
+                return new Response() { Success = false, Message = e.Message };
+            }
+        }
     }
 }

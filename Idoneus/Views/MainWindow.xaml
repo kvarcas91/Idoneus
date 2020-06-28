@@ -26,45 +26,55 @@
     <materialDesign:DrawerHost>
         <materialDesign:DrawerHost.LeftDrawerContent>
 
-            <StackPanel Margin="10" Orientation="Vertical"
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Margin="10" Orientation="Vertical"
                         VerticalAlignment="Top"
                             HorizontalAlignment="Center"
                             WindowChrome.IsHitTestVisibleInChrome="True">
-                <Button 
+                    <Button 
                         Style="{StaticResource MaterialDesignFlatButton}"
                         VerticalAlignment="Center"
                         ToolTip="Create new project">
-                    <materialDesign:PackIcon Kind="AddCircleOutline"/>
-                </Button>
+                        <materialDesign:PackIcon Kind="AddCircleOutline"/>
+                    </Button>
 
-                <Button 
+                    <Button 
                         Style="{StaticResource MaterialDesignFlatButton}"
                         VerticalAlignment="Center"
                         ToolTip="Dashboard"
                         Command="{Binding NavigateCommand}"
                         CommandParameter="Dashboard">
-                    <materialDesign:PackIcon Kind="ViewDashboard"/>
-                </Button>
+                        <materialDesign:PackIcon Kind="ViewDashboard"/>
+                    </Button>
 
-                <Button 
+                    <Button 
                         Style="{StaticResource MaterialDesignFlatButton}"
                         VerticalAlignment="Center"
                         ToolTip="Projects"
                         Command="{Binding NavigateCommand}"
                         CommandParameter="Projects">
-                    <materialDesign:PackIcon Kind="FilterList"/>
-                </Button>
+                        <materialDesign:PackIcon Kind="FilterList"/>
+                    </Button>
 
-                <Button 
+                   
+                </StackPanel>
+
+                <Button Grid.Row="1"
+                        Margin="10 0 10 20"
                         Style="{StaticResource MaterialDesignFlatButton}"
-                        VerticalAlignment="Center"
                         ToolTip="Settings"
                         Command="{Binding NavigateCommand}"
                         CommandParameter="UserSettings">
                     <materialDesign:PackIcon Kind="Gear"/>
                 </Button>
 
-            </StackPanel>
+            </Grid>
+     
 
         </materialDesign:DrawerHost.LeftDrawerContent>
 

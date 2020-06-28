@@ -269,6 +269,12 @@ namespace Idoneus.ViewModels
 
         private void RemoveVersion()
         {
+            if (_currentProject == null)
+            {
+                PublishSnackBar("Select project first");
+                return;
+            }
+
             if (DataVersions.Count < 2)
             {
                 PublishSnackBar("At least one version must be present");
@@ -339,11 +345,23 @@ namespace Idoneus.ViewModels
 
         private void ShowAddFolderPanel()
         {
+            if (_currentProject == null)
+            {
+                PublishSnackBar("Select project first");
+                return;
+            }
+
             IsAddFolderPanelVisible = !IsAddFolderPanelVisible;
         }
 
         private void Home()
         {
+            if (_currentProject == null)
+            {
+                PublishSnackBar("Select project first");
+                return;
+            }
+
             var homePath = Path.Combine(_basePath, CurrentVersion.ToString());
             if (CurrentPath.Equals(homePath)) return;
 
@@ -356,6 +374,12 @@ namespace Idoneus.ViewModels
 
         private void NavigateBack()
         {
+            if (_currentProject == null)
+            {
+                PublishSnackBar("Select project first");
+                return;
+            }
+
             if (!FileHelper.CanNavigateBack(CurrentPath, Path.Combine(_basePath, CurrentVersion.ToString()))) return;
             CurrentPath = FileHelper.GetParentPath(CurrentPath);
 
@@ -367,8 +391,7 @@ namespace Idoneus.ViewModels
 
         private void SetFiles()
         {
-            if (_currentProject == null) return;
-
+        
             if (RelatedFiles != null)
             {
                 App.Current.Dispatcher.Invoke(() => RelatedFiles.Clear());
@@ -393,6 +416,12 @@ namespace Idoneus.ViewModels
 
         private void AddNewVersion()
         {
+            if (_currentProject == null)
+            {
+                PublishSnackBar("Select project first");
+                return;
+            }
+
             if (IsFileDataLoading) return;
             int version;
             try
@@ -449,8 +478,37 @@ namespace Idoneus.ViewModels
 
         }
 
+        private void MoveFile(IData item, string desstinationPath, FileAction fileAction, bool overwrite, bool addToRelatedFiles = true)
+        {
+            Response moveResponse;
+            if (fileAction == FileAction.CopyAndReplace || fileAction == FileAction.Copy)
+            {
+                moveResponse = item.Copy(desstinationPath, overwrite);
+            }
+            else
+            {
+                moveResponse = item.Move(desstinationPath, overwrite);
+            }
+
+            if (!moveResponse.Success)
+            {
+                PublishSnackBar($"Failed to copy file: {moveResponse.Message}");
+                return;
+            }
+
+            if (FileHelper.Contains(RelatedFiles, Path.GetFileName(item.Path))) return;
+
+            if(addToRelatedFiles) App.Current.Dispatcher.Invoke(() => RelatedFiles.Add(item));
+        }
+
         public void OnFileDrop(string[] filePaths)
         {
+            if (_currentProject == null)
+            {
+                PublishSnackBar("Select project first");
+                return;
+            }
+
             if (filePaths == null || filePaths.Length == 0) return;
             var response = FileHelper.GetFilesFromPath(filePaths);
             if (!string.IsNullOrEmpty(response.Message))
@@ -469,33 +527,41 @@ namespace Idoneus.ViewModels
             {
                 foreach (var item in files)
                 {
-                    if (fileAction == FileAction.CopyAndReplace || fileAction == FileAction.Copy)
+                    try
                     {
-                        try
-                        {
-                            var copyResponse = item.Copy(CurrentPath, overwrite);
-                            if (!copyResponse.Success)
-                            {
-                                PublishSnackBar($"Failed to copy file: {copyResponse.Message}");
-                                continue;
-                            }
-
-                            if (FileHelper.Contains(RelatedFiles, Path.GetFileName(item.Path))) continue;
-
-                            App.Current.Dispatcher.Invoke(() => RelatedFiles.Add(item));
-
-                           
-                        }
-                        catch (Exception e)
-                        {
-                            PublishSnackBar($"Couldn't move file: {e.Message}");
-                        }
-
+                        MoveFile(item, CurrentPath, fileAction, overwrite);
+                    }
+                    catch (Exception e)
+                    {
+                        PublishSnackBar($"Couldn't move file: {e.Message}");
                     }
                 }
 
+                PublishSnackBar($"Files have been moved!");
+
             });
             
+        }
+
+        public void OnInnerFileDrop(IData sourceFile, IData destinationFile)
+        {
+            var fileAction = FileAction.Move;
+            var overwrite = false;
+            Task.Run(() =>
+            {
+                try
+                {
+                    MoveFile(sourceFile, destinationFile.Path, fileAction, overwrite, false);
+                    App.Current.Dispatcher.Invoke(() => RelatedFiles.Remove(sourceFile));
+                }
+               catch(Exception e)
+                {
+                    PublishSnackBar($"Couldn't move file: {e.Message}");
+                    return;
+                }
+
+                PublishSnackBar($"File has been moved!");
+            });
         }
 
         #endregion // Files
@@ -531,6 +597,12 @@ namespace Idoneus.ViewModels
 
         private void AddContributor()
         {
+            if (_currentProject == null)
+            {
+                PublishSnackBar("Select project first");
+                return;
+            }
+
             if (string.IsNullOrEmpty(SelectedContributor))
             {
                 PublishSnackBar("Cannot add this person...");

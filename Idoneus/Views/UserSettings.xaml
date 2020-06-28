@@ -13,35 +13,51 @@
     <materialDesign:Card Margin="10"
                          materialDesign:ShadowAssist.ShadowDepth="Depth2">
 
-        <StackPanel Orientation="Vertical" 
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            
+            <StackPanel Orientation="Vertical" 
                     HorizontalAlignment="Stretch"
                     Margin="10">
 
-            <Expander Header="Project files">
-                <StackPanel Orientation="Vertical"
+                <Expander Header="Project files">
+                    <StackPanel Orientation="Vertical"
                             HorizontalAlignment="Stretch"
                             Margin="20">
-                    <Grid Margin="20">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="3*"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
+                        <Grid Margin="20">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="3*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
 
-                        <TextBlock Text="File move action onFileDrop"
+                            <TextBlock Text="File move action onFileDrop"
                                    VerticalAlignment="Center"
                                Style="{StaticResource MaterialDesignOverlineTextBlock}"/>
 
-                        <ComboBox materialDesign:HintAssist.Hint="Select..."
+                            <ComboBox materialDesign:HintAssist.Hint="Select..."
                                   Grid.Column="1"
                                   VerticalAlignment="Center"
                                   ItemsSource="{Binding FileActions}"
                                   SelectedItem="{Binding SelectedFileAction, Mode=TwoWay}"/>
-                    </Grid>
-                </StackPanel>
-                
-            </Expander>
-            
-        </StackPanel>
+                        </Grid>
+                    </StackPanel>
+
+                </Expander>
+
+            </StackPanel>
+
+            <Button Grid.Row="1"
+                    HorizontalAlignment="Right"
+                    Margin="10"
+                    Content="Save"
+                    Style="{StaticResource MaterialDesignFlatButton}"
+                    Command="{Binding SaveCommand}"/>
+
+        </Grid>
+    
         
     </materialDesign:Card>
 </UserControl>

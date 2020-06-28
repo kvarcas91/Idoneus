@@ -1,6 +1,7 @@
 ﻿using Common.Enums;
 using Common.EventAggregators;
 using Common.Settings;
+using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
 using Prism.Regions;
@@ -20,12 +21,15 @@ namespace Idoneus.ViewModels
         public string SelectedFileAction
         {
             get { return _selectedFileAction; }
-            set { SetProperty(ref _selectedFileAction, value); SetFileActionSelection(); }
+            set { SetProperty(ref _selectedFileAction, value); }
         }
 
         #endregion // File properties
 
         private readonly IEventAggregator _eventAggregator;
+
+        private DelegateCommand _saveCommand;
+        public DelegateCommand SaveCommand => _saveCommand ?? (_saveCommand = new DelegateCommand(Update));
 
         public UserSettingsViewModel(IEventAggregator eventAggregator)
         {
@@ -38,23 +42,18 @@ namespace Idoneus.ViewModels
 
         #region File
 
-        private void SetFileActionSelection()
+        private FileAction GetFileActionSelection()
         {
             try
             {
                 FileAction fileAction = (FileAction)Enum.Parse(typeof(FileAction), SelectedFileAction.Replace(" ", ""), true);
-                AppSettings.Instance.FileAction = fileAction;
-                Update();
+                return fileAction;
             }
             catch
             {
                 PublishSnackBar("Something went wrong...");
-                return;
+                return FileAction.Default;
             }
-
-
-            Update();
-
         }
 
         #endregion // File
@@ -68,6 +67,8 @@ namespace Idoneus.ViewModels
 
         private void Update()
         {
+            var fileAction = GetFileActionSelection();
+            if (fileAction != FileAction.Default) AppSettings.Instance.FileAction = fileAction;
             AppSettings.Save();
             PublishSnackBar("Changes have been saved!");
         }

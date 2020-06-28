@@ -48,5 +48,19 @@ namespace Domain.Data
                 return new Response() { Success = false, Message = e.Message };
             }
         }
+
+        public Response Move(string destinationPath, bool overwrite)
+        {
+            try
+            {
+                if (overwrite) FileHelper.MoveDirectory(Path, destinationPath);
+                else Directory.Move(Path, destinationPath);
+                return new Response() { Success = true };
+            }
+            catch (Exception e)
+            {
+                return new Response() { Success = false, Message = e.Message };
+            }
+        }
     }
 }
