@@ -13,16 +13,13 @@
 
     <Grid>
 
-
-        
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="5*"/>
             <ColumnDefinition Width="3*"/>
         </Grid.ColumnDefinitions>
 
-        <!-- Expanded comment view -->
-       
-            <materialDesign:Card Margin="10"
+         <!-- Expanded comment view -->
+        <materialDesign:Card Margin="10"
                 Visibility="{Binding IsCommentExpanded, Converter={StaticResource BooleanToVisibilityConverter}}"
                 Panel.ZIndex="1"
                 materialDesign:ShadowAssist.ShadowDepth="Depth2">
@@ -111,143 +108,102 @@
                 <RowDefinition Height="5*"/>
             </Grid.RowDefinitions>
 
-            <!-- Description/contributors -->
+            <!-- contributors -->
             <materialDesign:Card Margin="10"
                                 materialDesign:ShadowAssist.ShadowDepth="Depth2">
 
-                <Grid>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                    <materialDesign:ColorZone 
+                        materialDesign:ShadowAssist.ShadowDepth="Depth2"
+                        Background="Transparent"
+                        VerticalAlignment="Stretch">
+
+                        <TextBlock Text="Contributors"
+                                   Margin="10 5"
+                                   Typography.Capitals="AllSmallCaps"
+                                   Style="{StaticResource MaterialDesignOverlineTextBlock}"/>
+
+                    </materialDesign:ColorZone>
+                    <!-- Controls -->
+                <materialDesign:ColorZone 
+                    Grid.Row="1"
+                        materialDesign:ShadowAssist.ShadowDepth="Depth2"
+                        Background="Transparent"
+                        BorderBrush="{DynamicResource PrimaryHueMidBrush}"
+                        BorderThickness="0 0 0 0.2"
+                        VerticalAlignment="Stretch"
+                        Visibility="{Binding SelectedContributorCount, Converter={StaticResource NotZeroToVisibilityConverter}}">
+
+                    <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Right">
+                        <Button 
+                                Style="{StaticResource MaterialDesignFlatButton}"
+                                ToolTip="Unselect contributors"
+                                Command="{Binding UnselectContributorsCommand}">
+                            <materialDesign:PackIcon Kind="CheckAll"/>
+                        </Button>
+
+                        <Button 
+                                Style="{StaticResource MaterialDesignFlatButton}"
+                                ToolTip="Remove selected contributors"
+                                Command="{Binding DeleteSelectedContributorsCommand}">
+                            <materialDesign:PackIcon Kind="DeleteEmpty"/>
+                        </Button>
+                    </StackPanel>
+
+                </materialDesign:ColorZone>
+
+                <Grid Grid.Row="2">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <ListBox Style="{StaticResource MaterialDesignToolToggleListBox}" 
-                            HorizontalAlignment="Left"
-                            Background="Transparent"
-                            SelectedIndex="{Binding DescriptionViewType}">
+                    <ListView Margin="10"
+                                Grid.Row="0"
+                            x:Name="contributorList"
+                            ItemsSource="{Binding Contributors}"
+                            SelectionChanged="ListView_SelectionChanged"
+                            Style="{StaticResource MaterialDesignFilterChipListBox}"/>
 
-                        <ListBoxItem>
-                            <TextBlock Text="Description"
-                            Typography.Capitals="AllSmallCaps"
-                            Style="{StaticResource MaterialDesignOverlineTextBlock}"
-                            VerticalAlignment="Center"/>
-                        </ListBoxItem>
-                        <ListBoxItem>
-                            <TextBlock Text="Contributors"
-                            Typography.Capitals="AllSmallCaps"
-                            Style="{StaticResource MaterialDesignOverlineTextBlock}"
-                            VerticalAlignment="Center"/>
-                        </ListBoxItem>
+                    <materialDesign:ColorZone Margin="-3 0 -2 -1"
+                            Grid.Row="1"
+                            materialDesign:ShadowAssist.ShadowDepth="Depth2">
 
-                    </ListBox>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
 
-                    <TabControl Grid.Row="1"
-                    Background="Transparent"
-                    BorderThickness="0" 
-                    SelectedIndex="{Binding DescriptionViewType}">
+                            <ComboBox VerticalAlignment="Center"
+                                            BorderBrush="Transparent"
+                                        materialDesign:HintAssist.Hint="Add new contributor..."
+                                        BorderThickness="0"
+                                        materialDesign:TextFieldAssist.DecorationVisibility="Collapsed"
+                                        materialDesign:TextFieldAssist.HasClearButton="True"
+                                        Text="{Binding SelectedContributor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                            IsEditable="True"
+                                            ItemsSource="{Binding AllContributors}"
+                                        Margin="5 0"/>
 
-                        <TabControl.ItemContainerStyle>
-                            <Style TargetType="{x:Type TabItem}">
-                                <Setter Property="Visibility" Value="Collapsed"/>
-                            </Style>
-                        </TabControl.ItemContainerStyle>
+                            <Button Style="{StaticResource MaterialDesignFlatButton}"
+                Grid.Column="1"
+                Command="{Binding AddContributorCommand}">
+                                <materialDesign:PackIcon Kind="Send"/>
+                            </Button>
 
-                        <!-- Description -->
-                        <TabItem BorderThickness="0"
-                                BorderBrush="Transparent">
-                            <TextBlock Text="{Binding ProjectDescription}"
-                                    TextWrapping="Wrap"
-                                    Margin="10 10 10 2"
-                                    />
-                        </TabItem>
+                        </Grid>
 
-                        <!-- Contributors -->
-                        <TabItem BorderThickness="0"
-                                BorderBrush="Transparent">
-
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="*"/>
-                                </Grid.RowDefinitions>
-
-                                <!-- Controls -->
-                                <materialDesign:ColorZone 
-                                materialDesign:ShadowAssist.ShadowDepth="Depth2"
-                                Background="Transparent"
-                                BorderBrush="{DynamicResource PrimaryHueMidBrush}"
-                                BorderThickness="0 0 0 0.2"
-                                VerticalAlignment="Stretch"
-                                Visibility="{Binding SelectedContributorCount, Converter={StaticResource NotZeroToVisibilityConverter}}">
-
-                                    <StackPanel Orientation="Horizontal"
-                                            HorizontalAlignment="Right">
-                                        <Button 
-                                        Style="{StaticResource MaterialDesignFlatButton}"
-                                        ToolTip="Unselect contributors"
-                                        Command="{Binding UnselectContributorsCommand}">
-                                            <materialDesign:PackIcon Kind="CheckAll"/>
-                                        </Button>
-
-                                        <Button 
-                                        Style="{StaticResource MaterialDesignFlatButton}"
-                                        ToolTip="Remove selected contributors"
-                                        Command="{Binding DeleteSelectedContributorsCommand}">
-                                            <materialDesign:PackIcon Kind="DeleteEmpty"/>
-                                        </Button>
-                                    </StackPanel>
-
-                                </materialDesign:ColorZone>
-
-                                <Grid Grid.Row="1">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="*"/>
-                                        <RowDefinition Height="Auto"/>
-                                    </Grid.RowDefinitions>
-
-                                    <ListView Margin="10"
-                                        Grid.Row="0"
-                                    x:Name="contributorList"
-                                    ItemsSource="{Binding Contributors}"
-                                    SelectionChanged="ListView_SelectionChanged"
-                                    Style="{StaticResource MaterialDesignFilterChipListBox}"/>
-
-                                    <materialDesign:ColorZone Margin="-3 0 -2 -1"
-                                    Grid.Row="1"
-                                    materialDesign:ShadowAssist.ShadowDepth="Depth2">
-
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
-
-                                            <ComboBox VerticalAlignment="Center"
-                                                    BorderBrush="Transparent"
-                                                materialDesign:HintAssist.Hint="Add new contributor..."
-                                                BorderThickness="0"
-                                                materialDesign:TextFieldAssist.DecorationVisibility="Collapsed"
-                                                materialDesign:TextFieldAssist.HasClearButton="True"
-                                                Text="{Binding SelectedContributor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                    IsEditable="True"
-                                                    ItemsSource="{Binding AllContributors}"
-                                                Margin="5 0"/>
-
-                                            <Button Style="{StaticResource MaterialDesignFlatButton}"
-                        Grid.Column="1"
-                        Command="{Binding AddContributorCommand}">
-                                                <materialDesign:PackIcon Kind="Send"/>
-                                            </Button>
-
-                                        </Grid>
-
-                                    </materialDesign:ColorZone>
-                                </Grid>
-                            </Grid>
-
-                        </TabItem>
-
-                    </TabControl>
+                    </materialDesign:ColorZone>
+                </Grid>
+                    
                 </Grid>
 
             </materialDesign:Card>

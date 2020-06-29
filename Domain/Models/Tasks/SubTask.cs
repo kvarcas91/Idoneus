@@ -17,7 +17,7 @@ namespace Domain.Models.Tasks
         public string Content { get; set; }
         public Priority Priority { get; set; }
         public DateTime DueDate { get; set; }
-        public Status Status { get; set; } = Status.Default;
+        public Status Status { get; set; } = Status.Archived;
         public int OrderNumber { get; set; }
 
         public bool HasString(string param)

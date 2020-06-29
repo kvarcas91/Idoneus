@@ -8,7 +8,9 @@ using Domain.Repository.Base;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Domain.Repository
 {
@@ -60,7 +62,7 @@ namespace Domain.Repository
 
             foreach (var task in project.Tasks)
             {
-                task.SubTasks = new ObservableCollection<SubTask>(GetSubTasks(task.ParentID));
+                task.SubTasks = new ObservableCollection<SubTask>(GetSubTasks(task.ID));
                 task.Contributors = new ObservableCollection<Contributor>(GetTaskContributors(task.ID));
             }
         }
@@ -122,7 +124,7 @@ namespace Domain.Repository
             {
                 ViewType.Completed => list.Where(i => i.Status.Equals(Status.Completed)),
                 ViewType.InProgress => list.Where(i => i.Status.Equals(Status.InProgress)),
-                ViewType.Archived => list.Where(i => i.Status.Equals(Status.Default)),
+                ViewType.Archived => list.Where(i => i.Status.Equals(Status.Archived)),
                 ViewType.Delayed => list.Where(i => i.Status.Equals(Status.Delayed)),
                 _ => list,
             };
@@ -135,7 +137,7 @@ namespace Domain.Repository
             {
                 ViewType.Completed => list.Where(i => i.Status.Equals(Status.Completed)),
                 ViewType.InProgress => list.Where(i => i.Status.Equals(Status.InProgress)),
-                ViewType.Archived => list.Where(i => i.Status.Equals(Status.Default)),
+                ViewType.Archived => list.Where(i => i.Status.Equals(Status.Archived)),
                 ViewType.Delayed => list.Where(i => i.Status.Equals(Status.Delayed)),
                 _ => list,
             };
@@ -171,6 +173,20 @@ namespace Domain.Repository
             Delete(query);
         }
 
+        public void UnassignTaskContributors(IEnumerable<Contributor> contributors, string taskID)
+        {
+            foreach (var item in contributors)
+            {
+                UnassignTaskContributor(item.ID, taskID);
+            }
+        }
+
+        public void UnassignTaskContributor(string contributorID, string taskID)
+        {
+            var query = $"DELETE FROM task_contributors WHERE taskID = '{taskID}' AND contributorID = '{contributorID}'";
+            Delete(query);
+        }
+
         public Response DeleteComment(IComment data)
         {
             var table = string.Empty;
@@ -185,9 +201,62 @@ namespace Domain.Repository
 
             var query = $"DELETE FROM {table} WHERE ID = '{data.ID}'";
             return new Response { Success = Delete(query) };
-            
 
         }
 
+        public Response DeleteProject(Project project)
+        {
+
+            GetProjectContent(project);
+
+            foreach (var comment in project.Comments)
+            {
+                DeleteComment(comment);
+            }
+
+            UnassignContributors(project.Contributors, project.ID);
+
+            DeleteTasks(project.Tasks);
+            Task.Run(() => DeleteProjectData(project.ID));
+
+            Delete(project);
+            return new Response();
+        }
+
+        public bool DeleteProjectData(string ID)
+        {
+            var dir = new DirectoryInfo(FileHelper.GetFullPath(Path.Combine(".\\Projects", ID)));
+            try
+            {
+                dir.Delete(true);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public bool DeleteTasks(IEnumerable<ITask> projectTasks)
+        {
+            foreach (var item in projectTasks)
+            {
+                if (item is ProjectTask task)
+                {
+                    UnassignTaskContributors(task.Contributors, task.ID);
+                    DeleteTasks(task.SubTasks);
+                }
+               
+                DeleteTask(item);
+            }
+            return true;
+        }
+
+        public bool DeleteTask(ITask task)
+        {
+            if (task is ProjectTask pTask) Delete(pTask);
+            if (task is SubTask sTask) Delete(sTask);
+            return true;
+        }
     }
 }

@@ -37,27 +37,13 @@ namespace Idoneus.ViewModels
 
         #region Properties
 
-        #region Description / Contributors
-
-        private int _descriptionViewType = 0;
-        public int DescriptionViewType
-        {
-            get { return _descriptionViewType; }
-            set { SetProperty(ref _descriptionViewType, value); }
-        }
+        #region Contributors
 
         private int _selectedContributorCount = 0;
         public int SelectedContributorCount
         {
             get { return _selectedContributorCount; }
             set { SetProperty(ref _selectedContributorCount, value); }
-        }
-
-        private string _projectDescription;
-        public string ProjectDescription
-        {
-            get { return _projectDescription; }
-            set { SetProperty(ref _projectDescription, value); }
         }
 
         private string _selectedContributor;
@@ -810,12 +796,6 @@ namespace Idoneus.ViewModels
                 return;
             }
 
-            //var oldIndex = Comments.IndexOf(PreviewComment);
-            //if (oldIndex != -1)
-            //{
-            //    Comments.RemoveAt(oldIndex);
-            //    Comments.Insert(oldIndex, PreviewComment);
-            //}
             ExpandComment(null);
         }
 
@@ -900,7 +880,11 @@ namespace Idoneus.ViewModels
  
         private void AddComment()
         {
-            if (_currentProject == null) return;
+            if (_currentProject == null)
+            {
+                PublishSnackBar("Select project first");
+                return;
+            }
             if (string.IsNullOrEmpty(CommentText))
             {
                 PublishSnackBar("Please add the comment");
@@ -978,8 +962,6 @@ namespace Idoneus.ViewModels
 
                 });
 
-                ProjectDescription = project.Content;
-
                 if (Contributors != null) App.Current.Dispatcher.Invoke(() =>
                 {
                     Contributors.Clear();
@@ -994,7 +976,6 @@ namespace Idoneus.ViewModels
             });
           
         }
-
 
         private void PublishSnackBar(string text)
         {

@@ -22,7 +22,7 @@ namespace Domain.Models.Project
         public DateTime SubmitionDate { get; set; }
         public DateTime DueDate { get; set; }
         public Priority Priority { get; set; } = Priority.Default;
-        public Status Status { get; set; } = Status.Default;
+        public Status Status { get; set; } = Status.Archived;
         public int OrderNumber { get; set; }
 
         [Computed]
@@ -83,7 +83,7 @@ namespace Domain.Models.Project
             var type = viewType switch
             {
                 ViewType.All => (int)Status,
-                ViewType.Archived => (int)Status.Default,
+                ViewType.Archived => (int)Status.Archived,
                 _ => (int)viewType,
             };
 

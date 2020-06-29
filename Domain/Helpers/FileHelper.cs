@@ -1,5 +1,4 @@
-﻿using Common.Enums;
-using Domain.Data;
+﻿using Domain.Data;
 using Domain.Models;
 using System;
 using System.Collections.Generic;
@@ -182,7 +181,7 @@ namespace Domain.Helpers
 
         private static ParameterizedResponse<bool> IsDirectory(string path)
         {
-            FileAttributes attr = 0;
+            FileAttributes attr;
             try
             {
                 attr = File.GetAttributes(path);
