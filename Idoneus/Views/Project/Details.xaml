@@ -3,8 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Idoneus.Views"
              mc:Ignorable="d" 
+             xmlns:converters="clr-namespace:Idoneus.Converters"
              xmlns:helpers="clr-namespace:Idoneus.Helpers"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:prism="http://prismlibrary.com/"
@@ -13,78 +13,166 @@
 
     <Grid>
 
+
+        
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="5*"/>
             <ColumnDefinition Width="3*"/>
         </Grid.ColumnDefinitions>
 
-        <Grid.RowDefinitions>
-            <RowDefinition Height="2*"/>
-            <RowDefinition Height="5*"/>
-        </Grid.RowDefinitions>
-
-        <!-- Description/contributors -->
-        <materialDesign:Card Margin="10"
-                             materialDesign:ShadowAssist.ShadowDepth="Depth2">
-
+        <!-- Expanded comment view -->
+       
+            <materialDesign:Card Margin="10"
+                Visibility="{Binding IsCommentExpanded, Converter={StaticResource BooleanToVisibilityConverter}}"
+                Panel.ZIndex="1"
+                materialDesign:ShadowAssist.ShadowDepth="Depth2">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
-                <ListBox Style="{StaticResource MaterialDesignToolToggleListBox}" 
-                         HorizontalAlignment="Left"
-                         Background="Transparent"
-                         SelectedIndex="{Binding DescriptionViewType}">
+          
+                <!-- Controls -->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
 
-                    <ListBoxItem>
-                        <TextBlock Text="Description"
+                    <StackPanel Orientation="Horizontal">
+
+                        <Button Style="{StaticResource MaterialDesignFlatButton}"
+                            ToolTip="Navigate back"
+                                Command="{Binding ExpandCommentCommand}">
+                            <materialDesign:PackIcon Kind="ArrowBackCircle"/>
+                        </Button>
+
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal"
+                            Grid.Column="1"
+                                HorizontalAlignment="Right">
+
+
+                        <Button Style="{StaticResource MaterialDesignFlatButton}"
+                            ToolTip="Save"
+                                Command="{Binding UpdateCommentCommand}">
+                            <materialDesign:PackIcon Kind="ContentSaveEdit"/>
+                        </Button>
+
+                        <Button Style="{StaticResource MaterialDesignFlatButton}"
+                            ToolTip="Delete"
+                                Command="{Binding DeleteCommentCommand}">
+                            <materialDesign:PackIcon Kind="Cancel"/>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+
+                <Grid Grid.Row="1"
+                      Margin="10 0">
+                    <Grid.RowDefinitions>
+
+                        <!-- submition date -->
+                        <RowDefinition Height="Auto"/>
+
+                        <!-- content -->
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Border
+                        BorderBrush="{DynamicResource PrimaryHueMidBrush}"
+                        BorderThickness="0 0 0 0.3"
+                        Margin="0 0 5 0" >
+
+                        <TextBlock Grid.Row="0"
+                                   Text="{Binding PreviewComment.SubmitionDate, Converter={converters:DateTimeToStringConverter}}"
+                                    Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                                    Foreground="{DynamicResource PrimaryHueMidBrush}"/>
+                    </Border>
+
+                    <TextBox Grid.Row="1"
+                                   Text="{Binding PreviewComment.Content, Mode=TwoWay}"
+                                       Margin="10 3 5 10"
+                                        AcceptsReturn="True"
+                                        BorderThickness="0"
+                                        materialDesign:TextFieldAssist.DecorationVisibility="Collapsed"
+                                        VerticalAlignment="Top"
+                                        TextWrapping="Wrap" />
+                </Grid>
+
+            </Grid>
+        </materialDesign:Card>
+
+        <!-- Contributors/Description/Files -->
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="5*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Description/contributors -->
+            <materialDesign:Card Margin="10"
+                                materialDesign:ShadowAssist.ShadowDepth="Depth2">
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <ListBox Style="{StaticResource MaterialDesignToolToggleListBox}" 
+                            HorizontalAlignment="Left"
+                            Background="Transparent"
+                            SelectedIndex="{Binding DescriptionViewType}">
+
+                        <ListBoxItem>
+                            <TextBlock Text="Description"
                             Typography.Capitals="AllSmallCaps"
                             Style="{StaticResource MaterialDesignOverlineTextBlock}"
                             VerticalAlignment="Center"/>
-                    </ListBoxItem>
-                    <ListBoxItem>
-                        <TextBlock Text="Contributors"
+                        </ListBoxItem>
+                        <ListBoxItem>
+                            <TextBlock Text="Contributors"
                             Typography.Capitals="AllSmallCaps"
                             Style="{StaticResource MaterialDesignOverlineTextBlock}"
                             VerticalAlignment="Center"/>
-                    </ListBoxItem>
-                    
-                </ListBox>
+                        </ListBoxItem>
 
-                <TabControl Grid.Row="1"
+                    </ListBox>
+
+                    <TabControl Grid.Row="1"
                     Background="Transparent"
                     BorderThickness="0" 
                     SelectedIndex="{Binding DescriptionViewType}">
-                    
-                    <TabControl.ItemContainerStyle>
-                        <Style TargetType="{x:Type TabItem}">
-                            <Setter Property="Visibility" Value="Collapsed"/>
-                        </Style>
-                    </TabControl.ItemContainerStyle>
-                    
-                    <!-- Description -->
-                    <TabItem BorderThickness="0"
-                             BorderBrush="Transparent">
-                        <TextBlock Text="{Binding ProjectDescription}"
-                                   TextWrapping="Wrap"
-                                   Margin="10 10 10 2"
-                                   />
-                    </TabItem>
-                    
-                    <!-- Contributors -->
-                    <TabItem BorderThickness="0"
-                             BorderBrush="Transparent">
-                        
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
 
-                            <!-- Controls -->
-                            <materialDesign:ColorZone 
+                        <TabControl.ItemContainerStyle>
+                            <Style TargetType="{x:Type TabItem}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </Style>
+                        </TabControl.ItemContainerStyle>
+
+                        <!-- Description -->
+                        <TabItem BorderThickness="0"
+                                BorderBrush="Transparent">
+                            <TextBlock Text="{Binding ProjectDescription}"
+                                    TextWrapping="Wrap"
+                                    Margin="10 10 10 2"
+                                    />
+                        </TabItem>
+
+                        <!-- Contributors -->
+                        <TabItem BorderThickness="0"
+                                BorderBrush="Transparent">
+
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Controls -->
+                                <materialDesign:ColorZone 
                                 materialDesign:ShadowAssist.ShadowDepth="Depth2"
                                 Background="Transparent"
                                 BorderBrush="{DynamicResource PrimaryHueMidBrush}"
@@ -92,229 +180,231 @@
                                 VerticalAlignment="Stretch"
                                 Visibility="{Binding SelectedContributorCount, Converter={StaticResource NotZeroToVisibilityConverter}}">
 
-                                <StackPanel Orientation="Horizontal"
+                                    <StackPanel Orientation="Horizontal"
                                             HorizontalAlignment="Right">
-                                    <Button 
+                                        <Button 
                                         Style="{StaticResource MaterialDesignFlatButton}"
                                         ToolTip="Unselect contributors"
                                         Command="{Binding UnselectContributorsCommand}">
-                                        <materialDesign:PackIcon Kind="CheckAll"/>
-                                    </Button>
+                                            <materialDesign:PackIcon Kind="CheckAll"/>
+                                        </Button>
 
-                                    <Button 
+                                        <Button 
                                         Style="{StaticResource MaterialDesignFlatButton}"
                                         ToolTip="Remove selected contributors"
                                         Command="{Binding DeleteSelectedContributorsCommand}">
-                                        <materialDesign:PackIcon Kind="DeleteEmpty"/>
-                                    </Button>
-                                </StackPanel>
-
-                            </materialDesign:ColorZone>
-
-                            <Grid Grid.Row="1">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
-
-                                <ListView Margin="10"
-                                      Grid.Row="0"
-                                  x:Name="contributorList"
-                                  ItemsSource="{Binding Contributors}"
-                                  SelectionChanged="ListView_SelectionChanged"
-                                 Style="{StaticResource MaterialDesignFilterChipListBox}"/>
-
-                                <materialDesign:ColorZone Margin="-3 0 -2 -1"
-                                  Grid.Row="1"
-                                  materialDesign:ShadowAssist.ShadowDepth="Depth2">
-
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-
-                                        <ComboBox VerticalAlignment="Center"
-                                                  BorderBrush="Transparent"
-                                             materialDesign:HintAssist.Hint="Add new contributor..."
-                                             BorderThickness="0"
-                                             materialDesign:TextFieldAssist.DecorationVisibility="Collapsed"
-                                             materialDesign:TextFieldAssist.HasClearButton="True"
-                                             Text="{Binding SelectedContributor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                  IsEditable="True"
-                                                  ItemsSource="{Binding AllContributors}"
-                                             Margin="5 0"/>
-
-                                        <Button Style="{StaticResource MaterialDesignFlatButton}"
-                        Grid.Column="1"
-                        Command="{Binding AddContributorCommand}">
-                                            <materialDesign:PackIcon Kind="Send"/>
+                                            <materialDesign:PackIcon Kind="DeleteEmpty"/>
                                         </Button>
-
-                                    </Grid>
+                                    </StackPanel>
 
                                 </materialDesign:ColorZone>
+
+                                <Grid Grid.Row="1">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <ListView Margin="10"
+                                        Grid.Row="0"
+                                    x:Name="contributorList"
+                                    ItemsSource="{Binding Contributors}"
+                                    SelectionChanged="ListView_SelectionChanged"
+                                    Style="{StaticResource MaterialDesignFilterChipListBox}"/>
+
+                                    <materialDesign:ColorZone Margin="-3 0 -2 -1"
+                                    Grid.Row="1"
+                                    materialDesign:ShadowAssist.ShadowDepth="Depth2">
+
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <ComboBox VerticalAlignment="Center"
+                                                    BorderBrush="Transparent"
+                                                materialDesign:HintAssist.Hint="Add new contributor..."
+                                                BorderThickness="0"
+                                                materialDesign:TextFieldAssist.DecorationVisibility="Collapsed"
+                                                materialDesign:TextFieldAssist.HasClearButton="True"
+                                                Text="{Binding SelectedContributor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                    IsEditable="True"
+                                                    ItemsSource="{Binding AllContributors}"
+                                                Margin="5 0"/>
+
+                                            <Button Style="{StaticResource MaterialDesignFlatButton}"
+                        Grid.Column="1"
+                        Command="{Binding AddContributorCommand}">
+                                                <materialDesign:PackIcon Kind="Send"/>
+                                            </Button>
+
+                                        </Grid>
+
+                                    </materialDesign:ColorZone>
+                                </Grid>
                             </Grid>
-                        </Grid>
-                        
-                    </TabItem>
-                    
-                </TabControl>
-            </Grid>
-            
-        </materialDesign:Card>
 
-        <!-- Files -->
-        <materialDesign:Card Margin="10"
-                             Grid.Row="1"
-                             Grid.Column="0"
-                             materialDesign:ShadowAssist.ShadowDepth="Depth2">
+                        </TabItem>
 
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="180"/>
-                    </Grid.ColumnDefinitions>
-
-                    <StackPanel Orientation="Horizontal">
-
-                        <Button Style="{StaticResource MaterialDesignFlatButton}"
-                            ToolTip="Navigate back"
-                                Command="{Binding NavigateBackCommand}">
-                            <materialDesign:PackIcon Kind="ArrowBackCircle"/>
-                        </Button>
-
-                        <Button Style="{StaticResource MaterialDesignFlatButton}"
-                            ToolTip="Home"
-                                Command="{Binding HomeCommand}">
-                            <materialDesign:PackIcon Kind="HomeOutline"/>
-                        </Button>
-
-                        <Button Style="{StaticResource MaterialDesignFlatButton}"
-                            ToolTip="New folder"
-                                Command="{Binding ShowAddFolderPanelCommand}">
-                            <materialDesign:PackIcon Kind="FolderAddOutline"/>
-                        </Button>
-                    </StackPanel>
-
-                    <StackPanel Orientation="Horizontal"
-                          Grid.Column="1"
-                                HorizontalAlignment="Right">
-                        <ComboBox Grid.Column="1"
-                          ItemsSource="{Binding DataVersions}"
-                          Margin="0 0 10 0"
-                          BorderThickness="0"
-                          SelectedItem="{Binding CurrentVersion, Mode=TwoWay}"
-                          IsSynchronizedWithCurrentItem="True"/>
-
-                        <Button Style="{StaticResource MaterialDesignFlatButton}"
-                            ToolTip="Add new version"
-                                Command="{Binding AddNewVersionCommand}">
-                            <materialDesign:PackIcon Kind="ContentSaveEdit"/>
-                        </Button>
-
-                        <Button Style="{StaticResource MaterialDesignFlatButton}"
-                            ToolTip="Remove current version"
-                                Command="{Binding RemoveVersionCommand}">
-                            <materialDesign:PackIcon Kind="Cancel"/>
-                        </Button>
-                    </StackPanel>
+                    </TabControl>
                 </Grid>
 
-                <materialDesign:ColorZone Margin="-3 0 -2 -1"
-                                  Grid.Row="1"
-                                  materialDesign:ShadowAssist.ShadowDepth="Depth2"
-                                          Visibility="{Binding IsAddFolderPanelVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+            </materialDesign:Card>
 
+            <!-- Files -->
+            <materialDesign:Card Margin="10"
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                materialDesign:ShadowAssist.ShadowDepth="Depth2">
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Controls -->
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="180"/>
                         </Grid.ColumnDefinitions>
 
-                        <TextBox VerticalAlignment="Center"
-                         materialDesign:HintAssist.Hint="Name..."
-                         BorderThickness="0"
-                         materialDesign:TextFieldAssist.DecorationVisibility="Collapsed"
-                         materialDesign:TextFieldAssist.HasClearButton="True"
-                         Text="{Binding FolderName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                         Margin="5 0"/>
+                        <StackPanel Orientation="Horizontal">
 
-                        <Button Style="{StaticResource MaterialDesignFlatButton}"
-                        Grid.Column="1"
-                        Command="{Binding AddFolderCommand}">
-                            <materialDesign:PackIcon Kind="Send"/>
-                        </Button>
+                            <Button Style="{StaticResource MaterialDesignFlatButton}"
+                            ToolTip="Navigate back"
+                                Command="{Binding NavigateBackCommand}">
+                                <materialDesign:PackIcon Kind="ArrowBackCircle"/>
+                            </Button>
 
+                            <Button Style="{StaticResource MaterialDesignFlatButton}"
+                            ToolTip="Home"
+                                Command="{Binding HomeCommand}">
+                                <materialDesign:PackIcon Kind="HomeOutline"/>
+                            </Button>
+
+                            <Button Style="{StaticResource MaterialDesignFlatButton}"
+                            ToolTip="New folder"
+                                Command="{Binding ShowAddFolderPanelCommand}">
+                                <materialDesign:PackIcon Kind="FolderAddOutline"/>
+                            </Button>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal"
+                            Grid.Column="1"
+                                HorizontalAlignment="Right">
+                            <ComboBox Grid.Column="1"
+                            ItemsSource="{Binding DataVersions}"
+                            Margin="0 0 10 0"
+                            BorderThickness="0"
+                            SelectedItem="{Binding CurrentVersion, Mode=TwoWay}"
+                            IsSynchronizedWithCurrentItem="True"/>
+
+                            <Button Style="{StaticResource MaterialDesignFlatButton}"
+                            ToolTip="Add new version"
+                                Command="{Binding AddNewVersionCommand}">
+                                <materialDesign:PackIcon Kind="ContentSaveEdit"/>
+                            </Button>
+
+                            <Button Style="{StaticResource MaterialDesignFlatButton}"
+                            ToolTip="Remove current version"
+                                Command="{Binding RemoveVersionCommand}">
+                                <materialDesign:PackIcon Kind="Cancel"/>
+                            </Button>
+                        </StackPanel>
                     </Grid>
 
-                </materialDesign:ColorZone>
+                    <materialDesign:ColorZone Margin="-3 0 -2 -1"
+                                    Grid.Row="1"
+                                    materialDesign:ShadowAssist.ShadowDepth="Depth2"
+                                            Visibility="{Binding IsAddFolderPanelVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
 
-                <!-- Initial loader -->
-                <StackPanel Orientation="Vertical"
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBox VerticalAlignment="Center"
+                            materialDesign:HintAssist.Hint="Name..."
+                            BorderThickness="0"
+                            materialDesign:TextFieldAssist.DecorationVisibility="Collapsed"
+                            materialDesign:TextFieldAssist.HasClearButton="True"
+                            Text="{Binding FolderName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            Margin="5 0"/>
+
+                            <Button Style="{StaticResource MaterialDesignFlatButton}"
+                        Grid.Column="1"
+                        Command="{Binding AddFolderCommand}">
+                                <materialDesign:PackIcon Kind="Send"/>
+                            </Button>
+
+                        </Grid>
+
+                    </materialDesign:ColorZone>
+
+                    <!-- Initial loader -->
+                    <StackPanel Orientation="Vertical"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Visibility="{Binding IsFileDataLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
                     Grid.Row="2">
-                    <Grid>
-                        <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" 
-                                 Maximum="{Binding MaxLoaderValue}"
-                                 Value="{Binding CurrentLoaderValue}"
-                                 Width="80" 
-                                 Background="Transparent"
-                                 Height="80"/>
+                        <Grid>
+                            <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" 
+                                    Maximum="{Binding MaxLoaderValue}"
+                                    Value="{Binding CurrentLoaderValue}"
+                                    Width="80" 
+                                    Background="Transparent"
+                                    Height="80"/>
 
-                        <TextBlock VerticalAlignment="Center"
-                                   HorizontalAlignment="Center">
+                            <TextBlock VerticalAlignment="Center"
+                                    HorizontalAlignment="Center">
                             <Run Text="{Binding CurrentLoaderValue}"/>
                             <Run Text="/"/>
                             <Run Text="{Binding MaxLoaderValue}"/>
-                        </TextBlock>
-                    </Grid>
-                   
-                    
-                    <TextBlock Style="{StaticResource MaterialDesignSubtitle2TextBlock}" 
-                                   Text="{Binding LoadingMessage}" 
-                                   Padding="0 20 0 0"
-                                   TextAlignment="Center"/>
-
-                </StackPanel>
+                            </TextBlock>
+                        </Grid>
 
 
-                <ListView Grid.Row="2"
-                          x:Name="FileListView"
-                          Visibility="{Binding IsFileDataLoading, Converter={StaticResource InverseBoolToVisConverter}}"
-                          AllowDrop="True"
-                          helpers:FileDragDropHelper.IsFileDragDropEnabled="True" 
-                          helpers:FileDragDropHelper.FileDragDropTarget="{Binding}"
-                          helpers:FileDragDropHelper.MouseMove="{Binding}"
+                        <TextBlock Style="{StaticResource MaterialDesignSubtitle2TextBlock}" 
+                                    Text="{Binding LoadingMessage}" 
+                                    Padding="0 20 0 0"
+                                    TextAlignment="Center"/>
+
+                    </StackPanel>
+
+
+                    <ListView Grid.Row="2"
+                            x:Name="FileListView"
+                            Visibility="{Binding IsFileDataLoading, Converter={StaticResource InverseBoolToVisConverter}}"
+                            AllowDrop="True"
+                            helpers:FileDragDropHelper.IsFileDragDropEnabled="True" 
+                            helpers:FileDragDropHelper.FileDragDropTarget="{Binding}"
+                            helpers:FileDragDropHelper.MouseMove="{Binding}"
                          
-                          ItemsSource="{Binding RelatedFiles}"
-                          Style="{StaticResource FileListView}">
+                            ItemsSource="{Binding RelatedFiles}"
+                            Style="{StaticResource FileListView}">
 
-                </ListView>
+                    </ListView>
 
-                <Border Grid.Row="3"
+                    <Border Grid.Row="3"
                         BorderBrush="{DynamicResource SecondaryHueMidBrush}"
                         BorderThickness="0 0.3 0 0"
                         Margin="5 0 0 0"
                         >
-                    <TextBlock Text="{Binding CurrentPath}" 
-                               Style="{StaticResource MaterialDesignOverlineTextBlock}"
-                               Margin="10"/>
-                </Border>
+                        <TextBlock Text="{Binding CurrentPath}" 
+                                Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                                Margin="10"/>
+                    </Border>
 
-            </Grid>
-            
-        </materialDesign:Card>
+                </Grid>
+
+            </materialDesign:Card>
+        </Grid>
 
         <!-- Comments/links -->
         <materialDesign:Card Margin="10"
@@ -383,7 +473,7 @@
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-
+                                    
                                     <TextBox VerticalAlignment="Center"
                                              materialDesign:HintAssist.Hint="Add new comment..."
                                              BorderThickness="0"
@@ -393,8 +483,9 @@
                                              Margin="5 0"/>
 
                                     <Button Style="{StaticResource MaterialDesignFlatButton}"
-                        Grid.Column="1"
-                        Command="{Binding AddCommentCommand}">
+                                        Grid.Column="1"
+                                            VerticalAlignment="Center"
+                                        Command="{Binding AddCommentCommand}">
                                         <materialDesign:PackIcon Kind="Send"/>
                                     </Button>
 

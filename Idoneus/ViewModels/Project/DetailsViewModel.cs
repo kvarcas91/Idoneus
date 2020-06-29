@@ -106,6 +106,13 @@ namespace Idoneus.ViewModels
 
         #region Comments / Links
 
+        private bool _isCommentExpanded = false;
+        public bool IsCommentExpanded
+        {
+            get { return _isCommentExpanded; }
+            set { SetProperty(ref _isCommentExpanded, value); }
+        }
+
         private int _commentsViewType = 0;
         public int CommentsViewType
         {
@@ -132,6 +139,13 @@ namespace Idoneus.ViewModels
         {
             get { return _linkHeaderText; }
             set { SetProperty(ref _linkHeaderText, value); }
+        }
+
+        private Comment _previewComment;
+        public Comment PreviewComment
+        {
+            get { return _previewComment; }
+            set { SetProperty(ref _previewComment, value); }
         }
 
         #endregion // Comments / Links
@@ -265,6 +279,12 @@ namespace Idoneus.ViewModels
 
         private DelegateCommand _addCommentCommand;
         public DelegateCommand AddCommentCommand => _addCommentCommand ?? (_addCommentCommand = new DelegateCommand(AddComment));
+
+        private DelegateCommand _updateCommentCommand;
+        public DelegateCommand UpdateCommentCommand => _updateCommentCommand ?? (_updateCommentCommand = new DelegateCommand(UpdateComment));
+
+        private DelegateCommand<Comment> _expandCommentCommand;
+        public DelegateCommand<Comment> ExpandCommentCommand => _expandCommentCommand ?? (_expandCommentCommand = new DelegateCommand<Comment>(ExpandComment));
 
         private DelegateCommand _addLinkCommand;
         public DelegateCommand AddLinkCommand => _addLinkCommand ?? (_addLinkCommand = new DelegateCommand(AddLink));
@@ -770,12 +790,55 @@ namespace Idoneus.ViewModels
 
         #region Comments / Links
 
+        private void UpdateComment()
+        {
+            if (PreviewComment == null)
+            {
+                PublishSnackBar("Cannot update comment...");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(PreviewComment.Content))
+            {
+                PublishSnackBar("Content cannot be empty...");
+                return;
+            }
+
+            if(!_repository.Update(PreviewComment))
+            {
+                PublishSnackBar("Failed to update comment...");
+                return;
+            }
+
+            //var oldIndex = Comments.IndexOf(PreviewComment);
+            //if (oldIndex != -1)
+            //{
+            //    Comments.RemoveAt(oldIndex);
+            //    Comments.Insert(oldIndex, PreviewComment);
+            //}
+            ExpandComment(null);
+        }
+
+        private void ExpandComment(Comment comment)
+        {
+            PreviewComment = comment;
+            IsCommentExpanded = !IsCommentExpanded;
+        }
+
         private void DeleteComment(IComment data)
         {
-           
             Task.Run(() =>
             {
-                if (data is Comment comment)
+                var response = _repository.DeleteComment(PreviewComment ?? data);
+                PublishSnackBar(response.Success ? "Deleted successfully!" : "Failed to delete...");
+                if (!response.Success)
+                {
+                    return;
+                }
+
+                IsCommentExpanded = false;
+
+                if ((PreviewComment ?? data) is Comment comment)
                 {
                     App.Current.Dispatcher.Invoke(() => Comments.Remove(comment));
                 }
@@ -784,9 +847,7 @@ namespace Idoneus.ViewModels
                     App.Current.Dispatcher.Invoke(() => Links.Remove(link));
                 }
 
-                var response = _repository.DeleteComment(data);
-
-                PublishSnackBar(response.Success ? "Deleted successfully!" : "Failed to delete...");
+             
             });
         }
 
