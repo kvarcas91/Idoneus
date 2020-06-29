@@ -94,6 +94,9 @@ namespace Idoneus.ViewModels
             set { SetProperty(ref _currentVersion, value); if (_currentVersion != null) SetVersion(); }
         }
 
+        private bool _isFileEditable = false;
+        private IData _editableData;
+
         #endregion // Files
 
         #endregion // Properties
@@ -210,6 +213,9 @@ namespace Idoneus.ViewModels
         private DelegateCommand<IData> _deleteFileCommand;
         public DelegateCommand<IData> DeleteFileCommand => _deleteFileCommand ?? (_deleteFileCommand = new DelegateCommand<IData>(DeleteFile));
 
+        private DelegateCommand<IData> _editFileCommand;
+        public DelegateCommand<IData> EditFileCommand => _editFileCommand ?? (_editFileCommand = new DelegateCommand<IData>(EditFile));
+
         #endregion // Delegates
 
         private readonly IEventAggregator _eventAggregator;
@@ -234,6 +240,14 @@ namespace Idoneus.ViewModels
         }
 
         #region Files
+
+        private void EditFile(IData data)
+        {
+            ShowAddFolderPanel();
+            _editableData = data;
+            _isFileEditable = true;
+            FolderName = data.Name;
+        }
 
         private void DeleteFile(IData data)
         {
@@ -322,7 +336,13 @@ namespace Idoneus.ViewModels
         {
             if (string.IsNullOrEmpty(FolderName))
             {
-                PublishSnackBar("Folder name cannot be emty");
+                PublishSnackBar("Name cannot be emty");
+                return;
+            }
+
+            if (_isFileEditable)
+            {
+                Edit();
                 return;
             }
 
@@ -343,6 +363,39 @@ namespace Idoneus.ViewModels
             IsAddFolderPanelVisible = false;
         }
 
+        private void Edit()
+        {
+            if (FolderName.Equals(_editableData.Name))
+            {
+                FolderName = string.Empty;
+                IsAddFolderPanelVisible = false;
+                _editableData = null;
+                return;
+            }
+
+            var response = _editableData.Rename(FolderName);
+            if (!response.Success)
+            {
+                PublishSnackBar($"Failed to rename: {response.Message}");
+                return;
+            }
+
+            var index = RelatedFiles.IndexOf(_editableData);
+            RelatedFiles.Remove(_editableData);
+            if (index > -1) RelatedFiles.Insert(index, _editableData);
+            else RelatedFiles.Add(GetNew(_editableData));
+
+            FolderName = string.Empty;
+            IsAddFolderPanelVisible = false;
+            _editableData = null;
+        }
+
+        private IData GetNew(IData data)
+        {
+            if (data is ProjectFolder) return new ProjectFolder(data.Path);
+            else return new ProjectFile(data.Path);
+        }
+
         private void ShowAddFolderPanel()
         {
             if (_currentProject == null)
@@ -351,6 +404,7 @@ namespace Idoneus.ViewModels
                 return;
             }
 
+            FolderName = string.Empty;
             IsAddFolderPanelVisible = !IsAddFolderPanelVisible;
         }
 
@@ -537,7 +591,7 @@ namespace Idoneus.ViewModels
                     }
                 }
 
-                PublishSnackBar($"Files have been moved!");
+               
 
             });
             

@@ -242,7 +242,7 @@
                         </Grid.ColumnDefinitions>
 
                         <TextBox VerticalAlignment="Center"
-                         materialDesign:HintAssist.Hint="Folder name..."
+                         materialDesign:HintAssist.Hint="Name..."
                          BorderThickness="0"
                          materialDesign:TextFieldAssist.DecorationVisibility="Collapsed"
                          materialDesign:TextFieldAssist.HasClearButton="True"

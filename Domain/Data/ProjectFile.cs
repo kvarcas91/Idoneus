@@ -44,11 +44,31 @@ namespace Domain.Data
             }
         }
 
-        public Response Move(string destinationPath, bool overwrite)
+        public Response Move(string destinationPath, bool overwrite, bool combineDestinationPath = true)
         {
             try
             {
-                File.Move(Path, FileHelper.Combine(destinationPath, Path), overwrite);
+                var destination = combineDestinationPath ? FileHelper.Combine(destinationPath, Path) : destinationPath;
+                File.Move(Path, destination, overwrite);
+                return new Response() { Success = true };
+            }
+            catch(Exception e)
+            {
+                return new Response() { Success = false, Message = e.Message };
+            }
+        }
+
+        public Response Rename(string newName)
+        {
+            var parent = FileHelper.GetParentPath(Path);
+            var destinationPath = FileHelper.Combine(parent, $"{newName}{Extention}");
+            try
+            {
+                var response =  Move(destinationPath, false, false);
+                if (!response.Success) return new Response() { Success = false, Message = "Failed to rename file" };
+
+                Name = newName;
+                Path = destinationPath;
                 return new Response() { Success = true };
             }
             catch(Exception e)

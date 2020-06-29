@@ -14,6 +14,7 @@ namespace Domain.Data
 
         Response Copy(string newPath, bool overwrite);
         Response Delete();
-        Response Move(string newPath, bool overwrite);
+        Response Rename(string newName);
+        Response Move(string newPath, bool overwrite, bool combineDestinationPath = true);
     }
 }
