@@ -30,9 +30,9 @@ namespace Domain.Data
             return Name;
         }
 
-        public Response Copy(string newPath, bool overwrite)
+        public Response Copy(string newPath, bool overwrite, bool newVersion = false)
         {
-            return FileHelper.Copy(this, newPath, overwrite);
+            return FileHelper.Copy(this, newPath, overwrite, newVersion);
         }
 
         public Response Delete()

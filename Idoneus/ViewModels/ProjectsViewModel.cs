@@ -3,6 +3,8 @@ using Domain.Extentions;
 using Domain.Models.Project;
 using Domain.Repository;
 using Idoneus.Views;
+using MaterialDesignThemes.Wpf;
+using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
 using Prism.Regions;
@@ -65,6 +67,9 @@ namespace Idoneus.ViewModels
                 SetProperty(ref _viewType, value);
             }
         }
+
+        private DelegateCommand<Project> _selectProjectCommand;
+        public DelegateCommand<Project> SelectProjectCommand => _selectProjectCommand ?? (_selectProjectCommand = new DelegateCommand<Project>(OnItemClicked));
 
         private readonly ProjectRepository _projectRepository;
         private readonly IEventAggregator _eventAggregator;
@@ -133,6 +138,15 @@ namespace Idoneus.ViewModels
 
         }
 
+        private void OnItemClicked(Project project)
+        {
+            var drawer = DrawerHost.CloseDrawerCommand;
+            drawer.Execute(null, null);
+
+            ProjectTitle = project.Header;
+            _eventAggregator.GetEvent<SendCurrentProject<Project>>().Publish(project);
+        }
+
         #region Navigation
 
         public bool IsNavigationTarget(NavigationContext navigationContext)
@@ -147,6 +161,7 @@ namespace Idoneus.ViewModels
 
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
+          
             _project = navigationContext.Parameters["project"] as Project;
             if(_project != null)
             {

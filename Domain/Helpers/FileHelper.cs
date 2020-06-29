@@ -126,7 +126,7 @@ namespace Domain.Helpers
             return output;
         }
 
-        public static Response Copy(IData data, string newPath, bool overwrite)
+        public static Response Copy(IData data, string newPath, bool overwrite, bool newVersion = false)
         {
             if (data is ProjectFile file)
             {
@@ -139,7 +139,7 @@ namespace Domain.Helpers
             }
             if (data is ProjectFolder folder)
             {
-                if (!overwrite && Directory.Exists(folder.Path)) return new Response() { Success = false, Message = "Directory already exist" };
+                if (!overwrite && !newVersion && Directory.Exists(folder.Path)) return new Response() { Success = false, Message = "Directory already exist" };
                 return DirectoryCopy(folder.Path, Path.Combine(newPath, data.Name));
             }
 

@@ -507,7 +507,7 @@ namespace Idoneus.ViewModels
                 {
                     CurrentLoaderValue = counter;
 
-                    var response = item.Copy(Path.Combine(_basePath, versionName), false);
+                    var response = item.Copy(Path.Combine(_basePath, versionName), false, true);
                     if (!response.Success)
                     {
                         PublishSnackBar(response.Message);
@@ -734,6 +734,7 @@ namespace Idoneus.ViewModels
             _currentProject = project;
             if (project == null) return;
 
+            if (Contributors != null) Contributors.Clear();
             Contributors.AddRange(_currentProject.Contributors);
             ProjectDescription = project.Content;
             SeparateComments();
