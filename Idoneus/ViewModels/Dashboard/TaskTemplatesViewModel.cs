@@ -6,6 +6,7 @@ using Prism.Events;
 using Prism.Mvvm;
 using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Idoneus.ViewModels
@@ -42,6 +43,9 @@ namespace Idoneus.ViewModels
         private DelegateCommand _insertTemplateCommand;
         public DelegateCommand InsertTemplateCommand => _insertTemplateCommand ?? (_insertTemplateCommand = new DelegateCommand(InsertTemplate));
 
+        private DelegateCommand<RepetetiveDay> _setDayTemplateCommand;
+        public DelegateCommand<RepetetiveDay> SetDayTemplateCommand => _setDayTemplateCommand ?? (_setDayTemplateCommand = new DelegateCommand<RepetetiveDay>(SetDayTemplate));
+
         public TaskTemplatesViewModel(IEventAggregator eventAggregator)
         {
             Tasks = new ObservableCollection<RepetetiveTask>();
@@ -71,7 +75,7 @@ namespace Idoneus.ViewModels
             Task.Run(() =>
             {
                 var results = _repository.Update(task);
-                if (results) SendSnackBarMessage("Template has been updated!");
+                if (!results) SendSnackBarMessage($"Something went wrong.. {results}");
             });
 
         }
@@ -91,6 +95,18 @@ namespace Idoneus.ViewModels
                 SendSnackBarMessage("Something went wrong...");
             });
 
+        }
+
+        private void SetDayTemplate(RepetetiveDay repetetiveDay)
+        {
+            Task.Run(() =>
+            {
+                var parentTask = Tasks.Where(t => t.ID.Equals(repetetiveDay.ParentID)).FirstOrDefault();
+                if (parentTask == null) return;
+
+                parentTask.SetDate();
+                _repository.Update(parentTask);
+            });
         }
 
         private void InsertTemplate()

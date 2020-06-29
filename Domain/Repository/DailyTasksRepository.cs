@@ -23,7 +23,15 @@ namespace Domain.Repository
         public IEnumerable<RepetetiveTask> GetRepetetiveTasks()
         {
             var query = $"SELECT * FROM repetetive_tasks";
-            return GetAll<RepetetiveTask>(query);
+            var output = GetAll<RepetetiveTask>(query);
+            if (output != null)
+            {
+                foreach (var item in output)
+                {
+                    item.SetDayList(true);
+                }
+            }
+            return output;
         }
 
         public (int, int) GetTodaysTaskProgress()

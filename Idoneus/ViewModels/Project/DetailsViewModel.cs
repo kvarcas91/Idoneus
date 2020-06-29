@@ -28,6 +28,10 @@ namespace Idoneus.ViewModels
         private Project _currentProject;
         private string _basePath = string.Empty;
 
+        private readonly IEventAggregator _eventAggregator;
+        private readonly ProjectRepository _repository;
+        private Action _deselectContributors;
+
         #endregion // Local members
 
         #region Properties
@@ -218,10 +222,6 @@ namespace Idoneus.ViewModels
 
         #endregion // Delegates
 
-        private readonly IEventAggregator _eventAggregator;
-        private readonly ProjectRepository _repository;
-        private Action _deselectContributors;
-
         public DetailsViewModel(IEventAggregator eventAggregator)
         {
             _eventAggregator = eventAggregator;
@@ -238,6 +238,8 @@ namespace Idoneus.ViewModels
 
             eventAggregator.GetEvent<SendCurrentProject<Project>>().Subscribe(ProjectReceived);
         }
+
+        #region Methods
 
         #region Files
 
@@ -267,18 +269,18 @@ namespace Idoneus.ViewModels
             try
             {
                 if (data is ProjectFile)
-            {
-                ProcessHelper.Run(FileHelper.GetFullParentPath(data.Path));
-                return;
-            }
-           
+                {
+                    ProcessHelper.Run(FileHelper.GetFullParentPath(data.Path));
+                    return;
+                }
+
                 ProcessHelper.Run(FileHelper.GetExecutablePath(data.Path));
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 PublishSnackBar(e.Message);
             }
-           
+
         }
 
         private void RemoveVersion()
@@ -329,7 +331,7 @@ namespace Idoneus.ViewModels
             {
                 PublishSnackBar(e.Message);
             }
-          
+
         }
 
         private void AddFolder()
@@ -445,7 +447,7 @@ namespace Idoneus.ViewModels
 
         private void SetFiles()
         {
-        
+
             if (RelatedFiles != null)
             {
                 App.Current.Dispatcher.Invoke(() => RelatedFiles.Clear());
@@ -455,7 +457,6 @@ namespace Idoneus.ViewModels
             {
                 App.Current.Dispatcher.Invoke(() => RelatedFiles.Add(item));
             }
-
         }
 
         private void SetVersion()
@@ -465,7 +466,6 @@ namespace Idoneus.ViewModels
             {
                 SetFiles();
             });
-
         }
 
         private void AddNewVersion()
@@ -552,7 +552,7 @@ namespace Idoneus.ViewModels
 
             if (FileHelper.Contains(RelatedFiles, Path.GetFileName(item.Path))) return;
 
-            if(addToRelatedFiles) App.Current.Dispatcher.Invoke(() => RelatedFiles.Add(item));
+            if (addToRelatedFiles) App.Current.Dispatcher.Invoke(() => RelatedFiles.Add(item));
         }
 
         public void OnFileDrop(string[] filePaths)
@@ -590,11 +590,8 @@ namespace Idoneus.ViewModels
                         PublishSnackBar($"Couldn't move file: {e.Message}");
                     }
                 }
-
-               
-
             });
-            
+
         }
 
         public void OnInnerFileDrop(IData sourceFile, IData destinationFile)
@@ -608,7 +605,7 @@ namespace Idoneus.ViewModels
                     MoveFile(sourceFile, destinationFile.Path, fileAction, overwrite, false);
                     App.Current.Dispatcher.Invoke(() => RelatedFiles.Remove(sourceFile));
                 }
-               catch(Exception e)
+                catch (Exception e)
                 {
                     PublishSnackBar($"Couldn't move file: {e.Message}");
                     return;
@@ -729,6 +726,8 @@ namespace Idoneus.ViewModels
 
         #endregion // Comments Links
 
+        #region Common
+
         private void ProjectReceived(Project project)
         {
             _currentProject = project;
@@ -752,20 +751,24 @@ namespace Idoneus.ViewModels
 
             CurrentPath = Path.Combine(_basePath, DataVersions[DataVersions.Count - 1].ToString());
             IsFileDataLoading = true;
-          
-           
+
+
             Task.Run(() =>
             {
                 CurrentVersion = DataVersions[DataVersions.Count - 1];
                 IsFileDataLoading = false;
             });
-           
+
         }
 
         private void PublishSnackBar(string text)
         {
             _eventAggregator.GetEvent<SendSnackBarMessage>().Publish(text);
         }
+
+        #endregion // Common
+
+        #endregion // Methods
 
     }
 }

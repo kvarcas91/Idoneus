@@ -224,10 +224,15 @@ namespace Idoneus.ViewModels
             foreach (var task in rTasks)
             {
                 if (!task.IsActive) continue;
+
+                // Checks if repetetive task exist as a daily task for today
                 var item = Tasks.FirstOrDefault(x => x.RepetetiveTaskID.Equals(task.ID));
                 if (item == null)
                 {
+                    if (!task.IsActiveToday()) continue;
+
                     var newTask = new TodaysTask(task);
+                    
                     if (!_repository.Insert(newTask, "td_tasks"))
                     {
                         failed = true;
