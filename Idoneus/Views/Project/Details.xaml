@@ -68,7 +68,6 @@
                     <TabItem BorderThickness="0"
                              BorderBrush="Transparent">
                         <TextBlock Text="{Binding ProjectDescription}"
-                                
                                    TextWrapping="Wrap"
                                    Margin="10 10 10 2"
                                    />
@@ -322,6 +321,157 @@
                              Grid.RowSpan="2"
                              Grid.Column="1"
                              materialDesign:ShadowAssist.ShadowDepth="Depth2">
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <ListBox Style="{StaticResource MaterialDesignToolToggleListBox}" 
+                         HorizontalAlignment="Left"
+                         Background="Transparent"
+                         SelectedIndex="{Binding CommentsViewType}">
+
+                    <ListBoxItem>
+                        <TextBlock Text="Comments"
+                            Typography.Capitals="AllSmallCaps"
+                            Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                            VerticalAlignment="Center"/>
+                    </ListBoxItem>
+                    <ListBoxItem>
+                        <TextBlock Text="Links"
+                            Typography.Capitals="AllSmallCaps"
+                            Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                            VerticalAlignment="Center"/>
+                    </ListBoxItem>
+
+                </ListBox>
+
+                <TabControl Grid.Row="1"
+                    Background="Transparent"
+                    BorderThickness="0" 
+                    SelectedIndex="{Binding CommentsViewType}">
+
+                    <TabControl.ItemContainerStyle>
+                        <Style TargetType="{x:Type TabItem}">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </Style>
+                    </TabControl.ItemContainerStyle>
+
+                    <!-- Comments -->
+                    <TabItem BorderThickness="0"
+                             BorderBrush="Transparent">
+
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <ListView Margin="0 10 0 0"
+                                x:Name="CommentListView" 
+                                        Grid.Row="0" ItemsSource="{Binding Comments}"
+                                              Style="{StaticResource CommentListView}"/>
+
+                            <materialDesign:ColorZone Margin="-3 0 -2 -1"
+                                  Grid.Row="1"
+                                  materialDesign:ShadowAssist.ShadowDepth="Depth2">
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBox VerticalAlignment="Center"
+                                             materialDesign:HintAssist.Hint="Add new comment..."
+                                             BorderThickness="0"
+                                             materialDesign:TextFieldAssist.DecorationVisibility="Collapsed"
+                                             materialDesign:TextFieldAssist.HasClearButton="True"
+                                             Text="{Binding CommentText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                             Margin="5 0"/>
+
+                                    <Button Style="{StaticResource MaterialDesignFlatButton}"
+                        Grid.Column="1"
+                        Command="{Binding AddCommentCommand}">
+                                        <materialDesign:PackIcon Kind="Send"/>
+                                    </Button>
+
+                                </Grid>
+
+                            </materialDesign:ColorZone>
+                        </Grid>
+
+                    </TabItem>
+
+                    <!-- Links -->
+                    <TabItem BorderThickness="0"
+                             BorderBrush="Transparent">
+
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <ListView Margin="0 10 0 0"
+                                x:Name="LinkListView" 
+                                        Grid.Row="0" ItemsSource="{Binding Links}"
+                                              Style="{StaticResource LinkListView}"/>
+
+                            <materialDesign:ColorZone Margin="-3 0 -2 -1"
+                                  Grid.Row="1"
+                                  materialDesign:ShadowAssist.ShadowDepth="Depth2">
+
+                                <Grid>
+
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBox VerticalAlignment="Center" 
+                                             materialDesign:HintAssist.Hint="Header..."
+                                             BorderThickness="0"
+                                             materialDesign:TextFieldAssist.DecorationVisibility="Collapsed"
+                                             materialDesign:TextFieldAssist.HasClearButton="True"
+                                             Text="{Binding LinkHeaderText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                             Margin="5 0"/>
+
+                                    <TextBox VerticalAlignment="Center" 
+                                             materialDesign:HintAssist.Hint="link..."
+                                             BorderThickness="0"
+                                             Grid.Row="1"
+                                             materialDesign:TextFieldAssist.DecorationVisibility="Collapsed"
+                                             materialDesign:TextFieldAssist.HasClearButton="True"
+                                             Text="{Binding LinkText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                             Margin="5 0"/>
+                                    
+
+                                    <Button Style="{StaticResource MaterialDesignFlatButton}"
+                                        Grid.Column="1"
+                                            Grid.RowSpan="2"
+                                        Command="{Binding AddLinkCommand}">
+                                        <materialDesign:PackIcon Kind="Send"/>
+                                    </Button>
+
+                                </Grid>
+
+                            </materialDesign:ColorZone>
+                        </Grid>
+
+                    </TabItem>
+
+                </TabControl>
+
+            </Grid>
+
 
         </materialDesign:Card>
 

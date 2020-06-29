@@ -18,7 +18,10 @@ namespace Idoneus.Views
             InitializeComponent();
             viewModel = (DetailsViewModel)DataContext;
             viewModel.SetDeselectAction(DeselectContributors);
+           
         }
+
+       
 
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -30,6 +33,6 @@ namespace Idoneus.Views
             contributorList.UnselectAll();
         }
 
-       
+      
     }
 }

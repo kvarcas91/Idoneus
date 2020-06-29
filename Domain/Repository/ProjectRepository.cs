@@ -171,5 +171,23 @@ namespace Domain.Repository
             Delete(query);
         }
 
+        public Response DeleteComment(IComment data)
+        {
+            var table = string.Empty;
+            if (data is Comment)
+            {
+                table = "comments";
+            }
+            if (data is Link)
+            {
+                table = "links";
+            }
+
+            var query = $"DELETE FROM {table} WHERE ID = '{data.ID}'";
+            return new Response { Success = Delete(query) };
+            
+
+        }
+
     }
 }

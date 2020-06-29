@@ -11,7 +11,7 @@ namespace Domain.Models.Comments
         public string ID { get; set; }
         public string ProjectID { get; set; }
         public string Content { get; set; }
-        public string Header { get; set; }
         public DateTime SubmitionDate { get; set; }
+        public string Header { get; set; }
     }
 }

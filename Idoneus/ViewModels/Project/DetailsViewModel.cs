@@ -14,6 +14,7 @@ using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -103,6 +104,38 @@ namespace Idoneus.ViewModels
 
         #endregion // Files
 
+        #region Comments / Links
+
+        private int _commentsViewType = 0;
+        public int CommentsViewType
+        {
+            get { return _commentsViewType; }
+            set { SetProperty(ref _commentsViewType, value); }
+        }
+
+        private string _commentText;
+        public string CommentText
+        {
+            get { return _commentText; }
+            set { SetProperty(ref _commentText, value); }
+        }
+
+        private string _linkText;
+        public string LinkText
+        {
+            get { return _linkText; }
+            set { SetProperty(ref _linkText, value); }
+        }
+
+        private string _linkHeaderText;
+        public string LinkHeaderText
+        {
+            get { return _linkHeaderText; }
+            set { SetProperty(ref _linkHeaderText, value); }
+        }
+
+        #endregion // Comments / Links
+
         #endregion // Properties
 
         #region Observable Collections
@@ -181,6 +214,8 @@ namespace Idoneus.ViewModels
 
         #region Delegates
 
+        #region Contributors / Details
+
         private DelegateCommand _deleteSelectedContributorsCommand;
         public DelegateCommand DeleteSelectedContributorsCommand => _deleteSelectedContributorsCommand ?? (_deleteSelectedContributorsCommand = new DelegateCommand(DeleteSelectedContributors));
 
@@ -189,6 +224,10 @@ namespace Idoneus.ViewModels
 
         private DelegateCommand _addContributorCommand;
         public DelegateCommand AddContributorCommand => _addContributorCommand ?? (_addContributorCommand = new DelegateCommand(AddContributor));
+
+        #endregion // Contributors / Details
+
+        #region Files
 
         private DelegateCommand _addNewVersionCommand;
         public DelegateCommand AddNewVersionCommand => _addNewVersionCommand ?? (_addNewVersionCommand = new DelegateCommand(AddNewVersion));
@@ -219,6 +258,24 @@ namespace Idoneus.ViewModels
 
         private DelegateCommand<IData> _editFileCommand;
         public DelegateCommand<IData> EditFileCommand => _editFileCommand ?? (_editFileCommand = new DelegateCommand<IData>(EditFile));
+
+        #endregion // Files
+
+        #region Comments / Links
+
+        private DelegateCommand _addCommentCommand;
+        public DelegateCommand AddCommentCommand => _addCommentCommand ?? (_addCommentCommand = new DelegateCommand(AddComment));
+
+        private DelegateCommand _addLinkCommand;
+        public DelegateCommand AddLinkCommand => _addLinkCommand ?? (_addLinkCommand = new DelegateCommand(AddLink));
+
+        private DelegateCommand<IComment> _openLinkCommand;
+        public DelegateCommand<IComment> OpenLinkCommand => _openLinkCommand ?? (_openLinkCommand = new DelegateCommand<IComment>(OpenLink));
+
+        private DelegateCommand<IComment> _deleteCommentCommand;
+        public DelegateCommand<IComment> DeleteCommentCommand => _deleteCommentCommand ?? (_deleteCommentCommand = new DelegateCommand<IComment>(DeleteComment));
+
+        #endregion // Comments / Links
 
         #endregion // Delegates
 
@@ -713,6 +770,106 @@ namespace Idoneus.ViewModels
 
         #region Comments / Links
 
+        private void DeleteComment(IComment data)
+        {
+           
+            Task.Run(() =>
+            {
+                if (data is Comment comment)
+                {
+                    App.Current.Dispatcher.Invoke(() => Comments.Remove(comment));
+                }
+                if (data is Link link)
+                {
+                    App.Current.Dispatcher.Invoke(() => Links.Remove(link));
+                }
+
+                var response = _repository.DeleteComment(data);
+
+                PublishSnackBar(response.Success ? "Deleted successfully!" : "Failed to delete...");
+            });
+        }
+
+        private void OpenLink(IComment link)
+        {
+            try
+            {
+                ProcessHelper.RunLink(link.Content);
+            }
+            catch (Exception e)
+            {
+                PublishSnackBar($"Cannot open url: {e.Message}");
+            }
+          
+        }
+
+        private void AddLink()
+        {
+            if (_currentProject == null) return;
+            if (string.IsNullOrEmpty(LinkText))
+            {
+                PublishSnackBar("Please add the link");
+                return;
+            }
+            var link = new Link
+            {
+                ID = Guid.NewGuid().ToString(),
+                Content = LinkText,
+                ProjectID = _currentProject.ID,
+                SubmitionDate = DateTime.Now,
+                Header = string.IsNullOrEmpty(LinkHeaderText) ? LinkText : LinkHeaderText
+            };
+
+            Task.Run(() =>
+            {
+                if (_repository.Insert(link, "links"))
+                {
+                    PublishSnackBar("Link has been added!");
+                    App.Current.Dispatcher.Invoke(() =>
+                    {
+                        Links.Insert(0, link);
+                    });
+
+                    LinkText = string.Empty;
+                    LinkHeaderText = string.Empty;
+                }
+                else PublishSnackBar("Something went wrong..");
+            });
+        }
+ 
+        private void AddComment()
+        {
+            if (_currentProject == null) return;
+            if (string.IsNullOrEmpty(CommentText))
+            {
+                PublishSnackBar("Please add the comment");
+                return;
+            }
+
+            var comment = new Comment
+            {
+                ID = Guid.NewGuid().ToString(),
+                Content = CommentText,
+                ProjectID = _currentProject.ID,
+                SubmitionDate = DateTime.Now
+            };
+
+            Task.Run(() =>
+            {
+                if (_repository.Insert(comment, "comments"))
+                {
+                    PublishSnackBar("Comment has been added!");
+                    App.Current.Dispatcher.Invoke(() =>
+                    {
+                        Comments.Insert(0, comment);
+                    });
+
+                    CommentText = string.Empty;
+                }
+                else PublishSnackBar("Something went wrong..");
+            });
+        }
+
         private void SeparateComments()
         {
             Comments.Clear();
@@ -733,33 +890,50 @@ namespace Idoneus.ViewModels
             _currentProject = project;
             if (project == null) return;
 
-            if (Contributors != null) Contributors.Clear();
-            Contributors.AddRange(_currentProject.Contributors);
-            ProjectDescription = project.Content;
-            SeparateComments();
-
-            _basePath = Path.Combine(".\\Projects", _currentProject.ID);
-            CurrentPath = _basePath;
-            FileHelper.CreateFolderIfNotExist(_basePath);
-
-            DataVersions.AddRange(FileHelper.GetVersions(_basePath));
-            if (DataVersions.Count == 0)
-            {
-                FileHelper.CreateFolderIfNotExist(Path.Combine(_basePath, "V1"));
-                DataVersions.AddRange(FileHelper.GetVersions(_basePath));
-            }
-
-            CurrentPath = Path.Combine(_basePath, DataVersions[DataVersions.Count - 1].ToString());
-            IsFileDataLoading = true;
-
-
             Task.Run(() =>
             {
-                CurrentVersion = DataVersions[DataVersions.Count - 1];
-                IsFileDataLoading = false;
-            });
+                _currentProject = _repository.GetProject(project.ID);
 
+                Task.Run(() =>
+                {
+                    _basePath = Path.Combine(".\\Projects", _currentProject.ID);
+                   // CurrentPath = _basePath;
+                    FileHelper.CreateFolderIfNotExist(_basePath);
+                   
+
+
+                    App.Current.Dispatcher.Invoke(() =>
+                    {
+                        DataVersions.AddRange(FileHelper.GetVersions(_basePath));
+                        if (DataVersions.Count == 0)
+                        {
+                            FileHelper.CreateFolderIfNotExist(Path.Combine(_basePath, "V1"));
+                            DataVersions.AddRange(FileHelper.GetVersions(_basePath));
+                        }
+                        CurrentVersion = DataVersions[DataVersions.Count - 1];
+                        CurrentPath = Path.Combine(_basePath, DataVersions[DataVersions.Count - 1].ToString());
+                    });
+                    
+
+                });
+
+                ProjectDescription = project.Content;
+
+                if (Contributors != null) App.Current.Dispatcher.Invoke(() =>
+                {
+                    Contributors.Clear();
+                    Contributors.AddRange(_currentProject.Contributors);
+                    SeparateComments();
+                });
+
+              
+
+             
+              
+            });
+          
         }
+
 
         private void PublishSnackBar(string text)
         {
