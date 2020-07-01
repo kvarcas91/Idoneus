@@ -66,6 +66,7 @@ namespace Idoneus.ViewModels
         {
             _eventAggregator = eventAggregator;
             _repository = new ProjectRepository();
+
             eventAggregator.GetEvent<SendCurrentProject<Project>>().Subscribe(ProjectReceived);
         }
 

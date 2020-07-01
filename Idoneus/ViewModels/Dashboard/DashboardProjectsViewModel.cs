@@ -65,6 +65,7 @@ namespace Idoneus.ViewModels
             set { SetProperty(ref _searchText, value); HandleSearch(); }
         }
 
+        private readonly IRegionManager _regionManager;
         private readonly IStorage _storage;
         private readonly ProjectRepository _repository;
         private readonly IEventAggregator _eventAggregator;
@@ -81,8 +82,9 @@ namespace Idoneus.ViewModels
 
         #endregion // UI Properties
 
-        public DashboardProjectsViewModel(IEventAggregator eventAggregator, IStorage storage)
+        public DashboardProjectsViewModel(IEventAggregator eventAggregator, IStorage storage, IRegionManager regionManager)
         {
+            _regionManager = regionManager;
             _storage = storage;
             _repository = new ProjectRepository();
             _eventAggregator = eventAggregator;
@@ -183,7 +185,7 @@ namespace Idoneus.ViewModels
             {
                 { "project", project }
             };
-
+            _regionManager.RequestNavigate("ContentRegion", "Projects", navigationParams);
             _eventAggregator.GetEvent<NavigateRequest<NavigationParameters>>().Publish(("Projects", navigationParams));
         }
 

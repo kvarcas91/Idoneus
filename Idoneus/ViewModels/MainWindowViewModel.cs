@@ -1,8 +1,8 @@
 ﻿using Common;
-using Common.Enums;
 using Common.EventAggregators;
 using Common.Settings;
 using Domain.Models;
+using Domain.Models.Project;
 using Domain.Repository;
 using MaterialDesignColors;
 using MaterialDesignThemes.Wpf;
@@ -19,6 +19,7 @@ namespace Idoneus.ViewModels
 {
     public class MainWindowViewModel : BindableBase
     {
+        private readonly ProjectRepository _repository;
         private readonly IRegionManager _regionManager;
         private readonly IStorage _storage;
         private readonly IEventAggregator _eventAggregator;
@@ -36,7 +37,8 @@ namespace Idoneus.ViewModels
                 repository.Initialize();
                 storage.FirstLoad = false;
             }
-           
+
+            _repository = new ProjectRepository();
             _regionManager = regionManager;
             _storage = storage;
             _eventAggregator = eventAggregator;
@@ -51,6 +53,12 @@ namespace Idoneus.ViewModels
 
         private DelegateCommand<string> _navigateCommand = null;
         public DelegateCommand<string> NavigateCommand => _navigateCommand ?? (_navigateCommand = new DelegateCommand<string>(Navigate));
+
+        private DelegateCommand _addNewProjectCommand = null;
+        public DelegateCommand AddNewProjectCommand => _addNewProjectCommand ?? (_addNewProjectCommand = new DelegateCommand(AddNewProject));
+
+        private DelegateCommand _closeDialogCommand = null;
+        public DelegateCommand CloseDialogCommand => _closeDialogCommand ?? (_closeDialogCommand = new DelegateCommand(CloseDialog));
 
         private string _title = "Dashboard";
         public string Title
@@ -100,6 +108,95 @@ namespace Idoneus.ViewModels
             }
         }
 
+        #region New Project
+
+        private string _header;
+        public string Header
+        {
+            get { return _header; }
+            set { SetProperty(ref _header, value); }
+        }
+
+        private string _content;
+        public string Content
+        {
+            get { return _content; }
+            set { SetProperty(ref _content, value); }
+        }
+
+        private string _priority;
+        public string Priority
+        {
+            get { return _priority; }
+            set { SetProperty(ref _priority, value); }
+        }
+
+        private DateTime _dueDate = DateTime.Now.AddDays(7);
+        public DateTime DueDate
+        {
+            get { return _dueDate; }
+            set { SetProperty(ref _dueDate, value); }
+        }
+
+        #endregion // New Project
+
+        private void CloseDialog()
+        {
+            var dialog = DialogHost.CloseDialogCommand;
+            dialog.Execute(null, null);
+
+            var drawer = DrawerHost.CloseDrawerCommand;
+            drawer.Execute(null, null);
+            ClearProjectData();
+        }
+
+        private void AddNewProject()
+        {
+            if (!IsNewProjectValid()) return;
+            Priority priority = (Priority)Enum.Parse(typeof(Priority), Priority);
+            var project = new Project
+            {
+                ID = Guid.NewGuid().ToString(),
+                SubmitionDate = DateTime.Now,
+                Header = Header,
+                Content = Content,
+                DueDate = DueDate,
+                Priority = priority
+            };
+
+            _repository.Insert(project, "projects");
+
+            CloseDialog();
+
+            if (_currentRegion.Equals("Projects"))
+            {
+                _eventAggregator.GetEvent<SendCurrentProject<Project>>().Publish(project);
+            }
+            else
+            {
+                var navigationParams = new NavigationParameters
+                    {
+                        { "project", project }
+                    };
+                Navigate("Projects", navigationParams);
+            }
+        }
+
+        private bool IsNewProjectValid()
+        {
+            if (string.IsNullOrEmpty(Priority)) return false;
+
+            return true;
+        }
+
+        private void ClearProjectData()
+        {
+            Header = string.Empty;
+            Content = string.Empty;
+            DueDate = DateTime.Now.AddDays(7);
+            Priority = string.Empty;
+        }
+
         private void SetTheme()
         {
            
@@ -147,7 +244,10 @@ namespace Idoneus.ViewModels
 
         private void ReceiveNavigateRequest((string, NavigationParameters) param)
         {
-            Navigate(param.Item1, param.Item2);
+            var drawer = DrawerHost.CloseDrawerCommand;
+            drawer.Execute(null, null);
+            _currentRegion = param.Item1;
+            Title = _currentRegion;
         }
 
         private void Navigate(string navigatePath)
@@ -163,12 +263,6 @@ namespace Idoneus.ViewModels
             if (_storage.IsExporting) return;
 
             if (_currentRegion.Equals(navigatePath)) return;
-
-
-            if (navigatePath.Equals("Dashboard"))
-            {
-                _storage.FirstLoad = true;
-            }
 
             if (navigatePath != null)
             {

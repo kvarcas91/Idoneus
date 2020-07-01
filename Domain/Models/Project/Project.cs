@@ -1,6 +1,5 @@
 ﻿using Common;
 using Dapper.Contrib.Extensions;
-using Domain.Attributes;
 using Domain.Models.Base;
 using Domain.Models.Comments;
 using Domain.Models.Tasks;
@@ -22,7 +21,7 @@ namespace Domain.Models.Project
         public DateTime SubmitionDate { get; set; }
         public DateTime DueDate { get; set; }
         public Priority Priority { get; set; } = Priority.Default;
-        public Status Status { get; set; } = Status.Archived;
+        public Status Status { get; set; } = Status.InProgress;
         public int OrderNumber { get; set; }
 
         [Computed]
@@ -46,6 +45,7 @@ namespace Domain.Models.Project
             if (Status == Status.Completed)
             {
                 Progress = 100D;
+                return Progress;
             }
 
             if (Tasks.Count == 0) return Progress;
@@ -72,9 +72,6 @@ namespace Domain.Models.Project
 
             if (CompletedTaskCount == Tasks.Count) Progress = 100D;
            
-
-
-
             return Math.Round(Progress, 0);
         }
 

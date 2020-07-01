@@ -23,140 +23,229 @@
         <WindowChrome CaptionHeight="42"/>
     </WindowChrome.WindowChrome>
 
-    <materialDesign:DrawerHost>
-        <materialDesign:DrawerHost.LeftDrawerContent>
+    <materialDesign:DialogHost CloseOnClickAway="True" Style="{StaticResource MaterialDesignEmbeddedDialogHost}">
 
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
+        <materialDesign:DialogHost.DialogContent>
+           
+                <materialDesign:ColorZone 
+                        materialDesign:ShadowAssist.ShadowDepth="Depth2"
+                        Background="Transparent"
+                    Margin="10"
+                    Width="400">
 
-                <StackPanel Margin="10" Orientation="Vertical"
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="1"
+                                    Orientation="Vertical">
+                        
+                        <TextBox VerticalAlignment="Center"
+                                materialDesign:HintAssist.Hint="Title..."
+                                BorderThickness="0"
+                                materialDesign:HintAssist.IsFloating="True"
+                                materialDesign:TextFieldAssist.DecorationVisibility="Collapsed"
+                                Text="{Binding Header, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                Margin="10"/>
+
+                        <TextBox VerticalAlignment="Center"
+                                materialDesign:HintAssist.Hint="Description"
+                                BorderThickness="0"
+                                materialDesign:HintAssist.IsFloating="True"
+                                materialDesign:TextFieldAssist.DecorationVisibility="Collapsed"
+                                AcceptsReturn="True"
+                                TextWrapping="Wrap"
+                                 Height="200"
+                                Text="{Binding Content, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                Margin="10"/>
+
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center"
+                                    Margin="10">
+
+                            <DatePicker Style="{StaticResource MaterialDesignDatePicker}"
+                                    materialDesign:HintAssist.Hint="Due on"
+                                    materialDesign:HintAssist.IsFloating="True"
+                                    SelectedDate="{Binding DueDate}"
+                                    Margin="10 0"/>
+
+                            <ComboBox Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                                      materialDesign:HintAssist.Hint="Priority"
+                                      materialDesign:HintAssist.IsFloating="True"
+                                      Margin="10 0"
+                                      SelectedValuePath="content"
+                                      Text="{Binding Priority}">
+                                <ComboBoxItem Content="Low"/>
+                                <ComboBoxItem Content="Medium"/>
+                                <ComboBoxItem Content="High"/>
+                            </ComboBox>
+
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal"
+                                    Margin="10 30 10 10"
+                                    HorizontalAlignment="Right">
+
+                            <Button Style="{StaticResource MaterialDesignFlatButton}"
+                                    Margin="5"
+                                    Content="Cancel"
+                                    Command="{Binding CloseDialogCommand}"/>
+
+                            <Button Style="{StaticResource MaterialDesignOutlinedButton}"
+                                    Margin="5"
+                                    Command="{Binding AddNewProjectCommand}">
+                                <TextBlock Text="Confirm"
+                                           Typography.Capitals="AllSmallCaps"/>
+                            </Button>
+
+                        </StackPanel>
+                        
+                    </StackPanel>
+
+                    </Grid>
+
+                </materialDesign:ColorZone>
+    
+        </materialDesign:DialogHost.DialogContent>
+
+        <materialDesign:DrawerHost>
+            <materialDesign:DrawerHost.LeftDrawerContent>
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Margin="10" Orientation="Vertical"
                         VerticalAlignment="Top"
                             HorizontalAlignment="Center"
                             WindowChrome.IsHitTestVisibleInChrome="True">
-                    <Button 
+                        <Button 
                         Style="{StaticResource MaterialDesignFlatButton}"
                         VerticalAlignment="Center"
+                        Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"
                         ToolTip="Create new project">
-                        <materialDesign:PackIcon Kind="AddCircleOutline"/>
-                    </Button>
+                            <materialDesign:PackIcon Kind="AddCircleOutline"/>
+                        </Button>
 
-                    <Button 
+                        <Button 
                         Style="{StaticResource MaterialDesignFlatButton}"
                         VerticalAlignment="Center"
                         ToolTip="Dashboard"
                         Command="{Binding NavigateCommand}"
                         CommandParameter="Dashboard">
-                        <materialDesign:PackIcon Kind="ViewDashboard"/>
-                    </Button>
+                            <materialDesign:PackIcon Kind="ViewDashboard"/>
+                        </Button>
 
-                    <Button 
+                        <Button 
                         Style="{StaticResource MaterialDesignFlatButton}"
                         VerticalAlignment="Center"
                         ToolTip="Projects"
                         Command="{Binding NavigateCommand}"
                         CommandParameter="Projects">
-                        <materialDesign:PackIcon Kind="FilterList"/>
-                    </Button>
+                            <materialDesign:PackIcon Kind="FilterList"/>
+                        </Button>
 
-                   
-                </StackPanel>
 
-                <Button Grid.Row="1"
+                    </StackPanel>
+
+                    <Button Grid.Row="1"
                         Margin="10 0 10 20"
                         Style="{StaticResource MaterialDesignFlatButton}"
                         ToolTip="Settings"
                         Command="{Binding NavigateCommand}"
                         CommandParameter="UserSettings">
-                    <materialDesign:PackIcon Kind="Gear"/>
-                </Button>
+                        <materialDesign:PackIcon Kind="Gear"/>
+                    </Button>
 
-            </Grid>
-     
+                </Grid>
 
-        </materialDesign:DrawerHost.LeftDrawerContent>
 
-        <materialDesign:Card HorizontalAlignment="Stretch"
+            </materialDesign:DrawerHost.LeftDrawerContent>
+
+            <materialDesign:Card HorizontalAlignment="Stretch"
                          VerticalAlignment="Stretch"           
         materialDesign:ShadowAssist.ShadowDepth="Depth3"
                                  materialDesign:ShadowAssist.ShadowEdges="All">
 
 
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="42"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="42"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
 
-                <Grid WindowChrome.IsHitTestVisibleInChrome="True"
+                    <Grid WindowChrome.IsHitTestVisibleInChrome="True"
                       VerticalAlignment="Stretch">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
 
-                    <StackPanel Grid.Column="0"
+                        <StackPanel Grid.Column="0"
                             Orientation="Horizontal"
                             Margin="10">
 
-                        <Button HorizontalAlignment="Left"
+                            <Button HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
                                  Style="{StaticResource MaterialDesignFlatButton}"
                                     Command="{x:Static materialDesign:DrawerHost.OpenDrawerCommand}">
-                            <materialDesign:PackIcon Kind="HamburgerMenu"/>
-                        </Button>
+                                <materialDesign:PackIcon Kind="HamburgerMenu"/>
+                            </Button>
 
-                        <TextBlock VerticalAlignment="Center" 
+                            <TextBlock VerticalAlignment="Center" 
                                        Text="{Binding Title}" 
                                        Style="{StaticResource MaterialDesignCaptionTextBlock}"
                                        Foreground="{DynamicResource PrimaryHueMidBrush}"/>
 
-                    </StackPanel>
+                        </StackPanel>
 
-                    <StackPanel Grid.Column="1"
+                        <StackPanel Grid.Column="1"
                                 Orientation="Horizontal">
 
-                        <ToggleButton Style="{StaticResource MaterialDesignSwitchToggleButton}"
+                            <ToggleButton Style="{StaticResource MaterialDesignSwitchToggleButton}"
                                       IsChecked="{Binding DarkMode, Mode=TwoWay}"
                                       ToolTip="{Binding Mode}"
                                       VerticalAlignment="Center"
                                       Height="10"/>
 
-                        <Button HorizontalAlignment="Center"
+                            <Button HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
                                 Style="{StaticResource MaterialDesignFlatButton}">
-                            <TextBlock Text="{Binding UserName}"
+                                <TextBlock Text="{Binding UserName}"
                                        Style="{StaticResource MaterialDesignOverlineTextBlock}"/>
-                        </Button>
+                            </Button>
 
-                        <Button HorizontalAlignment="Left"
+                            <Button HorizontalAlignment="Left"
                                 VerticalAlignment="Stretch"
                                 Name="CloseButton"
                                 ToolTip="Close"
                                  Style="{StaticResource MaterialDesignFlatButton}">
-                            <materialDesign:PackIcon Kind="Close"/>
-                        </Button>
+                                <materialDesign:PackIcon Kind="Close"/>
+                            </Button>
 
-                    </StackPanel>
+                        </StackPanel>
 
 
 
-                </Grid>
+                    </Grid>
 
-                <ContentControl Grid.Row="1"
+                    <ContentControl Grid.Row="1"
                 prism:RegionManager.RegionName="ContentRegion"/>
 
-                <materialDesign:Snackbar 
+                    <materialDesign:Snackbar 
                     Grid.Row="1"
                     HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Center"
                     Message="{Binding SnackBarMessage}" IsActive="{Binding IsSnackBarActive}"/>
 
-            </Grid>
+                </Grid>
 
-        </materialDesign:Card>
+            </materialDesign:Card>
 
-    </materialDesign:DrawerHost>
+        </materialDesign:DrawerHost>
+    </materialDesign:DialogHost>
 </Window>

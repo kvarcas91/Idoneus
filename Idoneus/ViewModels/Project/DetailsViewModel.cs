@@ -935,9 +935,9 @@ namespace Idoneus.ViewModels
             _currentProject = project;
             if (project == null) return;
 
-            Task.Run(() =>
-            {
-                _currentProject = _repository.GetProject(project.ID);
+            //Task.Run(() =>
+            //{
+               // _currentProject = _repository.GetProject(project.ID);
 
                 Task.Run(() =>
                 {
@@ -945,10 +945,9 @@ namespace Idoneus.ViewModels
                    // CurrentPath = _basePath;
                     FileHelper.CreateFolderIfNotExist(_basePath);
                    
-
-
                     App.Current.Dispatcher.Invoke(() =>
                     {
+                        DataVersions.Clear();
                         DataVersions.AddRange(FileHelper.GetVersions(_basePath));
                         if (DataVersions.Count == 0)
                         {
@@ -973,7 +972,7 @@ namespace Idoneus.ViewModels
 
              
               
-            });
+           // });
           
         }
 

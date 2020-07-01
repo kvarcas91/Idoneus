@@ -138,12 +138,19 @@ namespace Idoneus.ViewModels
 
         }
 
+        private void SetTaskCount()
+        {
+            TasksCount = _project.Tasks.Count;
+        }
+
         private void OnItemClicked(Project project)
         {
             var drawer = DrawerHost.CloseDrawerCommand;
             drawer.Execute(null, null);
 
             ProjectTitle = project.Header;
+            _project = project;
+            SetTaskCount();
             _eventAggregator.GetEvent<SendCurrentProject<Project>>().Publish(project);
         }
 
@@ -167,6 +174,7 @@ namespace Idoneus.ViewModels
             {
                 ProjectTitle = _project.Header;
                 _eventAggregator.GetEvent<SendCurrentProject<Project>>().Publish(_project);
+                SetTaskCount();
             }
             InitData();
         }
