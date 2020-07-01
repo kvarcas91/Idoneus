@@ -1,4 +1,5 @@
 ﻿using Common;
+using Domain.Repository;
 using Idoneus.Commands;
 using Idoneus.Views;
 using Prism.Ioc;
@@ -20,8 +21,7 @@ namespace Idoneus
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
-           
-            containerRegistry.RegisterSingleton<IApplicationCommands, ApplicationCommands>();
+            containerRegistry.RegisterSingleton<ProjectRepository>();
             containerRegistry.RegisterSingleton<IStorage, Storage>();
             // register other needed services here
         }

@@ -54,6 +54,7 @@ namespace Domain.Repository
 
         private void GetProjectContent(Project project)
         {
+            if (project == null) return;
             project.GetProgress();
             project.Tasks = new ObservableCollection<ProjectTask>(GetProjectTasks(project.ID));
             project.Contributors = new ObservableCollection<Contributor>(GetProjectContributors(project.ID));
@@ -147,13 +148,13 @@ namespace Domain.Repository
         {
             if (task is ProjectTask)
             {
-                return Get<Project>("ID", task.ParentID, "projects");
+                return GetProject(task.ParentID);
             }
             if (task is SubTask)
             {
                 var query = $"SELECT ParentID FROM subtasks WHERE ID ='{task.ID}'";
                 string parentID = GetScalar<string>(query);
-                return Get<Project>("ID", parentID, "projects");
+                return GetProject(parentID);
             }
 
             return null;

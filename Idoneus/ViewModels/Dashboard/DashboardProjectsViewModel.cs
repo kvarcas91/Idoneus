@@ -82,11 +82,11 @@ namespace Idoneus.ViewModels
 
         #endregion // UI Properties
 
-        public DashboardProjectsViewModel(IEventAggregator eventAggregator, IStorage storage, IRegionManager regionManager)
+        public DashboardProjectsViewModel(IEventAggregator eventAggregator, IStorage storage, IRegionManager regionManager, ProjectRepository repository)
         {
             _regionManager = regionManager;
             _storage = storage;
-            _repository = new ProjectRepository();
+            _repository = repository;
             _eventAggregator = eventAggregator;
             eventAggregator.GetEvent<SendMessageEvent<ObservableCollection<Project>>>().Subscribe(MessageReceived);
             _projectViewType = new List<string>() { "All", "In Progress", "Completed", "Archived", "Delayed" };
@@ -185,8 +185,8 @@ namespace Idoneus.ViewModels
             {
                 { "project", project }
             };
-            _regionManager.RequestNavigate("ContentRegion", "Projects", navigationParams);
-            _eventAggregator.GetEvent<NavigateRequest<NavigationParameters>>().Publish(("Projects", navigationParams));
+            //_regionManager.RequestNavigate("ContentRegion", "Projects", navigationParams);
+            _eventAggregator.GetEvent<NavigateRequest<NavigationParameters>>().Publish(("Projects", navigationParams, true));
         }
 
     }

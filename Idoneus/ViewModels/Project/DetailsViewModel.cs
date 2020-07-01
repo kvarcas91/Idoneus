@@ -285,7 +285,7 @@ namespace Idoneus.ViewModels
 
         #endregion // Delegates
 
-        public DetailsViewModel(IEventAggregator eventAggregator)
+        public DetailsViewModel(IEventAggregator eventAggregator, ProjectRepository repository)
         {
             _eventAggregator = eventAggregator;
 
@@ -293,7 +293,7 @@ namespace Idoneus.ViewModels
             SelectedContributors = new ObservableCollection<Contributor>();
             Comments = new ObservableCollection<Comment>();
             Links = new ObservableCollection<Link>();
-            _repository = new ProjectRepository();
+            _repository = repository;
 
             AllContributors = new ObservableCollection<Contributor>(_repository.GetAllContributors());
             DataVersions = new ObservableCollection<ProjectFolder>();
@@ -943,15 +943,15 @@ namespace Idoneus.ViewModels
                 {
                     _basePath = Path.Combine(".\\Projects", _currentProject.ID);
                    // CurrentPath = _basePath;
-                    FileHelper.CreateFolderIfNotExist(_basePath);
+                   
                    
                     App.Current.Dispatcher.Invoke(() =>
                     {
+                        FileHelper.InitializeProjectFolder(_currentProject.ID);
                         DataVersions.Clear();
                         DataVersions.AddRange(FileHelper.GetVersions(_basePath));
                         if (DataVersions.Count == 0)
                         {
-                            FileHelper.CreateFolderIfNotExist(Path.Combine(_basePath, "V1"));
                             DataVersions.AddRange(FileHelper.GetVersions(_basePath));
                         }
                         CurrentVersion = DataVersions[DataVersions.Count - 1];

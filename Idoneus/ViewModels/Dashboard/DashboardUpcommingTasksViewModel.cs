@@ -49,11 +49,11 @@ namespace Idoneus.ViewModels
         private DelegateCommand<ITask> _onItemClickedCommand;
         public DelegateCommand<ITask> OnItemClickedCommand => _onItemClickedCommand ?? (_onItemClickedCommand = new DelegateCommand<ITask>(OnItemClicked));
 
-        public DashboardUpcommingTasksViewModel(IEventAggregator eventAggregator)
+        public DashboardUpcommingTasksViewModel(IEventAggregator eventAggregator, ProjectRepository repository)
         {
             _eventAggregator = eventAggregator;
             eventAggregator.GetEvent<SendMessageToUpcommingTasks<ObservableCollection<ITask>>>().Subscribe(MessageReceived);
-            _repository = new ProjectRepository();
+            _repository = repository;
         }
 
         private void MessageReceived(ObservableCollection<ITask> projects)
@@ -106,7 +106,7 @@ namespace Idoneus.ViewModels
                 { "project", parentProject }
             };
 
-            _eventAggregator.GetEvent<NavigateRequest<NavigationParameters>>().Publish(("Projects", navigationParams));
+            _eventAggregator.GetEvent<NavigateRequest<NavigationParameters>>().Publish(("Projects", navigationParams, true));
         }
 
     }

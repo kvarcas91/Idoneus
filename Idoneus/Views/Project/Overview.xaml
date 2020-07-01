@@ -178,12 +178,6 @@
                                 <materialDesign:PackIcon Kind="Delete"/>
                             </Button>
 
-                            <Button Style="{StaticResource MaterialDesignFlatButton}"
-                                    ToolTip="Edit"
-                                    Command="{Binding EditProjectCommand}">
-                                <materialDesign:PackIcon Kind="Edit"/>
-                            </Button>
-
                         </StackPanel>
 
                     </Grid>

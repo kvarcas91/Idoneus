@@ -23,17 +23,15 @@ namespace Idoneus.Views
 
             _container = container;
             _regionManager = regionManager;
-
-            Loaded += MainWindow_Loaded;
+            Loaded += Dashboard_Loaded;
         }
 
-        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        private void Dashboard_Loaded(object sender, RoutedEventArgs e)
         {
             _dashboardDailyTasks = _container.Resolve<DashboardDailyTasks>();
-
             _taskRegion = _regionManager.Regions["DashboardTaskRegion"];
             _taskRegion.Add(_dashboardDailyTasks);
-
+          
             ((DashboardViewModel)DataContext).InitRegion();
 
         }

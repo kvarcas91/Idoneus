@@ -1,6 +1,7 @@
 ﻿using Common;
 using Common.EventAggregators;
 using Common.Settings;
+using Domain.Helpers;
 using Domain.Models;
 using Domain.Models.Project;
 using Domain.Repository;
@@ -27,24 +28,28 @@ namespace Idoneus.ViewModels
         private readonly SwatchesProvider _swatchesProvider = new SwatchesProvider();
         private string _currentRegion = string.Empty;
 
-        public MainWindowViewModel(IRegionManager regionManager, IStorage storage, IEventAggregator eventAggregator)
+        public MainWindowViewModel(IRegionManager regionManager, IStorage storage, IEventAggregator eventAggregator, ProjectRepository repository)
         {
             AppSettings.Load();
+            _repository = repository;
             DarkMode = AppSettings.Instance.DarkMode;
 
             if (storage.FirstLoad)  {
-                var repository = new ProjectRepository();
+
                 repository.Initialize();
                 storage.FirstLoad = false;
             }
 
-            _repository = new ProjectRepository();
+            
             _regionManager = regionManager;
             _storage = storage;
             _eventAggregator = eventAggregator;
+
             storage.UserName = Environment.UserName;
             UserName = storage.UserName;
+
             Login();
+
             Navigate("Dashboard");
 
             _eventAggregator.GetEvent<SendSnackBarMessage>().Subscribe(ReceiveMessage);
@@ -153,6 +158,7 @@ namespace Idoneus.ViewModels
         private void AddNewProject()
         {
             if (!IsNewProjectValid()) return;
+
             Priority priority = (Priority)Enum.Parse(typeof(Priority), Priority);
             var project = new Project
             {
@@ -165,6 +171,8 @@ namespace Idoneus.ViewModels
             };
 
             _repository.Insert(project, "projects");
+
+            FileHelper.InitializeProjectFolder(project.ID);
 
             CloseDialog();
 
@@ -184,7 +192,10 @@ namespace Idoneus.ViewModels
 
         private bool IsNewProjectValid()
         {
-            if (string.IsNullOrEmpty(Priority)) return false;
+            if (string.IsNullOrEmpty(Priority))
+            {
+                return false;
+            }
 
             return true;
         }
@@ -199,7 +210,6 @@ namespace Idoneus.ViewModels
 
         private void SetTheme()
         {
-           
             ITheme theme = _paletteHelper.GetTheme();
             IBaseTheme baseTheme = DarkMode ? new MaterialDesignDarkTheme() : (IBaseTheme)new MaterialDesignLightTheme();
      
@@ -227,6 +237,7 @@ namespace Idoneus.ViewModels
                 FirstName = "Eduardas",
                 LastName = "Slutas"
             };
+
             _eventAggregator.GetEvent <UserLoginMessage<Contributor>>().Publish(user);
           
         }
@@ -242,12 +253,14 @@ namespace Idoneus.ViewModels
             });
         }
 
-        private void ReceiveNavigateRequest((string, NavigationParameters) param)
+        private void ReceiveNavigateRequest((string, NavigationParameters, bool) param)
         {
             var drawer = DrawerHost.CloseDrawerCommand;
             drawer.Execute(null, null);
             _currentRegion = param.Item1;
             Title = _currentRegion;
+
+            if (param.Item3) Navigate(param.Item1, param.Item2);
         }
 
         private void Navigate(string navigatePath)
@@ -262,7 +275,7 @@ namespace Idoneus.ViewModels
 
             if (_storage.IsExporting) return;
 
-            if (_currentRegion.Equals(navigatePath)) return;
+            //if (_currentRegion.Equals(navigatePath)) return;
 
             if (navigatePath != null)
             {

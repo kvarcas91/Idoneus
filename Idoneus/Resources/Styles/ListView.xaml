@@ -24,7 +24,13 @@
                             <ColumnDefinition Width="2*"/>
                         </Grid.ColumnDefinitions>
 
-                        <StackPanel Orientation="Horizontal">
+                        <Grid.InputBindings>
+                            <MouseBinding Gesture="LeftDoubleClick" 
+                                          Command="{Binding ElementName=projectSnippetListView, Path=DataContext.OnItemClickedCommand}"
+                                          CommandParameter="{Binding}"/>
+                        </Grid.InputBindings>
+
+                        <StackPanel Orientation="Horizontal" Background="Transparent">
 
                             <!-- Priority Color Indicator -->
                             <Border Grid.Column="0"
@@ -35,11 +41,11 @@
 
                             <!-- Project summary -->
                             <TextBlock Grid.Column="0"
-                                   Text="{Binding Content}"
+                                   Text="{Binding Content, Converter={converters:SingleTextLineConverter}}"
                                    TextTrimming="WordEllipsis"/>
                         </StackPanel>
                         
-                        <Grid Grid.Column="1">
+                        <Grid Grid.Column="1" Background="Transparent">
                             <Grid.ColumnDefinitions>
 
                                 <!-- completed tasks / Total tasks -->
@@ -403,14 +409,13 @@
                             <StackPanel VerticalAlignment="Center" >
 
                                 <!-- Header -->
-                                <TextBlock Text="{Binding Header}"
+                                <TextBlock Text="{Binding Header, Converter={converter:SingleTextLineConverter}}"
                                     Padding="0 0 0 2"
-                                         
                                     Foreground="{DynamicResource PrimaryHueMidBrush}"
                                     TextTrimming="CharacterEllipsis"/>
 
                                 <!-- Content -->
-                                <TextBlock Text="{Binding Content}"
+                                <TextBlock Text="{Binding Content, Converter={converter:SingleTextLineConverter}}"
                                     Padding="0 2 0 0"
                                     Foreground="Gray"
                                     ToolTip="{Binding Content}"

@@ -81,6 +81,13 @@ namespace Domain.Helpers
             return exists;
         }
 
+        public static void InitializeProjectFolder(string projectID)
+        {
+            var _basePath = Path.Combine(".\\Projects", projectID);
+            CreateFolderIfNotExist(_basePath);
+            CreateFolderIfNotExist(Path.Combine(_basePath, "V1"));
+        }
+
         public static bool FileExists(string path)
         {
             return File.Exists(path);

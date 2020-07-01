@@ -105,18 +105,12 @@
                                HorizontalAlignment="Center"/>
                
             </StackPanel>
-            
+
             <ListView x:Name="projectSnippetListView"
                       Visibility="{Binding IsExporting, Converter={StaticResource InverseBoolToVisConverter}}"
                       ItemsSource="{Binding Projects}"
-                      Style="{StaticResource ProjectListViewSnippet}">
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="MouseDoubleClick">
-                        <i:InvokeCommandAction CommandParameter="{Binding ElementName=projectSnippetListView, Path=SelectedItem}"
-                                   Command="{Binding OnItemClickedCommand}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-            </ListView>
+                      Style="{StaticResource ProjectListViewSnippet}"/>
+          
         </Grid>
 
     </Grid>

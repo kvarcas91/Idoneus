@@ -9,7 +9,6 @@ using Prism.Events;
 using Prism.Mvvm;
 using Prism.Regions;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 
@@ -18,7 +17,12 @@ namespace Idoneus.ViewModels
     public class ProjectsViewModel : BindableBase, INavigationAware
     {
 
-        private Project _project;
+        private Project _currentProject;
+        public Project CurrentProject
+        {
+            get { return _currentProject; }
+            set { SetProperty(ref _currentProject, value); }
+        }
 
         private ObservableCollection<Project> _allProjects;
         private ObservableCollection<Project> _projects;
@@ -74,10 +78,10 @@ namespace Idoneus.ViewModels
         private readonly ProjectRepository _projectRepository;
         private readonly IEventAggregator _eventAggregator;
 
-        public ProjectsViewModel(IEventAggregator eventAggregator)
+        public ProjectsViewModel(IEventAggregator eventAggregator, ProjectRepository repository)
         {
             _eventAggregator = eventAggregator;
-            _projectRepository = new ProjectRepository();
+            _projectRepository = repository;
             Tabs = new ObservableCollection<UserControl>
             {
                 new Overview(),
@@ -140,7 +144,12 @@ namespace Idoneus.ViewModels
 
         private void SetTaskCount()
         {
-            TasksCount = _project.Tasks.Count;
+            if (CurrentProject == null)
+            {
+                TasksCount = 0;
+                return;
+            }
+            TasksCount = CurrentProject.Tasks.Count;
         }
 
         private void OnItemClicked(Project project)
@@ -149,7 +158,7 @@ namespace Idoneus.ViewModels
             drawer.Execute(null, null);
 
             ProjectTitle = project.Header;
-            _project = project;
+            CurrentProject = project;
             SetTaskCount();
             _eventAggregator.GetEvent<SendCurrentProject<Project>>().Publish(project);
         }
@@ -163,17 +172,19 @@ namespace Idoneus.ViewModels
 
         public void OnNavigatedFrom(NavigationContext navigationContext)
         {
-            Debug.WriteLine("OnVaigatedFrom", nameof(ProjectsViewModel));
+            CurrentProject = null;
+            _eventAggregator.GetEvent<SendCurrentProject<Project>>().Publish(null);
+            SetTaskCount();
         }
 
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
-          
-            _project = navigationContext.Parameters["project"] as Project;
-            if(_project != null)
+
+            CurrentProject = navigationContext.Parameters["project"] as Project;
+            if(CurrentProject != null)
             {
-                ProjectTitle = _project.Header;
-                _eventAggregator.GetEvent<SendCurrentProject<Project>>().Publish(_project);
+                ProjectTitle = CurrentProject.Header;
+                _eventAggregator.GetEvent<SendCurrentProject<Project>>().Publish(CurrentProject);
                 SetTaskCount();
             }
             InitData();

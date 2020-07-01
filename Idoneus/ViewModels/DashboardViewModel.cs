@@ -1,7 +1,6 @@
 ﻿using Common;
 using Common.EventAggregators;
 using Domain.Models;
-using Domain.Models.Base;
 using Domain.Models.Project;
 using Domain.Models.Tasks;
 using Domain.Repository;
@@ -35,8 +34,6 @@ namespace Idoneus.ViewModels
             set { SetProperty(ref _isDataLoaded, value); }
         }
 
-       
-
         private ObservableCollection<Project> _projects = new ObservableCollection<Project>();
 
         private bool _activeDashboardTab = true;
@@ -52,7 +49,6 @@ namespace Idoneus.ViewModels
         public bool KeepAlive => true;
 
         private UserControl _activeTab;
-
         private readonly IEventAggregator _eventAggregator;
         private readonly IRegionManager _regionManager;
         private readonly IContainerExtension _container;
@@ -62,16 +58,15 @@ namespace Idoneus.ViewModels
         private DashboardProjects d;
         private DashboardUpcommingTasks u;
 
-        public DashboardViewModel(IEventAggregator eventAggregator, 
-            IRegionManager regionManager, IContainerExtension container, IStorage storage)
+        public DashboardViewModel(IEventAggregator eventAggregator, IRegionManager regionManager, IContainerExtension container, IStorage storage, ProjectRepository repository)
         {
             _eventAggregator = eventAggregator;
             _regionManager = regionManager;
             _container = container;
             _storage = storage;
-          
-            _repository = new ProjectRepository();
-          
+
+            _repository = repository;
+
             _eventAggregator.GetEvent<UserLoginMessage<Contributor>>().Subscribe(GetUser);
 
         }
@@ -96,17 +91,13 @@ namespace Idoneus.ViewModels
 
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
-            
-            InitializeData();
-                
+            InitializeData();    
         }
 
         #endregion // Navigation
 
         public void InitializeData()
         {
-          
-          
             Task.Run(() =>
             {
                 _projects = new ObservableCollection<Project>(_repository.GetProjects());

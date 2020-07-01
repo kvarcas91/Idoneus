@@ -6,9 +6,6 @@ using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
 using Prism.Regions;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Idoneus.ViewModels
@@ -19,6 +16,7 @@ namespace Idoneus.ViewModels
         #region Local members
 
         private readonly IEventAggregator _eventAggregator;
+        private readonly IRegionManager _regionManager;
         private readonly ProjectRepository _repository;
 
         #endregion // Local members
@@ -52,9 +50,6 @@ namespace Idoneus.ViewModels
         private DelegateCommand _archiveProjectCommand;
         public DelegateCommand ArchiveProjectCommand => _archiveProjectCommand ?? (_archiveProjectCommand = new DelegateCommand(ArchiveProject));
 
-        private DelegateCommand _editProjectCommand;
-        public DelegateCommand EditProjectCommand => _editProjectCommand ?? (_editProjectCommand = new DelegateCommand(EditProject));
-
         private DelegateCommand _deleteProjectCommand;
         public DelegateCommand DeleteProjectCommand => _deleteProjectCommand ?? (_deleteProjectCommand = new DelegateCommand(DeleteProject));
 
@@ -62,10 +57,11 @@ namespace Idoneus.ViewModels
 
         #endregion // Delegates
 
-        public OverviewViewModel(IEventAggregator eventAggregator)
+        public OverviewViewModel(IEventAggregator eventAggregator, IRegionManager regionManager, ProjectRepository repository)
         {
+            _regionManager = regionManager;
             _eventAggregator = eventAggregator;
-            _repository = new ProjectRepository();
+            _repository = repository;
 
             eventAggregator.GetEvent<SendCurrentProject<Project>>().Subscribe(ProjectReceived);
         }
@@ -73,16 +69,6 @@ namespace Idoneus.ViewModels
         #region Methods
 
         #region Project
-
-        private void EditProject()
-        {
-            if (CurrentProject == null)
-            {
-                PublishSnackBar("Select project first");
-                return;
-            }
-
-        }
 
         private void ArchiveProject()
         {
@@ -119,7 +105,7 @@ namespace Idoneus.ViewModels
                 _repository.DeleteProject(CurrentProject);
                 CurrentProject = null;
 
-                App.Current.Dispatcher.Invoke(() => _eventAggregator.GetEvent<NavigateRequest<NavigationParameters>>().Publish(("Dashboard", null)));
+                App.Current.Dispatcher.Invoke(() => _eventAggregator.GetEvent<NavigateRequest<NavigationParameters>>().Publish(("Dashboard", null, true)));
             });
 
            

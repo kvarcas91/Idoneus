@@ -54,7 +54,6 @@
         </materialDesign:DrawerHost.LeftDrawerContent>
 
         <Grid>
-
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
@@ -104,7 +103,8 @@
                          HorizontalAlignment="Left"
                                  Margin="10 0 10 0"
                          Background="Transparent"
-                         SelectedIndex="{Binding ViewType}">
+                         SelectedIndex="{Binding ViewType}"
+                                 Visibility="{Binding CurrentProject, Converter={StaticResource NullableToVisibilityConverter}}">
 
                             <ListBoxItem>
                                 <TextBlock Text="Overview"
@@ -148,7 +148,8 @@
                                 Grid.Column="3"
                                 VerticalAlignment="Center"
                                 ToolTip="Edit Project"
-                                Margin="0 0 10 0">
+                                Margin="0 0 10 0"
+                                  Visibility="{Binding CurrentProject, Converter={StaticResource NullableToVisibilityConverter}}">
                             <materialDesign:PackIcon Kind="EditOutline"/>
                         </Button>
                     </Grid>
@@ -162,7 +163,7 @@
                     BorderThickness="0"
                     ItemsSource="{Binding Tabs}"
                     SelectedIndex="{Binding ViewType}"
-                    >
+                      Visibility="{Binding CurrentProject, Converter={StaticResource NullableToVisibilityConverter}}">
                 <TabControl.ItemContainerStyle>
                     <Style TargetType="{x:Type TabItem}">
                         <Setter Property="Visibility" Value="Collapsed"/>
