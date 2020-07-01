@@ -190,7 +190,81 @@
 
         </materialDesign:Card>
 
+        <!-- Project content info -->
+        <Grid Margin="10"
+              Grid.Row="1">
 
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+
+          
+            <materialDesign:Card materialDesign:ShadowAssist.ShadowDepth="Depth2"
+                             Grid.Row="1"
+                                 Margin="0 0 5 0">
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <materialDesign:ColorZone  materialDesign:ShadowAssist.ShadowDepth="Depth2">
+                        <TextBlock Text="Description"
+                                   Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                                   Typography.Capitals="AllSmallCaps"
+                                   Margin="10"/>
+                    </materialDesign:ColorZone>
+
+
+                    <materialDesign:ColorZone  materialDesign:ShadowAssist.ShadowDepth="Depth2"
+                                               Background="Transparent"
+                                               Grid.Row="1"
+                                               VerticalAlignment="Stretch">
+                        <ScrollViewer>
+                            <TextBlock Text="{Binding CurrentProject.Content}"
+                                       Margin="10"
+                                       ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                    ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+                        </ScrollViewer>
+                    </materialDesign:ColorZone>
+
+                </Grid>
+             
+
+            </materialDesign:Card>
+
+            <Grid Grid.Column="1"
+                  Margin="5 0 0 0">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                
+                <Grid Margin="0 0 0 5">
+
+                    
+                    
+                </Grid>
+
+                <Grid Margin="0 5 0 5"
+                      Grid.Row="1">
+
+                    
+                    
+                </Grid>
+
+                <Grid Margin="0 5 0 0"
+                      Grid.Row="2">
+
+                    
+                    
+                </Grid>
+            </Grid>
+            
+        </Grid>
         
         
     </Grid>

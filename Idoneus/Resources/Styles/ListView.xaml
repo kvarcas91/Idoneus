@@ -412,14 +412,16 @@
                                 <TextBlock Text="{Binding Header, Converter={converter:SingleTextLineConverter}}"
                                     Padding="0 0 0 2"
                                     Foreground="{DynamicResource PrimaryHueMidBrush}"
-                                    TextTrimming="CharacterEllipsis"/>
+                                    TextTrimming="CharacterEllipsis"
+                                           MaxWidth="100"/>
 
                                 <!-- Content -->
                                 <TextBlock Text="{Binding Content, Converter={converter:SingleTextLineConverter}}"
                                     Padding="0 2 0 0"
                                     Foreground="Gray"
                                     ToolTip="{Binding Content}"
-                                    TextTrimming="CharacterEllipsis"/>
+                                    TextTrimming="CharacterEllipsis"
+                                           MaxWidth="100"/>
                             </StackPanel>
                         </Border>
 
@@ -696,6 +698,17 @@
                         </Setter.Value>
                     </Setter>
                 </Style>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <!-- Project tasks ListView -->
+    <Style x:Key="ProjectTaskListView" TargetType="{x:Type ListView}" BasedOn="{StaticResource ListView}">
+        <Setter Property="ItemTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Content}"/>
+                </DataTemplate>
             </Setter.Value>
         </Setter>
     </Style>
