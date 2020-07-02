@@ -1,6 +1,7 @@
 ﻿using Common;
 using Domain.Helpers;
 using Domain.Models;
+using Domain.Models.Base;
 using Domain.Models.Comments;
 using Domain.Models.Project;
 using Domain.Models.Tasks;
@@ -150,20 +151,7 @@ namespace Domain.Repository
             return base.GetAll<SubTask>(query);
         }
 
-        public IEnumerable<Project> SortByViewType(IEnumerable<Project> list, string viewType)
-        {
-            Enum.TryParse(viewType.Replace(" ", string.Empty), out ViewType type);
-            return type switch
-            {
-                ViewType.Completed => list.Where(i => i.Status.Equals(Status.Completed)),
-                ViewType.InProgress => list.Where(i => i.Status.Equals(Status.InProgress)),
-                ViewType.Archived => list.Where(i => i.Status.Equals(Status.Archived)),
-                ViewType.Delayed => list.Where(i => i.Status.Equals(Status.Delayed)),
-                _ => list,
-            };
-        }
-
-        public IEnumerable<ITask> SortByViewType(IEnumerable<ITask> list, string viewType)
+        public IEnumerable<T> SortByViewType<T>(IEnumerable<T> list, string viewType) where T : IStatus
         {
             Enum.TryParse(viewType.Replace(" ", string.Empty), out ViewType type);
             return type switch

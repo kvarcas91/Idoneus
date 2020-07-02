@@ -86,7 +86,7 @@ namespace Domain.Models.Project
             if (Status == Status.Completed)
             {
                 Progress = 100D;
-                return Progress;
+               
             }
 
             if (Tasks.Count == 0) return Progress;
@@ -99,7 +99,7 @@ namespace Domain.Models.Project
 
                 if (item.Status == Status.Completed)
                 {
-                    Progress += itemWeight;
+                    if (Status != Status.Completed) Progress += itemWeight;
                     CompletedTasksCount++;
                     continue;
                 }
@@ -108,7 +108,7 @@ namespace Domain.Models.Project
 
                 double itemSubWeight = itemWeight / item.SubTasks.Count;
 
-                Progress += itemSubWeight / 100 * item.GetProgress(); 
+                if (Status != Status.Completed) Progress += itemSubWeight / 100 * item.GetProgress(); 
             }
 
             if (CompletedTasksCount == Tasks.Count) Progress = 100D;

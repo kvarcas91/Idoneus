@@ -1,4 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿using Domain.Models.Tasks;
+using System;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
@@ -7,22 +9,30 @@ namespace Domain.Extentions
     public static class ListExtention
     {
 
-        public static ObservableCollection<T> Clone<T>(this ObservableCollection<T> list)
+        public static ObservableCollection<T> Clone<T>(this ObservableCollection<T> list) where T : class, new()
         {
-           
-            BinaryFormatter formatter = new BinaryFormatter();
-            MemoryStream stream = new MemoryStream();
-            try
+
+            var output = new ObservableCollection<T>();
+            foreach (var item in list)
             {
-                formatter.Serialize(stream, list);
+                output.Add((T)Activator.CreateInstance(typeof(T), new object[] { item}));
             }
-            catch
-            {
-                return list;
-            }
+
+            return output;
            
-            stream.Position = 0;
-            return (ObservableCollection<T>)formatter.Deserialize(stream);
+            //BinaryFormatter formatter = new BinaryFormatter();
+            //MemoryStream stream = new MemoryStream();
+            //try
+            //{
+            //    formatter.Serialize(stream, list);
+            //}
+            //catch (Exception e)
+            //{
+            //    return list;
+            //}
+           
+            //stream.Position = 0;
+            //return (ObservableCollection<T>)formatter.Deserialize(stream);
             
         }
 

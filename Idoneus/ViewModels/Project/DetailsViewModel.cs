@@ -801,8 +801,17 @@ namespace Idoneus.ViewModels
 
         private void ExpandComment(Comment comment)
         {
-            PreviewComment = comment;
-            IsCommentExpanded = !IsCommentExpanded;
+            if (comment != null && PreviewComment != comment)
+            {
+                IsCommentExpanded = true;
+                PreviewComment = comment;
+            }
+            else
+            {
+                IsCommentExpanded = false;
+                PreviewComment = null;
+            }
+
         }
 
         private void DeleteComment(IComment data)

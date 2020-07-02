@@ -88,7 +88,10 @@
                                     Foreground="{DynamicResource PrimaryHueMidBrush}"/>
                     </Border>
 
-                    <TextBox Grid.Row="1"
+                    <materialDesign:ColorZone  Grid.Row="1"
+                        materialDesign:ShadowAssist.ShadowDepth="Depth2"
+                                               Background="Transparent">
+                        <TextBox 
                                    Text="{Binding PreviewComment.Content, Mode=TwoWay}"
                                        Margin="10 3 5 10"
                                         AcceptsReturn="True"
@@ -96,6 +99,7 @@
                                         materialDesign:TextFieldAssist.DecorationVisibility="Collapsed"
                                         VerticalAlignment="Top"
                                         TextWrapping="Wrap" />
+                    </materialDesign:ColorZone>
                 </Grid>
 
             </Grid>

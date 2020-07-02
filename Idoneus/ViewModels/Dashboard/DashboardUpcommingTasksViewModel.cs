@@ -1,5 +1,4 @@
-﻿using Common;
-using Common.EventAggregators;
+﻿using Common.EventAggregators;
 using Domain.Extentions;
 using Domain.Models.Tasks;
 using Domain.Repository;
@@ -8,11 +7,7 @@ using Prism.Events;
 using Prism.Mvvm;
 using Prism.Regions;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Idoneus.ViewModels
@@ -56,10 +51,11 @@ namespace Idoneus.ViewModels
             _repository = repository;
         }
 
-        private void MessageReceived(ObservableCollection<ITask> projects)
+        private void MessageReceived(ObservableCollection<ITask> tasks)
         {
-            _allTasks = projects.Clone();
-            UpcomingTasks = projects;
+           
+           _allTasks = new ObservableCollection<ITask>(tasks.Clone());
+            UpcomingTasks = tasks;
         }
 
         private void HandleDateChange()
@@ -85,7 +81,7 @@ namespace Idoneus.ViewModels
             {
                 if (string.IsNullOrEmpty(SearchText))
                 {
-                    App.Current.Dispatcher.Invoke(() => UpcomingTasks = _allTasks.Clone());
+                    App.Current.Dispatcher.Invoke(() => UpcomingTasks = new ObservableCollection<ITask>(_allTasks.Clone()));
                     return;
                 }
                 App.Current.Dispatcher.Invoke(() => UpcomingTasks.Clear());

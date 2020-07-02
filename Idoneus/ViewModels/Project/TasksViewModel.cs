@@ -1,4 +1,6 @@
-﻿using Common.EventAggregators;
+﻿using Common;
+using Common.EventAggregators;
+using Domain.Extentions;
 using Domain.Models;
 using Domain.Models.Project;
 using Domain.Models.Tasks;
@@ -43,11 +45,32 @@ namespace Idoneus.ViewModels
 
         #region Tasks
 
+        private string _searchText = string.Empty;
+        public string SearchText
+        {
+            get => _searchText;
+            set { SetProperty(ref _searchText, value); HandleSearch(); }
+        }
+
         private bool _isAllTasksSelected;
         public bool IsAllTasksSelected
         {
             get { return _isAllTasksSelected; }
             set { SetProperty(ref _isAllTasksSelected, value); SelectAllTasks(); }
+        }
+
+        private List<string> _taskViewType;
+        public List<string> TaskViewType
+        {
+            get => _taskViewType;
+            set { SetProperty(ref _taskViewType, value); }
+        }
+
+        private string _selectedTaskViewType = "All";
+        public string SelectedTaskViewType
+        {
+            get => _selectedTaskViewType;
+            set { SetProperty(ref _selectedTaskViewType, value); HandleViewTypeSelect(); }
         }
 
         #endregion // Tasks
@@ -81,6 +104,13 @@ namespace Idoneus.ViewModels
             set { SetProperty(ref _selectedContributors, value); }
         }
         public ObservableCollection<ProjectTask> SelectedTasks { get; set; }
+
+        private ObservableCollection<ProjectTask> _tasks;
+        public ObservableCollection<ProjectTask> Tasks
+        {
+            get { return _tasks; }
+            set { SetProperty(ref _tasks, value); }
+        }
 
         #region Delegates
 
@@ -129,11 +159,62 @@ namespace Idoneus.ViewModels
             AllContributors = new ObservableCollection<Contributor>(_repository.GetAllContributors());
 
             eventAggregator.GetEvent<SendCurrentProject<Project>>().Subscribe(ProjectReceived);
+
+            TaskViewType = new List<string>() { "All", "In Progress", "Completed", "Archived", "Delayed" };
         }
 
         #region Methods
 
         #region Tasks
+
+        private void HandleViewTypeSelect()
+        {
+           
+            Task.Run(() =>
+            {
+                if (SelectedTaskViewType.Equals("All"))
+                {
+                    App.Current.Dispatcher.Invoke(() => Tasks = CurrentProject.Tasks.Clone());
+                    if (!string.IsNullOrEmpty(SearchText))
+                    {
+                        HandleSearch();
+                        return;
+                    }
+
+                    return;
+                }
+                Tasks = new ObservableCollection<ProjectTask>(_repository.SortByViewType(CurrentProject.Tasks, SelectedTaskViewType));
+                if (!string.IsNullOrEmpty(SearchText))
+                {
+                    HandleSearch();
+                    return;
+                }
+
+            });
+
+        }
+
+        private void HandleSearch()
+        {
+            if (string.IsNullOrEmpty(SearchText))
+            {
+                HandleViewTypeSelect();
+                return;
+            }
+
+            Task.Run(() =>
+            {
+                Enum.TryParse(SelectedTaskViewType.Replace(" ", string.Empty), out ViewType type);
+
+                App.Current.Dispatcher.Invoke(() => Tasks.Clear());
+
+                foreach (var item in CurrentProject.Tasks)
+                {
+                    if (item.HasString(SearchText, type)) App.Current.Dispatcher.Invoke(() => Tasks.Add(item));
+                }
+            });
+
+        }
 
         private void SelectAllTasks()
         {
@@ -144,7 +225,7 @@ namespace Idoneus.ViewModels
             }
 
             SelectedTasks.Clear();
-            foreach (var task in CurrentProject.Tasks)
+            foreach (var task in Tasks)
             {
                 SelectedTasks.Add(task);
                 task.IsSelected = true;
@@ -161,7 +242,16 @@ namespace Idoneus.ViewModels
         {
             foreach (var task in SelectedTasks)
             {
-                CurrentProject.Tasks.Remove(task);
+                var mTask = CurrentProject.Tasks.Where(x => x.ID.Equals(task.ID)).FirstOrDefault();
+                if (mTask == null)
+                {
+                    PublishSnackBar("Something went wrong...");
+                    return;
+                }
+
+                CurrentProject.Tasks.Remove(mTask);
+                Tasks.Remove(task);
+
             }
 
             Task.Run(() => {
@@ -178,11 +268,20 @@ namespace Idoneus.ViewModels
             {
                 foreach (var task in SelectedTasks)
                 {
-                   
-                    var mTask = CurrentProject.Tasks[CurrentProject.Tasks.IndexOf(task)];
-                    if (mTask.Status != Common.Status.Completed) continue;
-                 
-                    mTask.Status = Common.Status.InProgress;
+
+                    var mTask = CurrentProject.Tasks.Where(x => x.ID.Equals(task.ID)).FirstOrDefault();
+                    if (mTask == null)
+                    {
+                        PublishSnackBar("something went wrong..");
+                        return;
+                    }
+
+                    if (mTask.Status != Status.Completed) continue;
+
+                    task.Status = Status.InProgress;
+                    task.GetProgress();
+
+                    mTask.Status = Status.InProgress;
                     mTask.GetProgress();
 
                     _repository.Update(mTask);
@@ -202,10 +301,19 @@ namespace Idoneus.ViewModels
             {
                 foreach (var task in SelectedTasks)
                 {
-                    if (task.Status == Common.Status.Completed) continue;
-                    var mTask = CurrentProject.Tasks[CurrentProject.Tasks.IndexOf(task)];
-                    mTask.Status = Common.Status.Completed;
+                    if (task.Status == Status.Completed) continue;
+                    var mTask = CurrentProject.Tasks.Where(x => x.ID.Equals(task.ID)).FirstOrDefault();
+                    if (mTask == null)
+                    {
+                        PublishSnackBar("something went wrong..");
+                        return;
+                    }
+                    task.Status = Status.Completed;
+                    task.GetProgress();
+
+                    mTask.Status = Status.Completed;
                     mTask.GetProgress();
+
 
                     _repository.Update(mTask);
 
@@ -219,7 +327,7 @@ namespace Idoneus.ViewModels
 
         private void UnselectTasks()
         {
-            foreach (var task in CurrentProject.Tasks)
+            foreach (var task in Tasks)
             {
                 task.IsSelected = false;
             }
@@ -327,7 +435,9 @@ namespace Idoneus.ViewModels
 
         private void ProjectReceived(Project project)
         {
+            if (project == null) return;
             CurrentProject = project;
+            Tasks = new ObservableCollection<ProjectTask>(CurrentProject.Tasks.Clone());
             if (project == null) return;
 
             //Task.Run(() =>

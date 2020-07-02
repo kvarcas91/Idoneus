@@ -15,6 +15,27 @@ namespace Domain.Models.Tasks
     public class ProjectTask : BindableBase, IUpdatableProgress, ITask
     {
 
+        public ProjectTask()
+        {
+
+        }
+
+        public ProjectTask(ProjectTask task)
+        {
+            ID = task.ID;
+            ParentID = task.ParentID;
+            Content = task.Content;
+            DueDate = task.DueDate;
+            Priority = task.Priority;
+            Status = task.Status;
+            OrderNumber = task.OrderNumber;
+            Progress = task.Progress;
+            SubTasks = task.SubTasks;
+            Contributors = task.Contributors;
+            IsSelected = task.IsSelected;
+            CompletedSubTasksCount = task.CompletedSubTasksCount;
+        }
+
         [Key]
         public string ID { get; set; }
         public string ParentID { get; set; }
@@ -101,6 +122,27 @@ namespace Domain.Models.Tasks
             foreach (var subTask in SubTasks)
             {
                 if (subTask.HasString(param)) return true;
+            }
+
+            return false;
+        }
+
+        public bool HasString(string param, ViewType viewType)
+        {
+            var type = viewType switch
+            {
+                ViewType.All => (int)Status,
+                ViewType.Archived => (int)Status.Archived,
+                _ => (int)viewType,
+            };
+
+            var lowerParam = param.ToLower();
+            if ((Content.ToLower().Contains(lowerParam) && (int)Status == type) ||
+                (Status.ToString().ToLower().Contains(lowerParam) && (int)Status == type)) return true;
+
+            foreach (var subTask in SubTasks)
+            {
+                if (subTask.HasString(param, type)) return true;
             }
 
             return false;

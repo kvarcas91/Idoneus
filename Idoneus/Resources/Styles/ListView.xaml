@@ -372,26 +372,23 @@
 
                                     <TextBlock  
                                 VerticalAlignment="Center"
-                                HorizontalAlignment="Center"
-                                FontFamily="Arial"
-                                FontWeight="Bold"
-                                    Foreground="{DynamicResource SecondaryHueMidBrush}" >
+                                HorizontalAlignment="Center">
                                     <Run Text="{Binding Progress}"/>
                                     <Run Text="%"/>
                                     </TextBlock>
                                 </Border>
 
                                 <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
-                            Height="40"
-                            Width="40"
+                            Height="45"
+                            Width="45"
                             Value="99.9"
                             Foreground="LightGray"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"/>
 
                                 <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
-                            Height="40"
-                            Width="40"
+                            Height="45"
+                            Width="45"
                             Foreground="{Binding Priority, Converter={converter:PriorityToColorConverter}}"
                             Value="{Binding Progress, Converter={converter:ProgressConverter}}"
                             HorizontalAlignment="Center"
