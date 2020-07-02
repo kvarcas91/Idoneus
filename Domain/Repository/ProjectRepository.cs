@@ -24,6 +24,11 @@ namespace Domain.Repository
             {
                 GetProjectContent(item);
                 item.GetProgress();
+                if (item.DueDate < DateTime.Now && item.Status != Status.Completed)
+                {
+                    item.Status = Status.Delayed;
+                    Task.Run(() => Update(item));
+                }
             }
             return output;
         }
@@ -32,8 +37,14 @@ namespace Domain.Repository
         {
             var project = Get<Project>("ID", ID, "projects");
             GetProjectContent(project);
+            if (project.DueDate < DateTime.Now && project.Status != Status.Completed)
+            {
+                project.Status = Status.Delayed;
+                Task.Run(() => Update(project));
+            }
             return project;
         }
+
 
         public IEnumerable<Contributor> GetAllContributors()
         {
@@ -72,6 +83,20 @@ namespace Domain.Repository
             {
                 task.SubTasks = new ObservableCollection<SubTask>(GetSubTasks(task.ID));
                 task.Contributors = new ObservableCollection<Contributor>(GetTaskContributors(task.ID));
+                if (task.DueDate < DateTime.Now && task.Status != Status.Completed)
+                {
+                    task.Status = Status.Delayed;
+                    Task.Run(() => Update(task));
+                }
+                task.GetProgress();
+                foreach (var subtask in task.SubTasks)
+                {
+                    if (subtask.DueDate < DateTime.Now && subtask.Status != Status.Completed)
+                    {
+                        subtask.Status = Status.Delayed;
+                        Task.Run(() => Update(subtask));
+                    }
+                }
             }
         }
 

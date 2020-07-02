@@ -1,9 +1,7 @@
 ﻿using Common;
 using Idoneus.Converters.Base;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Text;
 
 namespace Idoneus.Converters
 {

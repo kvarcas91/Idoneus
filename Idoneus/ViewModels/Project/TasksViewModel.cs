@@ -41,6 +41,17 @@ namespace Idoneus.ViewModels
             set { SetProperty(ref _selectedTask, value); }
         }
 
+        #region Tasks
+
+        private bool _isAllTasksSelected;
+        public bool IsAllTasksSelected
+        {
+            get { return _isAllTasksSelected; }
+            set { SetProperty(ref _isAllTasksSelected, value); SelectAllTasks(); }
+        }
+
+        #endregion // Tasks
+
         #region Contributors
 
         private int _selectedContributorCount = 0;
@@ -69,6 +80,7 @@ namespace Idoneus.ViewModels
             get { return _selectedContributors; }
             set { SetProperty(ref _selectedContributors, value); }
         }
+        public ObservableCollection<ProjectTask> SelectedTasks { get; set; }
 
         #region Delegates
 
@@ -90,6 +102,18 @@ namespace Idoneus.ViewModels
         private DelegateCommand<ProjectTask> _checkTaskCommand;
         public DelegateCommand<ProjectTask> CheckTaskCommand => _checkTaskCommand ?? (_checkTaskCommand = new DelegateCommand<ProjectTask>(CheckTask));
 
+        private DelegateCommand _deleteSelectedTasksCommand;
+        public DelegateCommand DeleteSelectedTasksCommand => _deleteSelectedTasksCommand ?? (_deleteSelectedTasksCommand = new DelegateCommand(DeleteSelectedTasks));
+
+        private DelegateCommand _completeSelectedTasksCommand;
+        public DelegateCommand CompleteSelectedTasksCommand => _completeSelectedTasksCommand ?? (_completeSelectedTasksCommand = new DelegateCommand(CompleteSelectedTasks));
+
+        private DelegateCommand _reopenSelectedTasksCommand;
+        public DelegateCommand ReopenSelectedTasksCommand => _reopenSelectedTasksCommand ?? (_reopenSelectedTasksCommand = new DelegateCommand(ReopenSelectedTasks));
+
+        private DelegateCommand _unselectTasksCommand;
+        public DelegateCommand UnselectTasksCommand => _unselectTasksCommand ?? (_unselectTasksCommand = new DelegateCommand(UnselectTasks));
+
         #endregion // Tasks
 
         #endregion // Delegates
@@ -101,6 +125,7 @@ namespace Idoneus.ViewModels
             _repository = repository;
 
             SelectedContributors = new ObservableCollection<Contributor>();
+            SelectedTasks = new ObservableCollection<ProjectTask>();
             AllContributors = new ObservableCollection<Contributor>(_repository.GetAllContributors());
 
             eventAggregator.GetEvent<SendCurrentProject<Project>>().Subscribe(ProjectReceived);
@@ -110,12 +135,95 @@ namespace Idoneus.ViewModels
 
         #region Tasks
 
+        private void SelectAllTasks()
+        {
+            if (!_isAllTasksSelected)
+            {
+                UnselectTasks();
+                return;
+            }
+
+            SelectedTasks.Clear();
+            foreach (var task in CurrentProject.Tasks)
+            {
+                SelectedTasks.Add(task);
+                task.IsSelected = true;
+            }
+        }
+
         private void CheckTask(ProjectTask task)
         {
-            SelectedTask = task;
-            SelectedTask.GetProgress();
-            _eventAggregator.GetEvent<NotifyProjectChanged<Project>>().Publish(CurrentProject);
-            Task.Run(() => _repository.Update(SelectedTask));
+            if (task.IsSelected) SelectedTasks.Add(task);
+            else SelectedTasks.Remove(task);
+        }
+
+        private void DeleteSelectedTasks()
+        {
+            foreach (var task in SelectedTasks)
+            {
+                CurrentProject.Tasks.Remove(task);
+            }
+
+            Task.Run(() => {
+                _repository.DeleteTasks(SelectedTasks);
+                IsAllTasksSelected = false;
+                App.Current.Dispatcher.Invoke(() => _eventAggregator.GetEvent<NotifyProjectChanged<Project>>().Publish(CurrentProject));
+                PublishSnackBar("Tasks have been deleted!");
+            }); 
+        }
+
+        private void ReopenSelectedTasks()
+        {
+            Task.Run(() =>
+            {
+                foreach (var task in SelectedTasks)
+                {
+                   
+                    var mTask = CurrentProject.Tasks[CurrentProject.Tasks.IndexOf(task)];
+                    if (mTask.Status != Common.Status.Completed) continue;
+                 
+                    mTask.Status = Common.Status.InProgress;
+                    mTask.GetProgress();
+
+                    _repository.Update(mTask);
+
+                }
+
+                IsAllTasksSelected = false;
+                App.Current.Dispatcher.Invoke(() => _eventAggregator.GetEvent<NotifyProjectChanged<Project>>().Publish(CurrentProject));
+               
+                PublishSnackBar("Tasks have been completed!");
+            });
+        }
+
+        private void CompleteSelectedTasks()
+        {
+            Task.Run(() =>
+            {
+                foreach (var task in SelectedTasks)
+                {
+                    if (task.Status == Common.Status.Completed) continue;
+                    var mTask = CurrentProject.Tasks[CurrentProject.Tasks.IndexOf(task)];
+                    mTask.Status = Common.Status.Completed;
+                    mTask.GetProgress();
+
+                    _repository.Update(mTask);
+
+                }
+                IsAllTasksSelected = false;
+
+                App.Current.Dispatcher.Invoke(() => _eventAggregator.GetEvent<NotifyProjectChanged<Project>>().Publish(CurrentProject));
+                PublishSnackBar("Tasks have been completed!");
+            });
+        }
+
+        private void UnselectTasks()
+        {
+            foreach (var task in CurrentProject.Tasks)
+            {
+                task.IsSelected = false;
+            }
+            SelectedTasks.Clear();
         }
 
         #endregion // Tasks

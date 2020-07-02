@@ -725,12 +725,17 @@
                             Margin="5 3 5 3"/>
 
                             <!-- Task summary -->
-                            <CheckBox Content="{Binding Content}" IsChecked="{Binding Status, Converter={converters:StatusToBoolConverter}}"
+                            <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}"
                                        Command="{Binding ElementName=projectTaskList, Path=DataContext.CheckTaskCommand}"
-                                        CommandParameter="{Binding}"/>
+                                        CommandParameter="{Binding}" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding Content}"  
+                                           VerticalAlignment="Center"
+                                           Margin="0 -3 0 0"
+                                           TextDecorations="{Binding Status, Converter={converter:StatusToTextDecorationConverter}}"/>
+                            </CheckBox>
                         </StackPanel>
 
-                        <Grid Grid.Column="1" Background="Transparent">
+                        <Grid Grid.Column="1" Background="Transparent" Margin="10 0 0 0">
                             <Grid.ColumnDefinitions>
 
                                 <!-- completed tasks / Total tasks -->

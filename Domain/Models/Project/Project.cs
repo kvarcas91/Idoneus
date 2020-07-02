@@ -14,6 +14,28 @@ namespace Domain.Models.Project
     public class Project : BindableBase, IEntity, IUpdatableProgress, IStatus
     {
 
+        public Project()
+        {
+
+        }
+
+        public Project(Project project)
+        {
+            ID = project.ID;
+            Header = project.Header;
+            Content = project.Content;
+            SubmitionDate = project.SubmitionDate;
+            DueDate = project.DueDate;
+            Priority = project.Priority;
+            Status = project.Status;
+            OrderNumber = project.OrderNumber;
+            Progress = project.Progress;
+            Tasks = project.Tasks;
+            Contributors = project.Contributors;
+            Comments = project.Comments;
+            CompletedTasksCount = project.CompletedTasksCount;
+        }
+
         [Key]
         public string ID { get; set; }
 
@@ -27,6 +49,7 @@ namespace Domain.Models.Project
 
         private double _progress;
 
+        [Computed]
         public double Progress
         {
             get { return _progress; }

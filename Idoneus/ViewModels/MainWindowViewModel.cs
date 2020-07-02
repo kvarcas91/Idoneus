@@ -179,32 +179,47 @@ namespace Idoneus.ViewModels
 
             var ID = _editableProject == null ? Guid.NewGuid().ToString() : _editableProject.ID;
             var submitionDate = _editableProject == null ? DateTime.Now : _editableProject.SubmitionDate;
-            _editableProject = new Project
+
+            Project project = null;
+            if (_editableProject == null)
             {
-                ID = ID,
-                SubmitionDate = submitionDate,
-                Header = Header,
-                Content = Content,
-                DueDate = DueDate,
-                Priority = priority
-            };
+                project = new Project
+                {
+                    ID = ID,
+                    SubmitionDate = submitionDate,
+                    Header = Header,
+                    Content = Content,
+                    DueDate = DueDate,
+                    Priority = priority
+                };
+            }
+            else
+            {
+                project = _editableProject;
+                project.Header = Header;
+                project.Content = Content;
+                project.DueDate = DueDate;
+                project.Priority = priority;
+            }
+            
 
-            if (_editableProject == null) _repository.Insert(_editableProject, "projects");
-            else _repository.Update(_editableProject);
+            if (_editableProject == null) _repository.Insert(project, "projects");
+            else _repository.Update(project);
 
-            FileHelper.InitializeProjectFolder(_editableProject.ID);
+
+            FileHelper.InitializeProjectFolder(project.ID);
 
             CloseDialog();
 
             if (_currentRegion.Equals("Projects"))
             {
-                _eventAggregator.GetEvent<SendCurrentProject<Project>>().Publish(_editableProject);
+                _eventAggregator.GetEvent<NotifyProjectChanged<Project>>().Publish(project);
             }
             else
             {
                 var navigationParams = new NavigationParameters
                     {
-                        { "project", _editableProject.Clone() }
+                        { "project", project.Clone() }
                     };
                 Navigate("Projects", navigationParams);
             }

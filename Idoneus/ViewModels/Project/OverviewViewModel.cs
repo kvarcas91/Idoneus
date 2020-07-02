@@ -16,7 +16,6 @@ namespace Idoneus.ViewModels
         #region Local members
 
         private readonly IEventAggregator _eventAggregator;
-        private readonly IRegionManager _regionManager;
         private readonly ProjectRepository _repository;
 
         #endregion // Local members
@@ -57,9 +56,8 @@ namespace Idoneus.ViewModels
 
         #endregion // Delegates
 
-        public OverviewViewModel(IEventAggregator eventAggregator, IRegionManager regionManager, ProjectRepository repository)
+        public OverviewViewModel(IEventAggregator eventAggregator, ProjectRepository repository)
         {
-            _regionManager = regionManager;
             _eventAggregator = eventAggregator;
             _repository = repository;
 
@@ -122,7 +120,7 @@ namespace Idoneus.ViewModels
 
             if (!CurrentProject.ID.Equals(project.ID)) return;
 
-            CurrentProject = project;
+            CurrentProject = new Project(project);
         }
 
         private void ProjectReceived(Project project)
@@ -131,13 +129,6 @@ namespace Idoneus.ViewModels
             if (project == null) return;
 
             ProjectStatus = CurrentProject.Status;
-
-            //Task.Run(() =>
-            //{
-            //    //CurrentProject = _repository.GetProject(project.ID);
-               
-
-            //});
         }
 
         private void PublishSnackBar(string text)
