@@ -25,5 +25,22 @@ namespace Domain.Extentions
             return (ObservableCollection<T>)formatter.Deserialize(stream);
             
         }
+
+        public static TObject Clone<TObject>(this TObject obj)
+        {
+            BinaryFormatter formatter = new BinaryFormatter();
+            MemoryStream stream = new MemoryStream();
+            try
+            {
+                formatter.Serialize(stream, obj);
+            }
+            catch
+            {
+                return obj;
+            }
+
+            stream.Position = 0;
+            return (TObject)formatter.Deserialize(stream);
+        }
     }
 }

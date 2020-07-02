@@ -19,7 +19,8 @@
         <materialDesign:Card materialDesign:ShadowAssist.ShadowDepth="Depth2"
                              Margin="10">
 
-            <ListView ItemsSource="{Binding CurrentProject.Tasks}"
+            <ListView x:Name="projectTaskList"
+                ItemsSource="{Binding CurrentProject.Tasks}"
                       Style="{StaticResource ProjectTaskListView}"
                       SelectedItem="{Binding SelectedTask}"/>
 
@@ -43,7 +44,99 @@
                              Margin="10"
                                  Grid.Row="1">
 
-                <ListView ItemsSource="{Binding SelectedTask.Contributors}"/>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <materialDesign:ColorZone 
+                        materialDesign:ShadowAssist.ShadowDepth="Depth2"
+                        Background="Transparent"
+                        VerticalAlignment="Stretch">
+
+                        <TextBlock Text="Contributors"
+                                   Margin="10 5"
+                                   Typography.Capitals="AllSmallCaps"
+                                   Style="{StaticResource MaterialDesignOverlineTextBlock}"/>
+
+                    </materialDesign:ColorZone>
+                    <!-- Controls -->
+                    <materialDesign:ColorZone 
+                    Grid.Row="1"
+                        materialDesign:ShadowAssist.ShadowDepth="Depth2"
+                        Background="Transparent"
+                        BorderBrush="{DynamicResource PrimaryHueMidBrush}"
+                        BorderThickness="0 0 0 0.2"
+                        VerticalAlignment="Stretch"
+                        Visibility="{Binding SelectedContributorCount, Converter={StaticResource NotZeroToVisibilityConverter}}">
+
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Right">
+                            <Button 
+                                Style="{StaticResource MaterialDesignFlatButton}"
+                                ToolTip="Unselect contributors"
+                                Command="{Binding UnselectContributorsCommand}">
+                                <materialDesign:PackIcon Kind="CheckAll"/>
+                            </Button>
+
+                            <Button 
+                                Style="{StaticResource MaterialDesignFlatButton}"
+                                ToolTip="Remove selected contributors"
+                                Command="{Binding DeleteSelectedContributorsCommand}">
+                                <materialDesign:PackIcon Kind="DeleteEmpty"/>
+                            </Button>
+                        </StackPanel>
+
+                    </materialDesign:ColorZone>
+
+                    <Grid Grid.Row="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <ListView Margin="10"
+                                Grid.Row="0"
+                            x:Name="contributorList"
+                            ItemsSource="{Binding SelectedTask.Contributors}"
+                            SelectionChanged="ListView_SelectionChanged"
+                            Style="{StaticResource MaterialDesignFilterChipListBox}"/>
+
+                        <materialDesign:ColorZone Margin="-3 0 -2 -1"
+                            Grid.Row="1"
+                            materialDesign:ShadowAssist.ShadowDepth="Depth2">
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <ComboBox VerticalAlignment="Center"
+                                            BorderBrush="Transparent"
+                                        materialDesign:HintAssist.Hint="Add new contributor..."
+                                        BorderThickness="0"
+                                        materialDesign:TextFieldAssist.DecorationVisibility="Collapsed"
+                                        materialDesign:TextFieldAssist.HasClearButton="True"
+                                        Text="{Binding SelectedContributor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                            IsEditable="True"
+                                            ItemsSource="{Binding AllContributors}"
+                                        Margin="5 0"/>
+
+                                <Button Style="{StaticResource MaterialDesignFlatButton}"
+                Grid.Column="1"
+                Command="{Binding AddContributorCommand}">
+                                    <materialDesign:PackIcon Kind="Send"/>
+                                </Button>
+
+                            </Grid>
+
+                        </materialDesign:ColorZone>
+                    </Grid>
+
+                </Grid>
 
             </materialDesign:Card>
 

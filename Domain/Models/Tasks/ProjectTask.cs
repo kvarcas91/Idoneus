@@ -2,15 +2,17 @@
 using Dapper.Contrib.Extensions;
 using Domain.Attributes;
 using Domain.Models.Base;
+using Prism.Mvvm;
 using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace Domain.Models.Tasks
 {
 
     [Table("tasks")]
     [Serializable]
-    public class ProjectTask : IUpdatableProgress, ITask
+    public class ProjectTask : BindableBase, IUpdatableProgress, ITask
     {
 
         [Key]
@@ -22,25 +24,54 @@ namespace Domain.Models.Tasks
         public Status Status { get; set; } = Status.Archived;
         public int OrderNumber { get; set; }
 
+        private int _completedSubTasksCount = 0;
+
+        [Computed]
+        public int CompletedSubTasksCount
+        {
+            get { return _completedSubTasksCount; }
+            set { SetProperty(ref _completedSubTasksCount, value); }
+        }
+
         [Computed]
         public ObservableCollection<SubTask> SubTasks { get; set; } = new ObservableCollection<SubTask>();
 
         [Computed]
         public ObservableCollection<Contributor> Contributors { get; set; } = new ObservableCollection<Contributor>();
 
+        private double _progress;
+
         [Exportable]
-        public double Progress { get; set; }
+        [Computed]
+        public double Progress
+        {
+            get { return _progress; }
+            set { SetProperty(ref _progress, value); }
+        }
 
         public double GetProgress()
         {
             Progress = 0D;
+            if (SubTasks.Count == 0 && Status != Status.Completed) return Progress;
+
+            if (Status == Status.Completed)
+            {
+                Progress = 100D;
+                return Progress;
+            }
+
             if (SubTasks.Count == 0) return Progress;
 
-            double itemWeight = 100;
+            double itemWeight = 100 / SubTasks.Count;
+            CompletedSubTasksCount = 0;
 
             foreach (var item in SubTasks)
             {
-                if (item.Status == Status.Completed) Progress += itemWeight;
+                if (item.Status == Status.Completed)
+                {
+                    Progress += itemWeight;
+                    CompletedSubTasksCount++;
+                }
             }
 
             return Progress;

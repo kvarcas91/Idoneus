@@ -21,8 +21,6 @@ namespace Idoneus.Views
            
         }
 
-       
-
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             viewModel.SetSelectedContributors(contributorList.SelectedItems.Cast<Contributor>());
@@ -32,7 +30,5 @@ namespace Idoneus.Views
         {
             contributorList.UnselectAll();
         }
-
-      
     }
 }

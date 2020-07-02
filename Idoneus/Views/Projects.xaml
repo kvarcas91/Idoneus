@@ -149,6 +149,7 @@
                                 VerticalAlignment="Center"
                                 ToolTip="Edit Project"
                                 Margin="0 0 10 0"
+                                Command="{Binding EditProjectCommand}"
                                   Visibility="{Binding CurrentProject, Converter={StaticResource NullableToVisibilityConverter}}">
                             <materialDesign:PackIcon Kind="EditOutline"/>
                         </Button>

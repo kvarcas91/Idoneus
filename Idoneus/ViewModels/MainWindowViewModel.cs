@@ -1,6 +1,7 @@
 ﻿using Common;
 using Common.EventAggregators;
 using Common.Settings;
+using Domain.Extentions;
 using Domain.Helpers;
 using Domain.Models;
 using Domain.Models.Project;
@@ -27,6 +28,7 @@ namespace Idoneus.ViewModels
         private readonly PaletteHelper _paletteHelper = new PaletteHelper();
         private readonly SwatchesProvider _swatchesProvider = new SwatchesProvider();
         private string _currentRegion = string.Empty;
+        private Project _editableProject;
 
         public MainWindowViewModel(IRegionManager regionManager, IStorage storage, IEventAggregator eventAggregator, ProjectRepository repository)
         {
@@ -53,6 +55,7 @@ namespace Idoneus.ViewModels
             Navigate("Dashboard");
 
             _eventAggregator.GetEvent<SendSnackBarMessage>().Subscribe(ReceiveMessage);
+            _eventAggregator.GetEvent<EditProjectRequest<Project>>().Subscribe(EditProject);
             _eventAggregator.GetEvent<NavigateRequest<NavigationParameters>>().Subscribe(ReceiveNavigateRequest);
         }
 
@@ -155,44 +158,63 @@ namespace Idoneus.ViewModels
             ClearProjectData();
         }
 
+        private void EditProject(Project project)
+        {
+            DueDate = project.DueDate;
+            Priority = project.Priority.ToString();
+            Content = project.Content;
+            Header = project.Header;
+
+            _editableProject = project;
+
+            var dialog = DialogHost.OpenDialogCommand;
+            dialog.Execute(null, null);
+        }
+
         private void AddNewProject()
         {
             if (!IsNewProjectValid()) return;
 
             Priority priority = (Priority)Enum.Parse(typeof(Priority), Priority);
-            var project = new Project
+
+            var ID = _editableProject == null ? Guid.NewGuid().ToString() : _editableProject.ID;
+            var submitionDate = _editableProject == null ? DateTime.Now : _editableProject.SubmitionDate;
+            _editableProject = new Project
             {
-                ID = Guid.NewGuid().ToString(),
-                SubmitionDate = DateTime.Now,
+                ID = ID,
+                SubmitionDate = submitionDate,
                 Header = Header,
                 Content = Content,
                 DueDate = DueDate,
                 Priority = priority
             };
 
-            _repository.Insert(project, "projects");
+            if (_editableProject == null) _repository.Insert(_editableProject, "projects");
+            else _repository.Update(_editableProject);
 
-            FileHelper.InitializeProjectFolder(project.ID);
+            FileHelper.InitializeProjectFolder(_editableProject.ID);
 
             CloseDialog();
 
             if (_currentRegion.Equals("Projects"))
             {
-                _eventAggregator.GetEvent<SendCurrentProject<Project>>().Publish(project);
+                _eventAggregator.GetEvent<SendCurrentProject<Project>>().Publish(_editableProject);
             }
             else
             {
                 var navigationParams = new NavigationParameters
                     {
-                        { "project", project }
+                        { "project", _editableProject.Clone() }
                     };
                 Navigate("Projects", navigationParams);
             }
+
+            _editableProject = null;
         }
 
         private bool IsNewProjectValid()
         {
-            if (string.IsNullOrEmpty(Priority))
+            if (!ValidationHelper.Validate(Priority, Header,Content) || DueDate < DateTime.Now)
             {
                 return false;
             }

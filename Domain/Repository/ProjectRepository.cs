@@ -23,6 +23,7 @@ namespace Domain.Repository
             foreach (var item in output)
             {
                 GetProjectContent(item);
+                item.GetProgress();
             }
             return output;
         }
@@ -49,6 +50,12 @@ namespace Domain.Repository
         public bool AssignContributor(string projectID, string contributorID)
         {
             var query = $"INSERT INTO project_contributors (projectID, contributorID) VALUES ('{projectID}', '{contributorID}')";
+            return Insert(query);
+        }
+
+        public bool AssignTaskContributor(string taskID, string contributorID)
+        {
+            var query = $"INSERT INTO task_contributors (taskID, contributorID) VALUES ('{taskID}', '{contributorID}')";
             return Insert(query);
         }
 
@@ -152,7 +159,7 @@ namespace Domain.Repository
             }
             if (task is SubTask)
             {
-                var query = $"SELECT ParentID FROM subtasks WHERE ID ='{task.ID}'";
+                var query = $"SELECT ParentID FROM tasks WHERE ID = (SELECT ParentID FROM subtasks WHERE ID = '{task.ID}')";
                 string parentID = GetScalar<string>(query);
                 return GetProject(parentID);
             }

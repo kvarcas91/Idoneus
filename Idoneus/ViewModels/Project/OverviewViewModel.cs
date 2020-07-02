@@ -64,6 +64,7 @@ namespace Idoneus.ViewModels
             _repository = repository;
 
             eventAggregator.GetEvent<SendCurrentProject<Project>>().Subscribe(ProjectReceived);
+            eventAggregator.GetEvent<NotifyProjectChanged<Project>>().Subscribe(NotifyChanged);
         }
 
         #region Methods
@@ -115,17 +116,28 @@ namespace Idoneus.ViewModels
 
         #region Common
 
+        private void NotifyChanged(Project project)
+        {
+            if (CurrentProject == null || project == null) return;
+
+            if (!CurrentProject.ID.Equals(project.ID)) return;
+
+            CurrentProject = project;
+        }
+
         private void ProjectReceived(Project project)
         {
             CurrentProject = project;
             if (project == null) return;
 
-            Task.Run(() =>
-            {
-                CurrentProject = _repository.GetProject(project.ID);
-                ProjectStatus = CurrentProject.Status;
+            ProjectStatus = CurrentProject.Status;
 
-            });
+            //Task.Run(() =>
+            //{
+            //    //CurrentProject = _repository.GetProject(project.ID);
+               
+
+            //});
         }
 
         private void PublishSnackBar(string text)

@@ -45,7 +45,7 @@
                                    TextTrimming="WordEllipsis"/>
                         </StackPanel>
                         
-                        <Grid Grid.Column="1" Background="Transparent">
+                        <Grid Grid.Column="1" Background="Transparent" Margin="10 0 0 0">
                             <Grid.ColumnDefinitions>
 
                                 <!-- completed tasks / Total tasks -->
@@ -62,7 +62,7 @@
                             <TextBlock Grid.Column="0"
                                    Margin="0 0 10 0"
                                        TextAlignment="Left">
-                            <Run Text="{Binding CompletedTaskCount}"/>
+                            <Run Text="{Binding CompletedTasksCount}"/>
                             <Run Text="/"/>
                             <Run Text="{Binding Tasks.Count, Mode=OneWay}"/>
                             </TextBlock>
@@ -707,8 +707,84 @@
         <Setter Property="ItemTemplate">
             <Setter.Value>
                 <DataTemplate>
-                    <TextBlock Text="{Binding Content}"/>
+
+                    <Grid VerticalAlignment="Center"
+                        Margin="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="3*"/>
+                            <ColumnDefinition Width="2*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Orientation="Horizontal" Background="Transparent">
+
+                            <!-- Priority Color Indicator -->
+                            <Border Grid.Column="0"
+                            Background="{Binding Priority, Converter={converters:PriorityToColorConverter}}" 
+                            Width="2" 
+                            Height="10"
+                            Margin="5 3 5 3"/>
+
+                            <!-- Task summary -->
+                            <CheckBox Content="{Binding Content}" IsChecked="{Binding Status, Converter={converters:StatusToBoolConverter}}"
+                                       Command="{Binding ElementName=projectTaskList, Path=DataContext.CheckTaskCommand}"
+                                        CommandParameter="{Binding}"/>
+                        </StackPanel>
+
+                        <Grid Grid.Column="1" Background="Transparent">
+                            <Grid.ColumnDefinitions>
+
+                                <!-- completed tasks / Total tasks -->
+                                <ColumnDefinition Width="Auto"/>
+
+                                <!-- Progress bar -->
+                                <ColumnDefinition Width="*"/>
+
+                                <!-- Progress percentage -->
+                                <ColumnDefinition Width="60"/>
+
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Column="0"
+                                Margin="0 0 10 0"
+                                    TextAlignment="Left">
+                        <Run Text="{Binding CompletedSubTasksCount}"/>
+                        <Run Text="/"/>
+                        <Run Text="{Binding SubTasks.Count, Mode=OneWay}"/>
+                            </TextBlock>
+
+                            <ProgressBar Grid.Column="1"
+                                    Value="{Binding Progress}"
+                                        Height="1"
+                                    Style="{StaticResource MaterialDesignLinearProgressBar}"
+                                    Foreground="{Binding Priority, Converter={converters:PriorityToColorConverter}}"/>
+
+                            <TextBlock Grid.Column="2"
+                                Margin="10 0 10 0"
+                                    TextAlignment="Right">
+                        <Run Text="{Binding Progress}"/>
+                        <Run Text="%"/>
+                            </TextBlock>
+
+                        </Grid>
+
+                    </Grid>
+
                 </DataTemplate>
+            </Setter.Value>
+        </Setter>
+        <!-- Disable onMouseOver and default style -->
+        <Setter Property="ItemContainerStyle">
+            <Setter.Value>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                <ContentPresenter />
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
             </Setter.Value>
         </Setter>
     </Style>

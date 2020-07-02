@@ -3,6 +3,7 @@ using Dapper.Contrib.Extensions;
 using Domain.Models.Base;
 using Domain.Models.Comments;
 using Domain.Models.Tasks;
+using Prism.Mvvm;
 using System;
 using System.Collections.ObjectModel;
 
@@ -10,7 +11,7 @@ namespace Domain.Models.Project
 {
     [Table("projects")]
     [Serializable]
-    public class Project : IEntity, IUpdatableProgress, IStatus
+    public class Project : BindableBase, IEntity, IUpdatableProgress, IStatus
     {
 
         [Key]
@@ -24,11 +25,22 @@ namespace Domain.Models.Project
         public Status Status { get; set; } = Status.InProgress;
         public int OrderNumber { get; set; }
 
-        [Computed]
-        public double Progress { get; set; } = 0D;
+        private double _progress;
+
+        public double Progress
+        {
+            get { return _progress; }
+            set { SetProperty(ref _progress, value); }
+        }
+
+        private ObservableCollection<ProjectTask> _tasks = new ObservableCollection<ProjectTask>();
 
         [Computed]
-        public ObservableCollection<ProjectTask> Tasks { get; set; } = new ObservableCollection<ProjectTask>();
+        public ObservableCollection<ProjectTask> Tasks
+        {
+            get { return _tasks; }
+            set { SetProperty(ref _tasks, value); }
+        }
 
         [Computed]
         public ObservableCollection<Contributor> Contributors { get; set; } = new ObservableCollection<Contributor>();
@@ -36,8 +48,14 @@ namespace Domain.Models.Project
         [Computed]
         public ObservableCollection<IComment> Comments { get; set; } = new ObservableCollection<IComment>();
 
+        private int _completedTasksCount = 0;
+
         [Computed]
-        public int CompletedTaskCount { get; set; } = 0;
+        public int CompletedTasksCount
+        {
+            get { return _completedTasksCount; }
+            set { SetProperty(ref _completedTasksCount, value); }
+        }
 
         public double GetProgress()
         {
@@ -51,7 +69,7 @@ namespace Domain.Models.Project
             if (Tasks.Count == 0) return Progress;
 
             double itemWeight = 100 / Tasks.Count;
-            CompletedTaskCount = 0;
+            CompletedTasksCount = 0;
 
             foreach (var item in Tasks)
             {
@@ -59,7 +77,7 @@ namespace Domain.Models.Project
                 if (item.Status == Status.Completed)
                 {
                     Progress += itemWeight;
-                    CompletedTaskCount++;
+                    CompletedTasksCount++;
                     continue;
                 }
 
@@ -70,7 +88,7 @@ namespace Domain.Models.Project
                 Progress += itemSubWeight / 100 * item.GetProgress(); 
             }
 
-            if (CompletedTaskCount == Tasks.Count) Progress = 100D;
+            if (CompletedTasksCount == Tasks.Count) Progress = 100D;
            
             return Math.Round(Progress, 0);
         }

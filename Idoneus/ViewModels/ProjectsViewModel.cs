@@ -9,6 +9,7 @@ using Prism.Events;
 using Prism.Mvvm;
 using Prism.Regions;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 
@@ -75,6 +76,9 @@ namespace Idoneus.ViewModels
         private DelegateCommand<Project> _selectProjectCommand;
         public DelegateCommand<Project> SelectProjectCommand => _selectProjectCommand ?? (_selectProjectCommand = new DelegateCommand<Project>(OnItemClicked));
 
+        private DelegateCommand _editProjectCommand;
+        public DelegateCommand EditProjectCommand => _editProjectCommand ?? (_editProjectCommand = new DelegateCommand(EditProject));
+
         private readonly ProjectRepository _projectRepository;
         private readonly IEventAggregator _eventAggregator;
 
@@ -89,7 +93,37 @@ namespace Idoneus.ViewModels
                 new Tasks()
             };
 
+            //eventAggregator.GetEvent<SendCurrentProject<Project>>().Subscribe(ProjectReceived);
+            eventAggregator.GetEvent<NotifyProjectChanged<Project>>().Subscribe(NotifyChanged);
+
             InitData();
+        }
+
+        private void NotifyChanged(Project project)
+        {
+            if (CurrentProject == null || project == null) return;
+
+            if (!CurrentProject.ID.Equals(project.ID)) return;
+
+            CurrentProject = project;
+            CurrentProject.GetProgress();
+            ProjectReceived(project);
+        }
+
+        private void ProjectReceived(Project project)
+        {
+            if (project == null) return;
+            var p = _allProjects.Where(x => x.ID.Equals(project.ID)).FirstOrDefault();
+            if (p == null) return;
+
+            var index = _allProjects.IndexOf(p);
+            if (index < 0) return;
+
+            _allProjects.RemoveAt(index);
+            _allProjects.Insert(index, project);
+            HandleSearch();
+            SetTaskCount();
+          
         }
 
         private void HandleSearch()
@@ -120,11 +154,11 @@ namespace Idoneus.ViewModels
             {
                 if (Projects == null)
                 {
+                    var projects = _projectRepository.GetProjects();
                     App.Current.Dispatcher.Invoke(() =>
                     {
-                        _allProjects = new ObservableCollection<Project>(_projectRepository.GetProjects());
-                        Projects = _allProjects.Clone();
-
+                        _allProjects = new ObservableCollection<Project>(projects.Clone());
+                        Projects = new ObservableCollection<Project>(_allProjects.Clone());
                     }
                     );
 
@@ -140,6 +174,11 @@ namespace Idoneus.ViewModels
 
             });
 
+        }
+
+        private void EditProject()
+        {
+            _eventAggregator.GetEvent<EditProjectRequest<Project>>().Publish(CurrentProject);
         }
 
         private void SetTaskCount()
