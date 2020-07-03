@@ -25,6 +25,7 @@ namespace Domain.Models.Tasks
             Priority = subTask.Priority;
             Status = subTask.Status;
             OrderNumber = subTask.OrderNumber;
+            IsSelected = subTask.IsSelected;
         }
 
         [Key]
@@ -33,8 +34,24 @@ namespace Domain.Models.Tasks
         public string Content { get; set; }
         public Priority Priority { get; set; }
         public DateTime DueDate { get; set; }
-        public Status Status { get; set; } = Status.InProgress;
+
+        private Status _status = Status.InProgress;
+        public Status Status
+        {
+            get { return _status; }
+            set { SetProperty(ref _status, value); }
+        }
         public int OrderNumber { get; set; }
+
+
+        private bool _isSelected = false;
+
+        [Computed]
+        public bool IsSelected
+        {
+            get { return _isSelected; }
+            set { SetProperty(ref _isSelected, value); }
+        }
 
         public bool HasString(string param)
         {

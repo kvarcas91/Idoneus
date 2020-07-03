@@ -149,7 +149,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
-                        <!-- Priority -->
+                        <!-- Status -->
                         <TextBlock Grid.Column="0"
                                    HorizontalAlignment="Left"
                                    VerticalAlignment="Center"

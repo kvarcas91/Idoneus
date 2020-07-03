@@ -166,7 +166,136 @@
             <materialDesign:Card materialDesign:ShadowAssist.ShadowDepth="Depth2"
                              Margin="10">
 
-                <ListView ItemsSource="{Binding SelectedTask.SubTasks}"/>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <materialDesign:ColorZone 
+            materialDesign:ShadowAssist.ShadowDepth="Depth2"
+            Background="Transparent"
+            BorderBrush="{DynamicResource PrimaryHueMidBrush}"
+            BorderThickness="0 0 0 0.2"
+            VerticalAlignment="Stretch">
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Orientation="Horizontal"
+                                Margin="10 0">
+                                <materialDesign:PackIcon 
+                            VerticalAlignment="Center"
+                            Kind="Magnify"/>
+
+                                <TextBox MinWidth="200"
+                                 VerticalAlignment="Center"
+                         materialDesign:HintAssist.Hint="search..."
+                         BorderThickness="0"
+                         materialDesign:TextFieldAssist.DecorationVisibility="Collapsed"
+                         materialDesign:TextFieldAssist.HasClearButton="True"
+                         Text="{Binding SearchSubTaskText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         Margin="5 0"/>
+
+
+                            </StackPanel>
+
+                            <ComboBox Grid.Column="2"
+                      BorderThickness="0"
+                      SelectedIndex="1"
+                      ItemsSource="{Binding SubTaskViewType}"
+                      SelectedItem="{Binding SelectedSubTaskViewType, Mode=TwoWay}"
+                      IsSynchronizedWithCurrentItem="True"
+                      >
+                            </ComboBox>
+
+                            <Button Style="{StaticResource MaterialDesignFlatButton}"
+                                 Grid.Column="3"
+                                ToolTip="Add new subtask">
+                                <materialDesign:PackIcon Kind="Add"/>
+                            </Button>
+
+                        </Grid>
+
+                    </materialDesign:ColorZone>
+
+                    <!-- Controls -->
+                    <materialDesign:ColorZone 
+                    Grid.Row="1"
+                        materialDesign:ShadowAssist.ShadowDepth="Depth2"
+                        Background="Transparent"
+                        BorderBrush="{DynamicResource PrimaryHueMidBrush}"
+                        BorderThickness="0 0 0 0.2"
+                        VerticalAlignment="Stretch"
+                        Visibility="{Binding SelectedSubTasks.Count, Converter={StaticResource NotZeroToVisibilityConverter}}">
+
+                        <Grid>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <CheckBox IsChecked="{Binding IsAllSubTasksSelected, Mode=TwoWay}"
+                                  Margin="20 0 0 0"
+                                  ToolTip="Select all"
+                                  VerticalContentAlignment="Center"
+                                  >
+                                <TextBlock Text="Select All" Margin="0 -3 0 0"/>
+                            </CheckBox>
+
+                            <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Right"
+                                    Grid.Column="1">
+
+                                <Button 
+                                Style="{StaticResource MaterialDesignFlatButton}"
+                                ToolTip="Reopen selected subtasks"
+                            Command="{Binding ReopenSelectedSubTasksCommand}"
+                               >
+                                    <materialDesign:PackIcon Kind="Restart"/>
+                                </Button>
+
+                                <Button 
+                                Style="{StaticResource MaterialDesignFlatButton}"
+                                ToolTip="Complete selected subtasks"
+                            Command="{Binding CompleteSelectedSubTasksCommand}"
+                               >
+                                    <materialDesign:PackIcon Kind="Check"/>
+                                </Button>
+
+                                <Button 
+                                Style="{StaticResource MaterialDesignFlatButton}"
+                                ToolTip="Unselect subtasks"
+                            Command="{Binding UnselectSubTasksCommand}"
+                               >
+                                    <materialDesign:PackIcon Kind="CheckAll"/>
+                                </Button>
+
+                                <Button 
+                                Style="{StaticResource MaterialDesignFlatButton}"
+                                ToolTip="Remove selected subtasks"
+                            Command="{Binding DeleteSelectedSubTasksCommand}"
+                               >
+                                    <materialDesign:PackIcon Kind="DeleteEmpty"/>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+
+
+                    </materialDesign:ColorZone>
+                    <ListView ItemsSource="{Binding SubTasks}"
+                              x:Name="taskSubTaskList"
+                              Grid.Row="2"
+                              Style="{StaticResource TaskSubTaskListView}"/>
+
+                </Grid>
 
             </materialDesign:Card>
 

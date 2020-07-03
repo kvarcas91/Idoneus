@@ -791,4 +791,73 @@
         </Setter>
     </Style>
 
+    <!-- Project SubTasks ListView -->
+    <Style x:Key="TaskSubTaskListView" TargetType="{x:Type ListView}" BasedOn="{StaticResource ListView}">
+        <Setter Property="ItemTemplate">
+            <Setter.Value>
+                <DataTemplate>
+
+                    <Grid VerticalAlignment="Center"
+                        Margin="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Orientation="Horizontal" Background="Transparent">
+
+                            <!-- Priority Color Indicator -->
+                            <Border Grid.Column="0"
+                            Background="{Binding Priority, Converter={converters:PriorityToColorConverter}}" 
+                            Width="2" 
+                            Height="10"
+                            Margin="5 3 5 3"/>
+
+                            <!-- Task summary -->
+                            <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                       Command="{Binding ElementName=taskSubTaskList, Path=DataContext.CheckSubTaskCommand}"
+                                        CommandParameter="{Binding}" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding Content}"  
+                                           VerticalAlignment="Center"
+                                           Margin="0 -3 0 0"
+                                           TextDecorations="{Binding Status, Converter={converter:StatusToTextDecorationConverter}}"/>
+                            </CheckBox>
+                        </StackPanel>
+
+                        <!-- Status -->
+                        <TextBlock Grid.Column="1"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Center"
+                                   Margin="5 0 5 0"
+                                   Typography.Capitals="AllSmallCaps">
+                                    <Run Text="Status: "
+                                         Foreground="Gray"/>
+                                    <Run Text="{Binding Status}"
+                                         Foreground="{Binding Status, Converter={converters:StatusToColorConverter}}"
+                                        />
+                        </TextBlock>
+
+                    </Grid>
+
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+        <!-- Disable onMouseOver and default style -->
+        <Setter Property="ItemContainerStyle">
+            <Setter.Value>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                <ContentPresenter />
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
 </ResourceDictionary>
