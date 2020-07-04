@@ -180,7 +180,7 @@ namespace Idoneus.ViewModels
             var ID = _editableProject == null ? Guid.NewGuid().ToString() : _editableProject.ID;
             var submitionDate = _editableProject == null ? DateTime.Now : _editableProject.SubmitionDate;
 
-            Project project = null;
+            Project project;
             if (_editableProject == null)
             {
                 project = new Project

@@ -5,6 +5,6 @@
         Archived = 0,
         InProgress = 2,
         Completed = 3,
-        Delayed = 4
+        Missed = 4
     }
 }

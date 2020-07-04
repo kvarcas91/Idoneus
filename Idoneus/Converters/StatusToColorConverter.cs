@@ -21,7 +21,7 @@ namespace Idoneus.Converters
                 case ViewType.InProgress:
                     color = "#2196F3";
                     break;
-                case ViewType.Delayed:
+                case ViewType.Missed:
                     color = "red";
                     break;
                 case ViewType.Completed:

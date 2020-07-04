@@ -5,7 +5,6 @@ using Domain.Models.Base;
 using Prism.Mvvm;
 using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 
 namespace Domain.Models.Tasks
 {

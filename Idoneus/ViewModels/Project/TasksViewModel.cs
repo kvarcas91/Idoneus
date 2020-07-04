@@ -1,10 +1,13 @@
 ﻿using Common;
 using Common.EventAggregators;
 using Domain.Extentions;
+using Domain.Helpers;
 using Domain.Models;
+using Domain.Models.Base;
 using Domain.Models.Project;
 using Domain.Models.Tasks;
 using Domain.Repository;
+using MaterialDesignThemes.Wpf;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
@@ -24,6 +27,7 @@ namespace Idoneus.ViewModels
         private readonly IEventAggregator _eventAggregator;
         private readonly ProjectRepository _repository;
         private Action _deselectContributors;
+        private bool _isTaskEditable = false;
 
         #endregion // Local members
 
@@ -42,6 +46,33 @@ namespace Idoneus.ViewModels
             get { return _selectedTask; }
             set { SetProperty(ref _selectedTask, value); SetSubTasks(); }
         }
+
+        private IEntity _newTask;
+
+        #region New Task
+
+        private string _content;
+        public string Content
+        {
+            get { return _content; }
+            set { SetProperty(ref _content, value); }
+        }
+
+        private string _priority;
+        public string Priority
+        {
+            get { return _priority; }
+            set { SetProperty(ref _priority, value); }
+        }
+
+        private DateTime _dueDate = DateTime.Now.AddDays(7);
+        public DateTime DueDate
+        {
+            get { return _dueDate; }
+            set { SetProperty(ref _dueDate, value); }
+        }
+
+        #endregion // New Task
 
         #region Tasks
 
@@ -205,6 +236,18 @@ namespace Idoneus.ViewModels
 
         #endregion // SubTasks
 
+        private DelegateCommand<string> _addNewTaskCommand;
+        public DelegateCommand<string> AddNewTaskCommand => _addNewTaskCommand ?? (_addNewTaskCommand = new DelegateCommand<string>(AddNewTask));
+
+        private DelegateCommand _closeDialogCommand;
+        public DelegateCommand CloseDialogCommand => _closeDialogCommand ?? (_closeDialogCommand = new DelegateCommand(CloseDialog));
+
+        private DelegateCommand _confirmNewTaskCommand;
+        public DelegateCommand ConfirmNewTaskCommand => _confirmNewTaskCommand ?? (_confirmNewTaskCommand = new DelegateCommand(ConfirmNewTask));
+
+        private DelegateCommand<ITask> _editTaskCommand;
+        public DelegateCommand<ITask> EditTaskCommand => _editTaskCommand ?? (_editTaskCommand = new DelegateCommand<ITask>(EditTask));
+
         #endregion // Delegates
 
 
@@ -227,6 +270,135 @@ namespace Idoneus.ViewModels
         }
 
         #region Methods
+
+        private void AddNewTask(string type)
+        {
+            if (type.Equals("TASK")) _newTask ??= new ProjectTask();
+            else
+            {
+                if (SelectedTask == null)
+                {
+                    PublishSnackBar("Select Task first!");
+                    return;
+                }
+                _newTask ??= new SubTask();
+            }
+            var dialog = DialogHost.OpenDialogCommand;
+            dialog.Execute(null, null);
+
+        }
+
+        private void ConfirmNewTask()
+        {
+            if (!IsNewProjectValid() || CurrentProject == null || _newTask == null) return;
+
+            Priority priority = (Priority)Enum.Parse(typeof(Priority), Priority);
+
+            if (_newTask is ProjectTask task)
+            {
+                if (!_isTaskEditable) task.ID = Guid.NewGuid().ToString();
+                task.DueDate = DueDate;
+                task.Content = Content;
+                task.Priority = priority;
+                if (!_isTaskEditable) task.ParentID = CurrentProject.ID;
+
+                if (_isTaskEditable)
+                {
+                    var currentProjectTaskIndex = CurrentProject.Tasks.IndexOf(CurrentProject.Tasks.Where(t => t.ID.Equals(task.ID)).FirstOrDefault());
+                    var taskIndex = Tasks.IndexOf(CurrentProject.Tasks.Where(t => t.ID.Equals(task.ID)).FirstOrDefault());
+                    if (currentProjectTaskIndex >= 0 && taskIndex >= 0)
+                    {
+                        CurrentProject.Tasks.RemoveAt(currentProjectTaskIndex);
+                        Tasks.RemoveAt(taskIndex);
+                    }
+                }
+                
+                CurrentProject.Tasks.Add(task);
+                Tasks.Add(task);
+
+                Task.Run(() => {
+                    if (!_isTaskEditable) _repository.Insert(task, "tasks");
+                    else _repository.Update(task);
+                    
+                    App.Current.Dispatcher.Invoke(() => _eventAggregator.GetEvent<NotifyProjectChanged<Project>>().Publish(CurrentProject));
+                    PublishSnackBar($"Tasks have been {(_isTaskEditable ? "updated" : "inserted")}!");
+                    _newTask = null;
+                    _isTaskEditable = false;
+                });
+
+            }
+            if (_newTask is SubTask subTask)
+            {
+                if (!_isTaskEditable) subTask.ID = Guid.NewGuid().ToString();
+                subTask.DueDate = DueDate;
+                subTask.Content = Content;
+                subTask.Priority = priority;
+                if (!_isTaskEditable) subTask.ParentID = SelectedTask.ID;
+
+                if (_isTaskEditable)
+                {
+                    var SelectedTaskIndex = SelectedTask.SubTasks.IndexOf(SelectedTask.SubTasks.Where(t => t.ID.Equals(subTask.ID)).FirstOrDefault());
+                    var taskIndex = Tasks.IndexOf(CurrentProject.Tasks.Where(t => t.ID.Equals(subTask.ID)).FirstOrDefault());
+                    if (taskIndex >= 0 && SelectedTaskIndex >= 0)
+                    {
+                        SelectedTask.SubTasks.RemoveAt(SelectedTaskIndex);
+                        SubTasks.RemoveAt(taskIndex);
+                    }
+                }
+
+                SubTasks.Add(subTask);
+                SelectedTask.SubTasks.Add(subTask);
+
+                SelectedTask.GetProgress();
+
+                Task.Run(() => {
+                    if (!_isTaskEditable) _repository.Insert(subTask, "subtasks");
+                    else _repository.Update(subTask);
+                    App.Current.Dispatcher.Invoke(() => _eventAggregator.GetEvent<NotifyProjectChanged<Project>>().Publish(CurrentProject));
+                    PublishSnackBar($"Tasks have been {(_isTaskEditable ? "updated" : "inserted")}!");
+                    _newTask = null;
+                    _isTaskEditable = false;
+                });
+            }
+
+            CloseDialog();
+        }
+
+        private bool IsNewProjectValid()
+        {
+            if (!ValidationHelper.Validate(Priority, Content) || DueDate < DateTime.Now)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private void CloseDialog()
+        {
+            var dialog = DialogHost.CloseDialogCommand;
+            dialog.Execute(null, null);
+
+            ClearTaskData();
+        }
+
+        private void ClearTaskData()
+        {
+            Content = string.Empty;
+            DueDate = DateTime.Now.AddDays(7);
+            Priority = string.Empty;
+        }
+
+        private void EditTask(ITask paramTask)
+        {
+            _isTaskEditable = true;
+            _newTask = paramTask;
+            Content = paramTask.Content;
+            DueDate = paramTask.DueDate;
+            Priority = paramTask.Priority.ToString();
+            var type = (paramTask is ProjectTask) ? "TASK" : "SUBTASK";
+            AddNewTask(type);
+        }
 
         #region Tasks
 
@@ -399,6 +571,8 @@ namespace Idoneus.ViewModels
 
         #endregion // Tasks
 
+        #region SubTasks
+
         private void HandleSubTaskViewTypeSelect()
         {
 
@@ -518,7 +692,7 @@ namespace Idoneus.ViewModels
                     if (mTask.Status != Status.Completed) continue;
 
                     task.Status = Status.InProgress;
-                   // task.GetProgress();
+                    // task.GetProgress();
 
                     mTask.Status = Status.InProgress;
                     //mTask.GetProgress();
@@ -549,9 +723,9 @@ namespace Idoneus.ViewModels
                         return;
                     }
                     task.Status = Status.Completed;
-                   
+
                     mTask.Status = Status.Completed;
-                   
+
                     _repository.Update(mTask);
 
                 }
@@ -574,10 +748,12 @@ namespace Idoneus.ViewModels
 
         private void SetSubTasks()
         {
-            if (SelectedTask != null) SubTasks.AddRange(SelectedTask.SubTasks);
+            if (SelectedTask != null)
+            {
+                SubTasks.Clear();
+                SubTasks.AddRange(SelectedTask.SubTasks);
+            }
         }
-
-        #region SubTasks
 
         #endregion // SubTasks
 

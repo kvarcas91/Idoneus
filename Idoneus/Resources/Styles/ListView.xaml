@@ -706,11 +706,37 @@
                 <DataTemplate>
 
                     <Grid VerticalAlignment="Center"
-                        Margin="10">
+                        Margin="10"
+                          Tag="{Binding RelativeSource={RelativeSource 
+                                    Mode=FindAncestor, 
+                                    AncestorType={x:Type UserControl}}}">
+
+                        <Grid.InputBindings>
+                            <MouseBinding Gesture="LeftDoubleClick" 
+                                              Command="{Binding ElementName=FileListView,Path=DataContext.FileListItemClickCommand}"
+                                              CommandParameter="{Binding}"/>
+                        </Grid.InputBindings>
+                        <Grid.ContextMenu>
+                            <ContextMenu>
+                                <!-- Options -->
+
+                                <MenuItem Header="Edit" Command="{
+                                                    Binding Path=PlacementTarget.Tag.DataContext.EditTaskCommand,
+                                                    RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContextMenu}}"
+                                                    CommandParameter="{Binding}"/>
+
+                            </ContextMenu>
+                        </Grid.ContextMenu>
+
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="3*"/>
                             <ColumnDefinition Width="2*"/>
                         </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
 
                         <StackPanel Orientation="Horizontal" Background="Transparent">
 
@@ -769,6 +795,18 @@
 
                         </Grid>
 
+                        <!-- Due Date -->
+                        <TextBlock Grid.Row="1" Grid.ColumnSpan="2"
+                                   Typography.Capitals="AllSmallCaps"
+                                   Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                                   HorizontalAlignment="Right"
+                                   Margin="0 5 10 0">
+                            <Run Text="Due to"/>
+                            <Run  Text="{Binding DueDate, 
+                                          Converter={converters:DateTimeToStringConverter},
+                                          ConverterParameter=1}"/>
+                        </TextBlock>
+
                     </Grid>
 
                 </DataTemplate>
@@ -798,11 +836,37 @@
                 <DataTemplate>
 
                     <Grid VerticalAlignment="Center"
-                        Margin="10">
+                        Margin="10"
+                          Tag="{Binding RelativeSource={RelativeSource 
+                                    Mode=FindAncestor, 
+                                    AncestorType={x:Type UserControl}}}">
+
+                        <Grid.InputBindings>
+                            <MouseBinding Gesture="LeftDoubleClick" 
+                                              Command="{Binding ElementName=FileListView,Path=DataContext.FileListItemClickCommand}"
+                                              CommandParameter="{Binding}"/>
+                        </Grid.InputBindings>
+                        <Grid.ContextMenu>
+                            <ContextMenu>
+                                <!-- Options -->
+
+                                <MenuItem Header="Edit" Command="{
+                                                    Binding Path=PlacementTarget.Tag.DataContext.EditTaskCommand,
+                                                    RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContextMenu}}"
+                                                    CommandParameter="{Binding}"/>
+                               
+                            </ContextMenu>
+                        </Grid.ContextMenu>
+
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
 
                         <StackPanel Orientation="Horizontal" Background="Transparent">
 
@@ -835,6 +899,18 @@
                                     <Run Text="{Binding Status}"
                                          Foreground="{Binding Status, Converter={converters:StatusToColorConverter}}"
                                         />
+                        </TextBlock>
+
+                        <!-- Due Date -->
+                        <TextBlock Grid.Row="1" Grid.ColumnSpan="2"
+                                   Typography.Capitals="AllSmallCaps"
+                                   Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                                   HorizontalAlignment="Right"
+                                   Margin="0 5 10 0">
+                            <Run Text="Due to"/>
+                            <Run  Text="{Binding DueDate, 
+                                          Converter={converters:DateTimeToStringConverter},
+                                          ConverterParameter=1}"/>
                         </TextBlock>
 
                     </Grid>

@@ -27,7 +27,7 @@ namespace Domain.Repository
                 item.GetProgress();
                 if (item.DueDate < DateTime.Now && item.Status != Status.Completed)
                 {
-                    item.Status = Status.Delayed;
+                    item.Status = Status.Missed;
                     Task.Run(() => Update(item));
                 }
             }
@@ -40,7 +40,7 @@ namespace Domain.Repository
             GetProjectContent(project);
             if (project.DueDate < DateTime.Now && project.Status != Status.Completed)
             {
-                project.Status = Status.Delayed;
+                project.Status = Status.Missed;
                 Task.Run(() => Update(project));
             }
             return project;
@@ -86,7 +86,7 @@ namespace Domain.Repository
                 task.Contributors = new ObservableCollection<Contributor>(GetTaskContributors(task.ID));
                 if (task.DueDate < DateTime.Now && task.Status != Status.Completed)
                 {
-                    task.Status = Status.Delayed;
+                    task.Status = Status.Missed;
                     Task.Run(() => Update(task));
                 }
                 task.GetProgress();
@@ -94,7 +94,7 @@ namespace Domain.Repository
                 {
                     if (subtask.DueDate < DateTime.Now && subtask.Status != Status.Completed)
                     {
-                        subtask.Status = Status.Delayed;
+                        subtask.Status = Status.Missed;
                         Task.Run(() => Update(subtask));
                     }
                 }
@@ -159,7 +159,7 @@ namespace Domain.Repository
                 ViewType.Completed => list.Where(i => i.Status.Equals(Status.Completed)),
                 ViewType.InProgress => list.Where(i => i.Status.Equals(Status.InProgress)),
                 ViewType.Archived => list.Where(i => i.Status.Equals(Status.Archived)),
-                ViewType.Delayed => list.Where(i => i.Status.Equals(Status.Delayed)),
+                ViewType.Missed => list.Where(i => i.Status.Equals(Status.Missed)),
                 _ => list,
             };
         }
