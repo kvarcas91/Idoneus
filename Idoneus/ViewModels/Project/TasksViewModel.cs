@@ -265,8 +265,8 @@ namespace Idoneus.ViewModels
 
             eventAggregator.GetEvent<SendCurrentProject<Project>>().Subscribe(ProjectReceived);
 
-            TaskViewType = new List<string>() { "All", "In Progress", "Completed", "Archived", "Delayed" };
-            SubTaskViewType = new List<string>() { "All", "In Progress", "Completed", "Archived", "Delayed" };
+            TaskViewType = new List<string>() { "All", "In Progress", "Completed", "Archived", "Missed" };
+            SubTaskViewType = new List<string>() { "All", "In Progress", "Completed", "Archived", "Missed" };
         }
 
         #region Methods
@@ -338,7 +338,7 @@ namespace Idoneus.ViewModels
                 if (_isTaskEditable)
                 {
                     var SelectedTaskIndex = SelectedTask.SubTasks.IndexOf(SelectedTask.SubTasks.Where(t => t.ID.Equals(subTask.ID)).FirstOrDefault());
-                    var taskIndex = Tasks.IndexOf(CurrentProject.Tasks.Where(t => t.ID.Equals(subTask.ID)).FirstOrDefault());
+                    var taskIndex = SubTasks.IndexOf(SelectedTask.SubTasks.Where(t => t.ID.Equals(subTask.ID)).FirstOrDefault());
                     if (taskIndex >= 0 && SelectedTaskIndex >= 0)
                     {
                         SelectedTask.SubTasks.RemoveAt(SelectedTaskIndex);

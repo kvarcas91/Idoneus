@@ -944,44 +944,35 @@ namespace Idoneus.ViewModels
             _currentProject = project;
             if (project == null) return;
 
-            //Task.Run(() =>
-            //{
-               // _currentProject = _repository.GetProject(project.ID);
-
-                Task.Run(() =>
+            Task.Run(() =>
+            {
+                _basePath = Path.Combine(".\\Projects", _currentProject.ID);
+                // CurrentPath = _basePath;
+                   
+                   
+                App.Current.Dispatcher.Invoke(() =>
                 {
-                    _basePath = Path.Combine(".\\Projects", _currentProject.ID);
-                   // CurrentPath = _basePath;
-                   
-                   
-                    App.Current.Dispatcher.Invoke(() =>
+                    FileHelper.InitializeProjectFolder(_currentProject.ID);
+                    DataVersions.Clear();
+                    DataVersions.AddRange(FileHelper.GetVersions(_basePath));
+                    if (DataVersions.Count == 0)
                     {
-                        FileHelper.InitializeProjectFolder(_currentProject.ID);
-                        DataVersions.Clear();
                         DataVersions.AddRange(FileHelper.GetVersions(_basePath));
-                        if (DataVersions.Count == 0)
-                        {
-                            DataVersions.AddRange(FileHelper.GetVersions(_basePath));
-                        }
-                        CurrentVersion = DataVersions[DataVersions.Count - 1];
-                        CurrentPath = Path.Combine(_basePath, DataVersions[DataVersions.Count - 1].ToString());
-                    });
+                    }
+                    CurrentVersion = DataVersions[DataVersions.Count - 1];
+                    CurrentPath = Path.Combine(_basePath, DataVersions[DataVersions.Count - 1].ToString());
+                });
                     
 
-                });
+            });
 
-                if (Contributors != null) App.Current.Dispatcher.Invoke(() =>
-                {
-                    Contributors.Clear();
-                    Contributors.AddRange(_currentProject.Contributors);
-                    SeparateComments();
-                });
+            if (Contributors != null) App.Current.Dispatcher.Invoke(() =>
+            {
+                Contributors.Clear();
+                Contributors.AddRange(_currentProject.Contributors);
+                SeparateComments();
+            });
 
-              
-
-             
-              
-           // });
           
         }
 

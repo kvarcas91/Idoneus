@@ -132,8 +132,10 @@ namespace Domain.Repository.Base
 
         private static string GetConnectionString()
         {
-            var connectionStringBuilder = new SqliteConnectionStringBuilder();
-            connectionStringBuilder.DataSource = $".{Path.DirectorySeparatorChar}Database{Path.DirectorySeparatorChar}db.db";
+            var connectionStringBuilder = new SqliteConnectionStringBuilder
+            {
+                DataSource = $".{Path.DirectorySeparatorChar}Database{Path.DirectorySeparatorChar}db.db"
+            };
             return connectionStringBuilder.ConnectionString;     
         }
 

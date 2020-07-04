@@ -31,7 +31,6 @@ namespace Domain.Models.Tasks
             if (string.IsNullOrEmpty(Dates))
             {
                 CreateDateList();
-                return;
             }
 
             for (int i = 0; i < Dates.Length; i++)
@@ -74,6 +73,7 @@ namespace Domain.Models.Tasks
                     new RepetetiveDay() { DayName = "S"},
                 };
             }
+           
         }
 
     }

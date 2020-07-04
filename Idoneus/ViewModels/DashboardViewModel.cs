@@ -100,7 +100,13 @@ namespace Idoneus.ViewModels
         {
             Task.Run(() =>
             {
-                _projects = new ObservableCollection<Project>(_repository.GetProjects());
+                _projects ??= new ObservableCollection<Project>();
+                App.Current.Dispatcher.Invoke(() =>
+                {
+                    _projects.Clear();
+                     _projects.AddRange(_repository.GetProjects());
+                });
+               
                 var upcommingTasks = new ObservableCollection<ITask>(_repository.GetUpcommingTasks(DateTime.Now.AddDays(7)));
 
                 _eventAggregator.GetEvent<SendMessageEvent<ObservableCollection<Project>>>().Publish(_projects);

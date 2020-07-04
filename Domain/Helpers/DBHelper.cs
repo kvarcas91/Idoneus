@@ -88,7 +88,6 @@ namespace Domain.Repository.Helpers
 								Priority INTEGER NOT NULL,
 								DueDate TEXT NOT NULL,
 								Status INTEGER NOT NULL,
-								IsCompleted INTEGER NOT NULL,
 								OrderNumber INTEGER,
 								FOREIGN KEY(ParentID) REFERENCES projects(ID));
 
@@ -102,7 +101,8 @@ namespace Domain.Repository.Helpers
 							CREATE TABLE repetetive_tasks (
 								ID TEXT NOT NULL PRIMARY KEY,
 								Content TEXT NOT NULL,
-								IsActive INTEGER);
+								IsActive INTEGER,
+								Dates TEXT);
 
 							CREATE TABLE contributors ( 
 								  ID TEXT NOT NULL,
@@ -131,7 +131,6 @@ namespace Domain.Repository.Helpers
 								Content TEXT NOT NULL,
 								Priority INTEGER NOT NULL,
 								DueDate TEXT NOT NULL,
-								IsCompleted INTEGER NOT NULL,
 								Status INTEGER NOT NULL,
 								OrderNumber INTEGER,
 								FOREIGN KEY(ParentID) REFERENCES tasks(ID));

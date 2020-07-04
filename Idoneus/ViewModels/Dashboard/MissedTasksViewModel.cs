@@ -41,6 +41,12 @@ namespace Idoneus.ViewModels
             Tasks = new ObservableCollection<TodaysTask>();
             _eventAggregator = eventAggregator;
             _repository = new DailyTasksRepository();
+            _eventAggregator.GetEvent<NotifyDailyTaskChanged>().Subscribe(NotifyTaskChanged);
+            GetData();
+        }
+
+        private void NotifyTaskChanged()
+        {
             GetData();
         }
 
@@ -94,7 +100,7 @@ namespace Idoneus.ViewModels
                     {
                         Tasks.Clear();
                         Tasks.AddRange(tempTasks);
-                        CalculateProgress();
+                        _eventAggregator.GetEvent<NotifyDailyTaskChanged>().Publish();
                     });
                 }
             });
@@ -120,8 +126,9 @@ namespace Idoneus.ViewModels
             }
 
             _repository.Delete(completedTasks);
-            CalculateProgress();
+            _eventAggregator.GetEvent<NotifyDailyTaskChanged>().Publish();
             SendSnackBarMessage("Completed tasks were removed");
+            _eventAggregator.GetEvent<NotifyDailyTaskChanged>().Publish();
         }
 
         private void CalculateProgress()

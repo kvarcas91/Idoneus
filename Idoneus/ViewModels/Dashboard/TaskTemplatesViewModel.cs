@@ -106,6 +106,7 @@ namespace Idoneus.ViewModels
 
                 parentTask.SetDate();
                 _repository.Update(parentTask);
+                _eventAggregator.GetEvent<NotifyDailyTaskChanged>().Publish();
             });
         }
 
@@ -122,6 +123,7 @@ namespace Idoneus.ViewModels
                 Content = TemplateContent,
                 IsActive = false
             };
+            newTemplate.SetDayList(true);
 
             var results = _repository.Insert(newTemplate, "repetetive_tasks");
 

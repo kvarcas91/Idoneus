@@ -294,7 +294,6 @@ namespace Idoneus.ViewModels
         {
             var drawer = DrawerHost.CloseDrawerCommand;
             drawer.Execute(null, null);
-            _currentRegion = param.Item1;
             Title = _currentRegion;
 
             if (param.Item3) Navigate(param.Item1, param.Item2);
@@ -312,7 +311,7 @@ namespace Idoneus.ViewModels
 
             if (_storage.IsExporting) return;
 
-            //if (_currentRegion.Equals(navigatePath)) return;
+            if (_currentRegion.Equals(navigatePath)) return;
 
             if (navigatePath != null)
             {

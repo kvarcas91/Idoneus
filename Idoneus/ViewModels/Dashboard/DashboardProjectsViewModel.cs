@@ -86,8 +86,9 @@ namespace Idoneus.ViewModels
             _storage = storage;
             _repository = repository;
             _eventAggregator = eventAggregator;
+            Projects = new ObservableCollection<Project>();
             eventAggregator.GetEvent<SendMessageEvent<ObservableCollection<Project>>>().Subscribe(MessageReceived);
-            _projectViewType = new List<string>() { "All", "In Progress", "Completed", "Archived", "Delayed" };
+            _projectViewType = new List<string>() { "All", "In Progress", "Completed", "Archived", "Missed" };
         }
 
         private void HandleExportParam(bool value, bool blockUIThread = true)
@@ -98,7 +99,13 @@ namespace Idoneus.ViewModels
         private void MessageReceived(ObservableCollection<Project> projects)
         {
             _allProjects = new ObservableCollection<Project>(projects.Clone());
-            Projects = projects;
+            App.Current.Dispatcher.Invoke(() =>
+            {
+                Projects.Clear();
+
+                Projects.AddRange(projects);
+            });
+           
         }
 
         private void SetExportMessage(string message)

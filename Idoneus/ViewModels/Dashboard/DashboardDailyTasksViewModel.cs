@@ -49,6 +49,8 @@ namespace Idoneus.ViewModels
         }
 
         private int _missedTaskCount = 0;
+        private readonly IEventAggregator _eventAggregator;
+
         public int MissedTaskCount
         {
             get { return _missedTaskCount; }
@@ -65,6 +67,7 @@ namespace Idoneus.ViewModels
                 new TaskTemplates()
             };
             eventAggregator.GetEvent<SendMessageToDailyTasks>().Subscribe(MessageReceived);
+            _eventAggregator = eventAggregator;
         }
 
         private void MessageReceived((double progress, int missedCount) param)
@@ -88,6 +91,7 @@ namespace Idoneus.ViewModels
                 default:
                     break;
             }
+            _eventAggregator.GetEvent<NotifyDailyTaskChanged>().Publish();
         }
     }
 }

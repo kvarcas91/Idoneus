@@ -85,7 +85,8 @@ namespace Domain.Helpers
         {
             var _basePath = Path.Combine(".\\Projects", projectID);
             CreateFolderIfNotExist(_basePath);
-            CreateFolderIfNotExist(Path.Combine(_basePath, "V1"));
+            var fileList = Directory.GetDirectories(_basePath);
+            if (fileList == null || fileList.Length == 0) CreateFolderIfNotExist(Path.Combine(_basePath, "V1"));
         }
 
         public static bool FileExists(string path)
