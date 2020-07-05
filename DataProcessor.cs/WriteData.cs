@@ -1,6 +1,8 @@
-﻿using Domain.Helpers;
+﻿using Domain.Extentions;
+using Domain.Helpers;
 using Domain.Models;
 using Domain.Models.Base;
+using Domain.Models.Comments;
 using Domain.Models.Project;
 using Domain.Models.Tasks;
 using Domain.Repository;
@@ -15,6 +17,9 @@ namespace DataProcessor.cs
 {
     public class WriteData
     {
+
+        private enum ObjTypes { Project, ProjectTask, SubTask, Link, Contributor, TaskContributor}
+
         public static Response Write(string path, Action<string> setter, IEnumerable<Project> projects)
         {
 
@@ -29,10 +34,77 @@ namespace DataProcessor.cs
             {
                 stream.WriteLine(data[i]);
             }
+
+            foreach (var project in projects)
+            {
+                stream.WriteLine(GetDetails(project));
+
+                foreach (var comment in project.Comments)
+                {
+                    stream.Write(GetDetails(project));
+                    stream.WriteLine(GetDetails(comment));
+                }
+
+                foreach (var contributor in project.Contributors)
+                {
+                    stream.Write(GetDetails(project));
+                    stream.Write(SkipObject(ObjTypes.Link));
+                    stream.WriteLine(GetDetails(contributor));
+                }
+
+                foreach (var task in project.Tasks)
+                {
+                    stream.Write(GetDetails(project));
+                    stream.Write(SkipObject(ObjTypes.Link));
+                    stream.Write(SkipObject(ObjTypes.Contributor));
+                    stream.WriteLine(GetDetails(task));
+
+                    foreach (var subTask in task.SubTasks)
+                    {
+                        stream.Write(GetDetails(project));
+                        stream.Write(SkipObject(ObjTypes.Link));
+                        stream.Write(SkipObject(ObjTypes.Contributor));
+                        stream.Write(GetDetails(task));
+                        stream.WriteLine(GetDetails(subTask));
+                    }
+
+                    foreach (var tContributor in task.Contributors)
+                    {
+                        stream.Write(GetDetails(project));
+                        stream.Write(SkipObject(ObjTypes.Link));
+                        stream.Write(SkipObject(ObjTypes.Contributor));
+                        stream.Write(GetDetails(task));
+                        stream.Write(SkipObject(ObjTypes.SubTask));
+                        stream.WriteLine(GetDetails(tContributor));
+                    }
+                }
+               
+            }
+
             return new Response
             {
                 Success = true
             };
+        }
+
+        private static string SkipObject(ObjTypes type)
+        {
+            switch (type)
+            {
+                case ObjTypes.Contributor:
+                    return ",,,";
+                case ObjTypes.Project:
+                    return ",,,,,,,";
+                case ObjTypes.ProjectTask:
+                    return ",,,,,,,";
+                case ObjTypes.SubTask:
+                    return ",,,,,,,";
+                case ObjTypes.Link:
+                    return ",,,,,";
+                case ObjTypes.TaskContributor:
+                    return ",,,";
+                default: return string.Empty;
+            }
         }
 
         private static string GetRowTemplate(Project project)
@@ -51,26 +123,66 @@ namespace DataProcessor.cs
             return ";";
         }
 
+        private static string GetDetails<T>(T obj)
+        {
+   
+            var props = PropertyHelper.GetProperties(obj, includeID: true, searchable: false);
+            var output = new StringBuilder(string.Empty);
+            for (int i = 0; i < props.Count; i++)
+            {
+                try
+                {
+                    output.Append($"{Verify(props[i].Value.ToString())},");
+                }
+                catch
+                {
+                    output.Append($"{string.Empty},");
+                }
+               
+            }
+            if (obj is Comment) output.Append($"{string.Empty},");
+            return output.ToString();
+        }
+
+        private static string Verify(string data)
+        {
+            if (data.Contains("\""))
+            {
+                data = data.Replace("\"", "\"\"");
+            }
+
+            if (data.Contains(","))
+            {
+                data = String.Format("\"{0}\"", data);
+            }
+
+            if (data.Contains(Environment.NewLine))
+            {
+                data = String.Format("\"{0}\"", data);
+            }
+
+            return data;
+        }
+
         public static string GetHeaders()
         {
             var headers = new StringBuilder(string.Empty);
             headers.Append(GetHeader(new Project()));
-            headers.Append(GetHeader(new ProjectTask(), "TaskParentID"));
-            headers.Append(GetHeader(new SubTask(), "SubTaskParentID"));
-            //headers.Append("\n");
+            headers.Append(GetHeader(new Link()));
+            headers.Append(GetHeader(new Contributor()));
+            headers.Append(GetHeader(new ProjectTask()));
+            headers.Append(GetHeader(new SubTask()));
+            headers.Append(GetHeader(new Contributor(), "Task"));
             return headers.ToString();
         }
 
-
-        public static string GetHeader<T>(T obj, string parentID = null)
+        public static string GetHeader<T>(T obj, string prefix = null, string parentID = null)
         {
             var props = PropertyHelper.GetProperties(obj, exportable: true);
             var output = new StringBuilder(string.Empty);
-            if (!string.IsNullOrEmpty(parentID)) output.Append($"{parentID}\t");
             for (int i = 0; i < props.Count; i++)
             {
-                output.Append($"{typeof(T).Name}{props[i]}");
-                output.Append(i + 1 >= props.Count ? "" : "\t");
+                output.Append($"{prefix ?? prefix}{typeof(T).Name}{props[i]},");
             }
             return output.ToString();
         }

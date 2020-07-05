@@ -2,6 +2,7 @@
 using Common.EventAggregators;
 using DataProcessor.cs;
 using Domain.Extentions;
+using Domain.Helpers;
 using Domain.Models.Project;
 using Domain.Repository;
 using Microsoft.Win32;
@@ -179,7 +180,8 @@ namespace Idoneus.ViewModels
             {
                 var response =  WriteData.Write(fileName, SetExportMessage, Projects);
                 IsExporting = false;
-                Process.Start(fileName);
+                ProcessHelper.Run(fileName);
+             
             });
         }
 

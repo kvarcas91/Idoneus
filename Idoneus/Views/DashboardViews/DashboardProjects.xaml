@@ -75,7 +75,7 @@
                     <StackPanel Orientation="Vertical">
                         <Button Style="{StaticResource MaterialDesignFlatButton}"
                         Grid.Row="0"
-                        Content="Excel"
+                        Content="CSV"
                         Command="{Binding ExportCommand}"/>
 
                         <Button  Style="{StaticResource MaterialDesignFlatButton}"
