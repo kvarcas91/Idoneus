@@ -2,6 +2,7 @@
 using Dapper.Contrib.Extensions;
 using Prism.Mvvm;
 using System;
+using System.Text.Json.Serialization;
 
 namespace Domain.Models.Tasks
 {
@@ -41,12 +42,15 @@ namespace Domain.Models.Tasks
             get { return _status; }
             set { SetProperty(ref _status, value); }
         }
+
+        [JsonIgnore]
         public int OrderNumber { get; set; }
 
 
         private bool _isSelected = false;
 
         [Computed]
+        [JsonIgnore]
         public bool IsSelected
         {
             get { return _isSelected; }

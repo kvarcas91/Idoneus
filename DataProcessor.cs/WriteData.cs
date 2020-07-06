@@ -1,17 +1,13 @@
-﻿using Domain.Extentions;
-using Domain.Helpers;
+﻿using Domain.Helpers;
 using Domain.Models;
-using Domain.Models.Base;
 using Domain.Models.Comments;
 using Domain.Models.Project;
 using Domain.Models.Tasks;
-using Domain.Repository;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace DataProcessor.cs
 {
@@ -19,6 +15,15 @@ namespace DataProcessor.cs
     {
 
         private enum ObjTypes { Project, ProjectTask, SubTask, Link, Contributor, TaskContributor}
+
+        public static Response WriteJson(string path, Action<string> setter, IEnumerable<Project> projects)
+        {
+            string output = JsonConvert.SerializeObject(projects, Formatting.Indented);
+            using var stream = File.CreateText(path);
+            stream.WriteLine(output);
+
+            return new Response { Success = true};
+        }
 
         public static Response Write(string path, Action<string> setter, IEnumerable<Project> projects)
         {
@@ -28,15 +33,17 @@ namespace DataProcessor.cs
             setter("Writing headers...");
             data.Add(GetHeaders());
 
-
             using var stream = File.CreateText(path);
+
             for (int i = 0; i < data.Count; i++)
             {
                 stream.WriteLine(data[i]);
             }
 
+            setter("Writing projects");
             foreach (var project in projects)
             {
+              
                 stream.WriteLine(GetDetails(project));
 
                 foreach (var comment in project.Comments)
@@ -89,22 +96,16 @@ namespace DataProcessor.cs
 
         private static string SkipObject(ObjTypes type)
         {
-            switch (type)
+            return type switch
             {
-                case ObjTypes.Contributor:
-                    return ",,,";
-                case ObjTypes.Project:
-                    return ",,,,,,,";
-                case ObjTypes.ProjectTask:
-                    return ",,,,,,,";
-                case ObjTypes.SubTask:
-                    return ",,,,,,,";
-                case ObjTypes.Link:
-                    return ",,,,,";
-                case ObjTypes.TaskContributor:
-                    return ",,,";
-                default: return string.Empty;
-            }
+                ObjTypes.Contributor => ",,,",
+                ObjTypes.Project => ",,,,,,,",
+                ObjTypes.ProjectTask => ",,,,,,,",
+                ObjTypes.SubTask => ",,,,,,,",
+                ObjTypes.Link => ",,,,,",
+                ObjTypes.TaskContributor => ",,,",
+                _ => string.Empty,
+            };
         }
 
         private static string GetRowTemplate(Project project)

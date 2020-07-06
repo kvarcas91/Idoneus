@@ -75,6 +75,9 @@ namespace Idoneus.ViewModels
         private DelegateCommand _exportCommand;
         public DelegateCommand ExportCommand => _exportCommand ?? (_exportCommand = new DelegateCommand(Export));
 
+        private DelegateCommand _exportJsonCommand;
+        public DelegateCommand ExportJsonCommand => _exportJsonCommand ?? (_exportJsonCommand = new DelegateCommand(ExportJson));
+
         private DelegateCommand<Project> _onItemClickedCommand;
         public DelegateCommand<Project> OnItemClickedCommand => _onItemClickedCommand ?? (_onItemClickedCommand = new DelegateCommand<Project>(OnItemClicked));
 
@@ -182,6 +185,28 @@ namespace Idoneus.ViewModels
                 IsExporting = false;
                 ProcessHelper.Run(fileName);
              
+            });
+        }
+
+        private void ExportJson()
+        {
+            SaveFileDialog dialog = new SaveFileDialog
+            {
+                Filter = "JSON Files|*.json",
+                Title = "Save a dashboard file"
+            };
+
+            if (dialog.ShowDialog() != true) return;
+
+            var fileName = dialog.FileName;
+
+            IsExporting = true;
+            Task.Run(() =>
+            {
+                var response = WriteData.WriteJson(fileName, SetExportMessage, Projects);
+                IsExporting = false;
+                //ProcessHelper.Run(fileName);
+
             });
         }
 

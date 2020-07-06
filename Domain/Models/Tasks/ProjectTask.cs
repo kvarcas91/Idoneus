@@ -5,6 +5,7 @@ using Domain.Models.Base;
 using Prism.Mvvm;
 using System;
 using System.Collections.ObjectModel;
+using System.Text.Json.Serialization;
 
 namespace Domain.Models.Tasks
 {
@@ -48,11 +49,14 @@ namespace Domain.Models.Tasks
             get { return _status; }
             set { SetProperty(ref _status, value); }
         }
+
+        [JsonIgnore]
         public int OrderNumber { get; set; }
 
         private bool _isSelected = false;
 
         [Computed]
+        [JsonIgnore]
         public bool IsSelected
         {
             get { return _isSelected; }
@@ -62,6 +66,7 @@ namespace Domain.Models.Tasks
         private int _completedSubTasksCount = 0;
 
         [Computed]
+        [JsonIgnore]
         public int CompletedSubTasksCount
         {
             get { return _completedSubTasksCount; }

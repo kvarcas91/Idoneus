@@ -80,7 +80,8 @@
 
                         <Button  Style="{StaticResource MaterialDesignFlatButton}"
                         Grid.Row="0"
-                        Content="JSON"/>
+                        Content="JSON"
+                                  Command="{Binding ExportJsonCommand}"/>
                     </StackPanel>
 
                 </materialDesign:PopupBox>

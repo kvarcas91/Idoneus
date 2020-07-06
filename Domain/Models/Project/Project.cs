@@ -6,6 +6,7 @@ using Domain.Models.Tasks;
 using Prism.Mvvm;
 using System;
 using System.Collections.ObjectModel;
+using System.Text.Json.Serialization;
 
 namespace Domain.Models.Project
 {
@@ -45,6 +46,8 @@ namespace Domain.Models.Project
         public DateTime DueDate { get; set; }
         public Priority Priority { get; set; } = Priority.Default;
         public Status Status { get; set; } = Status.InProgress;
+
+        [JsonIgnore]
         public int OrderNumber { get; set; }
 
         private double _progress;
@@ -74,6 +77,7 @@ namespace Domain.Models.Project
         private int _completedTasksCount = 0;
 
         [Computed]
+        [JsonIgnore]
         public int CompletedTasksCount
         {
             get { return _completedTasksCount; }
