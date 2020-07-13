@@ -668,10 +668,11 @@ namespace Idoneus.ViewModels
             }
 
             Task.Run(() => {
-                _repository.DeleteTasks(SelectedTasks);
+                _repository.DeleteTasks(SelectedSubTasks);
                 IsAllTasksSelected = false;
                 App.Current.Dispatcher.Invoke(() => _eventAggregator.GetEvent<NotifyProjectChanged<Project>>().Publish(CurrentProject));
                 PublishSnackBar("Tasks have been deleted!");
+                UnselectSubTasks();
             });
         }
 
