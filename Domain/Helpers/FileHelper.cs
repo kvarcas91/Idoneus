@@ -139,14 +139,16 @@ namespace Domain.Helpers
             {
                 try
                 {
-                    File.Copy(file.Path, Path.Combine(newPath, $"{data.Name}{file.Extention}"), overwrite);
+                    var nPath = Path.Combine(newPath, $"{data.Name}{file.Extention}");
+                    File.Copy(file.Path, nPath, overwrite);
+                    data.Path = GetFullPath(nPath);
                     return new Response { Success = true };
                 }
                 catch (Exception e) { return new Response { Success = false, Message = e.Message }; }
             }
             if (data is ProjectFolder folder)
             {
-                if (!overwrite && !newVersion && Directory.Exists(folder.Path)) return new Response() { Success = false, Message = "Directory already exist" };
+                if ((!overwrite && !newVersion) && Directory.Exists(Path.Combine(newPath, data.Name))) return new Response() { Success = false, Message = "Directory already exist" };
                 return DirectoryCopy(folder.Path, Path.Combine(newPath, data.Name));
             }
 
