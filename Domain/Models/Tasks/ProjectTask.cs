@@ -79,13 +79,13 @@ namespace Domain.Models.Tasks
         [Computed]
         public ObservableCollection<Contributor> Contributors { get; set; } = new ObservableCollection<Contributor>();
 
-        private double _progress;
+        private double _progress = 0;
 
         [Exportable]
         [Computed]
         public double Progress
         {
-            get { return _progress; }
+            get { return Math.Round(_progress, 2); }
             set { SetProperty(ref _progress, value); }
         }
 

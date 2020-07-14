@@ -50,12 +50,12 @@ namespace Domain.Models.Project
         [JsonIgnore]
         public int OrderNumber { get; set; }
 
-        private double _progress;
+        private double _progress = 0;
 
         [Computed]
         public double Progress
         {
-            get { return _progress; }
+            get { return Math.Round(_progress,2); }
             set { SetProperty(ref _progress, value); }
         }
 
